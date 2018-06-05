@@ -31,8 +31,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>https://raw.githubusercontent.com/TonyMajorDev/DeChargerRepo/master/DeCharger/MSViewer/publish/</InstallUrl>
-    <UpdateUrl>https://raw.githubusercontent.com/TonyMajorDev/DeChargerRepo/master/DeCharger/MSViewer/publish/</UpdateUrl>
+    <InstallUrl>https://tonymajordev.github.io/DeChargerRepo/DeCharger/MSViewer/publish/</InstallUrl>
     <SupportUrl>https://github.com/TonyMajorDev/DeChargerRepo</SupportUrl>
     <ProductName>DeCharger Alpha</ProductName>
     <PublisherName>DeCharger on Github</PublisherName>

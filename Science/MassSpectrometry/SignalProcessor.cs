@@ -381,8 +381,8 @@ namespace SignalProcessing
             //double[] signalResult;
 
             // Cross-correlate gaussian with signal and pattern
-            //alglib.corrr1d(signalBins.Select(kvp => (double)kvp.Value).ToArray(), signalBins.Count(), gaussian, gaussian.Length, out signalResult);
-            //alglib.corrr1d(patternBins.Select(kvp => (double)kvp.Value).ToArray(), patternBins.Count(), gaussian, gaussian.Length, out patternResult);
+            //.corrr1d(signalBins.Select(kvp => (double)kvp.Value).ToArray(), signalBins.Count(), gaussian, gaussian.Length, out signalResult);
+            //.corrr1d(patternBins.Select(kvp => (double)kvp.Value).ToArray(), patternBins.Count(), gaussian, gaussian.Length, out patternResult);
 
             //var predicted = SimpleCrossCorrelation(ion.IsoPattern.Select(i => i * ion.IsoScale).ToArray(), gaussian);
             var patternResult = SimpleCrossCorrelation(patternBins.Select(kvp => (double)kvp.Value).ToArray(), gaussian);
@@ -485,8 +485,8 @@ namespace SignalProcessing
             //double[] signalResult;
 
             // Cross-correlate gaussian with signal and pattern
-            //alglib.corrr1d(signalBins.Select(kvp => (double)kvp.Value).ToArray(), signalBins.Count(), gaussian, gaussian.Length, out signalResult);
-            //alglib.corrr1d(patternBins.Select(kvp => (double)kvp.Value).ToArray(), patternBins.Count(), gaussian, gaussian.Length, out patternResult);
+            //.corrr1d(signalBins.Select(kvp => (double)kvp.Value).ToArray(), signalBins.Count(), gaussian, gaussian.Length, out signalResult);
+            //.corrr1d(patternBins.Select(kvp => (double)kvp.Value).ToArray(), patternBins.Count(), gaussian, gaussian.Length, out patternResult);
 
             var signalResult = SimpleCrossCorrelation(signalBins.Select(kvp => (double)kvp.Value).ToArray(), gaussian);
             var patternResult = SimpleCrossCorrelation(patternBins.Select(kvp => (double)kvp.Value).ToArray(), gaussian);
@@ -511,7 +511,7 @@ namespace SignalProcessing
 
             //double[] finalResult;
 
-            //alglib.corrr1d(signalResult, signalResult.Length, patternResult, patternResult.Length, out finalResult);
+            //.corrr1d(signalResult, signalResult.Length, patternResult, patternResult.Length, out finalResult);
 
             var finalResult = SimpleCrossCorrelation(signalResult, patternResult);
 
@@ -541,8 +541,8 @@ namespace SignalProcessing
 
             //double[] result;
 
-            //alglib.corrr1d(signal.Select(kvp => (double)kvp.Value).ToArray(), signal.Count, patternBins.Select(kvp => (double)kvp.Value).ToArray(), patternBins.Count(), out result);
-            //alglib.corrr1d(data.ToArray(), 11, harr_kernel.ToArray(), 4, out result);
+            //.corrr1d(signal.Select(kvp => (double)kvp.Value).ToArray(), signal.Count, patternBins.Select(kvp => (double)kvp.Value).ToArray(), patternBins.Count(), out result);
+            //.corrr1d(data.ToArray(), 11, harr_kernel.ToArray(), 4, out result);
 
 
             //foreach (var aPoint in result)
@@ -938,73 +938,42 @@ namespace SignalProcessing
 
 
 
-        //private static double[] SimpleCrossCorrelation(double[] input1, double[] input2)
-        //{
-        //    double[] result;
-        //    var finalResult = new List<double>();
-
-        //    alglib.corrr1d(input1, input1.Length, input2, input2.Length, out result);
-
-        //    finalResult.AddRange(result.Skip(input1.Length).Take(input2.Length));
-        //    finalResult.AddRange(result.Take(input1.Length));
-
-        //    return finalResult.ToArray();
-        //}
-
         private static double[] SimpleCrossCorrelation(double[] input1, double[] input2)
-        {
-            double[] result;
-            var finalResult = new List<double>();
+        { 
+            double[] pattern, data, result;
 
-            alglib.corrr1d(input1, input1.Length, input2, input2.Length, out result);
+            if (input1.Length > input2.Length)
+            {
+                data = input1;
+                pattern = input2;
+            }
+            else
+            {
+                data = input2;
+                pattern = input1;
+            }
 
-            finalResult.AddRange(result.Skip(input1.Length).Take(input2.Length));
-            finalResult.AddRange(result.Take(input1.Length));
+            var dataList = new List<double>();
+            dataList.AddRange(new double[pattern.Length]);
+            dataList.AddRange(data);
+            dataList.AddRange(new double[pattern.Length*2]);
 
-            return finalResult.ToArray();
+            data = dataList.ToArray();
+
+            result = new double[data.Length - pattern.Length];
+
+            for (int i = 0; i < result.Length; i++)
+            {
+                for (int j = 0; j < pattern.Length; j++)
+                    result[i] += data[i+j] * pattern[j];
+            }
+
+            return result;
+
         }
 
-        //TODO: replace alglib to remove GPL dependency
 
-        //double[] array1 = { 3, 2, 4, 5, 6 };
-        //double[] array2 = { 9, 7, 12, 15, 17 };
-
-        //double correl = Correlation(array1, array2);
-
-        //public double Correlation(double array1, double array2)
-        //{
-        //    double[] array_xy = new double[array1.Length];
-        //    double[] array_xp2 = new double[array1.Length];
-        //    double[] array_yp2 = new double[array1.Length];
-        //    for (int i = 0; i & lt; array1.Length; i++)
-        //array_xy[i] = array1[i] * array2[i];
-        //    for (int i = 0; i & lt; array1.Length; i++)
-        //array_xp2[i] = Math.Pow(array1[i], 2.0);
-        //    for (int i = 0; i & lt; array1.Length; i++)
-        //array_yp2[i] = Math.Pow(array2[i], 2.0);
-        //    double sum_x = 0;
-        //    double sum_y = 0;
-        //    foreach (double n in array1)
-        //        sum_x += n;
-        //    foreach (double n in array2)
-        //        sum_y += n;
-        //    double sum_xy = 0;
-        //    foreach (double n in array_xy)
-        //        sum_xy += n;
-        //    double sum_xpow2 = 0;
-        //    foreach (double n in array_xp2)
-        //        sum_xpow2 += n;
-        //    double sum_ypow2 = 0;
-        //    foreach (double n in array_yp2)
-        //        sum_ypow2 += n;
-        //    double Ex2 = Math.Pow(sum_x, 2.00);
-        //    double Ey2 = Math.Pow(sum_y, 2.00);
-
-        //    return (array1.Length * sum_xy - sum_x * sum_y) /
-        //    Math.Sqrt((array1.Length * sum_xpow2 - Ex2) * (array1.Length * sum_ypow2 - Ey2));
-        //}
-
-
+     
         //public static List<int> Bucketize(this IEnumerable<KeyValuePair<double, float>> source, int totalBuckets)
         //{
         //    //Based on: http://stackoverflow.com/questions/2387916/looking-for-a-histogram-binning-algorithm-for-decimal-data

@@ -4105,8 +4105,8 @@ namespace MSViewer.Classes
                         {
                             fnlgap += gp.Gap;
                         }
-                        //hs gjsl
-                        //alglib sdjas j
+
+
                         if (App.AllValidationModifications.Any(a => Math.Abs(Convert.ToDouble(a.Mass) - gp.Gap) <= 0.1))
                         {
 

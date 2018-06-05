@@ -103,7 +103,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="alglibnet2, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="BaseCommon, Version=6.0.633.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\MassHunterDataAccessAssembly_64bit\bin\BaseCommon.dll</HintPath>
@@ -192,7 +191,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ExampleIso.jpg" />
-    <Content Include="lib\alglibnet2.dll" />
     <Content Include="lib\Ionic.Zip.dll" />
     <Content Include="lib\MassHunterDataAccessAssembly_64bit\bin\agtsampleinforw.dll" />
     <Content Include="lib\MassHunterDataAccessAssembly_64bit\bin\BaseCommon.dll" />

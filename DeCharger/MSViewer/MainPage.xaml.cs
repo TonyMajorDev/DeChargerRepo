@@ -15372,19 +15372,7 @@ namespace MSViewer
             ClearAminoAcids_Click();
         }
 
-        //private void imgInfoNew_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        //{
-        //    Window feedback = new Window();
-        //    feedback.Height = 685;
-        //    feedback.Width = 800;
-        //    feedback.Owner = this;
-        //    feedback.ResizeMode = ResizeMode.NoResize;
-        //    feedback.Content = new InfoLegend();
-        //    feedback.Title = "Info";
-        //    feedback.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
-        //    feedback.Activate();
-        //    feedback.ShowDialog();
-        //}
+
 
         private void mnuitemSetParentMass_Click(object sender, RoutedEventArgs e)
         {
@@ -20270,7 +20258,7 @@ namespace MSViewer
         private void btnShowInfo_Click(object sender, RoutedEventArgs e)
         {
             Window feedback = new Window();
-            feedback.Height = 685;
+            feedback.Height = 645;
             feedback.Width = 800;
             feedback.Owner = this;
             feedback.ResizeMode = ResizeMode.NoResize;

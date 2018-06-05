@@ -11,7 +11,7 @@
     x:Name="mainWindow"
     xmlns:this="clr-namespace:MSViewer"
         
-    mc:Ignorable="d" MinWidth="1025" MinHeight="698" KeyUp="UserControl_KeyUp" Title="Lilly Decharger" Width="1024" Height="728" WindowStartupLocation="CenterScreen" ContentRendered="mainWindow_ContentRendered">
+    mc:Ignorable="d" MinWidth="1025" MinHeight="698" KeyUp="UserControl_KeyUp" Title="Lilly Decharger" Width="1024" Height="698" WindowStartupLocation="CenterScreen" ContentRendered="mainWindow_ContentRendered">
 
     <Window.Resources>
         <!--<Style TargetType="{x:Type this:SimpleCheckBox}">

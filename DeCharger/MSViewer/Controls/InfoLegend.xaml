@@ -3,12 +3,22 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" d:DesignWidth="769" Height="643.943">
+             mc:Ignorable="d" d:DesignWidth="769" Height="677.543">
     <Grid>
         <Image HorizontalAlignment="Left" Height="172" Margin="10,4,0,0" Source="/Icons/DeChargerProteinLegend1.png" VerticalAlignment="Top" Width="749"/>
-        <Image HorizontalAlignment="Left" Height="418" Margin="10,184,0,0" Source ="/Icons/DeChargerSpectrumLegend1.png" VerticalAlignment="Top" Width="749"/>
-        <TextBlock Margin="10,589,25,0" Height="26" VerticalAlignment="Top">
-            Insert License info and Acknowledgements here including for components used...
+        <Image HorizontalAlignment="Left" Height="400" Margin="10,184,0,0" Source ="/Icons/DeChargerSpectrumLegend1.png" VerticalAlignment="Top" Width="749"/>
+        <TextBlock Margin="10,595,150.8,-14" Height="71" VerticalAlignment="Top" TextWrapping="Wrap">
+            Acknowledgements for Library and Code Contributions:
+Thermo Fisher for Authorization to use and distribute file reading libraries, 
+Agilent for Authorization to use and distribute file reading libraries, 
+NBug Open Source Project, 
+WPFToolkit Open Source Project, 
+Xceed Avalon Dock Open Source Project, 
+ALG Library Open Source Project, 
+Visifire Chart Open Source Project, 
+NCBI for Blast executables, 
+Newtonsoft JSON library, 
+Ionic Zip library
         </TextBlock>
         <Button x:Name="btnInfoClose" Content="Close" Click="btnInfoClose_Click" Margin="0,0,10,14" HorizontalAlignment="Right" Width="122" Height="30" VerticalAlignment="Bottom"/>
     </Grid>

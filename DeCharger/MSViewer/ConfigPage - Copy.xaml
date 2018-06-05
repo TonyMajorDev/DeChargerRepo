@@ -1,0 +1,106 @@
+﻿<Window x:Class="MSViewer.ConfigPage"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+         xmlns:p="clr-namespace:MSViewer.Properties"           
+           Width="453.035" Height="699.926" 
+           Title="Settings" xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" Closing="Window_Closing">
+    <Grid x:Name="LayoutRoot" Margin="2,3,4,-5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="403*"/>
+            <ColumnDefinition Width="38*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" MinHeight="47" />
+        </Grid.RowDefinitions>
+
+        <!--<Button x:Name="CancelButton" Content="Close" Click="CancelButton_Click" Width="75" HorizontalAlignment="Right" Margin="0,10,10,10" IsCancel="True" Grid.Row="1" Grid.ColumnSpan="2" />
+        <Button x:Name="OKButton" Content="OK" Click="OKButton_Click" Width="75" HorizontalAlignment="Right" Margin="0,10,54.398,10" Grid.Row="1" IsDefault="True" />-->
+        <!--<CheckBox Content="Show Binned Labels in Spectrum View (Experimental)" Margin="19,33,32,164" Name="chkBinnedLabels" />
+        <CheckBox Content="Enable High Point Density in Spectrum View" IsChecked="True" Margin="19,12,79,186" Name="chkHighBin" />
+        <CheckBox Content="Show Peak Labels in Spectrum View" Height="25" HorizontalAlignment="Left" Margin="19,56,0,0" Name="chkLabels" VerticalAlignment="Top" Width="327" />
+        <CheckBox Content="Show Mass value Tooltips in spectrum" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=ShowMassTips, Mode=TwoWay}" Height="24" HorizontalAlignment="Left" Margin="19,79,0,0" Name="chkShowMassTips" VerticalAlignment="Top" Width="327" />-->
+
+        <CheckBox IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=ShowOnlyFTMS, Mode=TwoWay}" Content="Show Only FTMS" Height="16" Name="chkOnlyFTMS" Margin="23,183,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="387" Grid.ColumnSpan="2"  />
+
+        <Label Height="28" HorizontalAlignment="Left" Margin="16,160,0,0" Name="label1" VerticalAlignment="Top" Width="153" Content="Minimum Peak Intensity: " />
+        <Label Height="28" HorizontalAlignment="Left" Margin="199,160,0,0" Name="label2" VerticalAlignment="Top" Width="123" Content="(Larger can be faster)" />
+        <TextBox Text="{Binding Source={x:Static p:Settings.Default}, Path=MinPeak, Mode=TwoWay}" ToolTipService.ToolTip="Number of pixels per peak (higher number yields better performance on noisy data)" Height="23" HorizontalAlignment="Left" Margin="157,162,0,0" Name="minPeak" VerticalAlignment="Top" Width="36" />
+        <!--<CheckBox IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=JumpToXIC, Mode=TwoWay}"  Content="Jump To XIC tab when a New XIC is computed" HorizontalAlignment="Left" Margin="23,61,0,0" VerticalAlignment="Top"/>-->
+        <CheckBox Content="Show Thermo Data" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=ShowThermo, Mode=TwoWay}" x:Name="ThermoData" HorizontalAlignment="Left" Margin="23,226,0,0" VerticalAlignment="Top"/>
+        <CheckBox Content="Use BLASTp for Protein Searches (as opposed to exact match)" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=UseBlast, Mode=TwoWay}" HorizontalAlignment="Left" Margin="23,250,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding Source={x:Static p:Settings.Default}, Path=SequenceTagLength, Mode=TwoWay}" VerticalAlignment="Top" Width="36" Margin="213,315,0,0"></TextBox>
+        <Label Content="Sort sequences by" HorizontalAlignment="Left" Margin="16,403,0,0" VerticalAlignment="Top" Width="119"/>
+        <!--IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=SortByDBHits, Mode=TwoWay}"-->
+        <!--IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=SortByScore, Mode=TwoWay}"-->
+        <RadioButton GroupName="SortSequence" Content="DB Hits" HorizontalAlignment="Left" x:Name="rdbtnSortbyDBHits" Margin="191,409,0,0" VerticalAlignment="Top"/>
+        <RadioButton GroupName="SortSequence" Content="Score" HorizontalAlignment="Left" x:Name="rdbtnSortbyScore" Margin="267,409,0,0" VerticalAlignment="Top"/>
+        <!--<CheckBox Content="Sequence Detection Mode" HorizontalAlignment="Left" x:Name="chkSequenceDetectionMode" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=SequenceDetectionMode, Mode=TwoWay}" Margin="23,184,0,0" VerticalAlignment="Top" Width="161"/>-->
+        <CheckBox IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=JumpToXIC, Mode=TwoWay}"  Content="Jump To XIC tab when a New XIC is computed" HorizontalAlignment="Left" Margin="23,205,0,0" VerticalAlignment="Top" Height="16" Width="262"/>
+        <!--<CheckBox Content="Show Thermo Data" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=ShowThermo, Mode=TwoWay}" x:Name="ThermoData" HorizontalAlignment="Left" Margin="23,82,0,0" VerticalAlignment="Top" Height="16" Width="118"/>-->
+
+
+        <GroupBox Header="Select Genus for Database Search (Note: FASTA files not filtered)" Margin="13,461,3,0" VerticalAlignment="Top" Height="201" Grid.RowSpan="2">
+            <Grid Height="189" Margin="4,-3,-2,0" VerticalAlignment="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="61*"/>
+                    <ColumnDefinition Width="44*"/>
+                    <ColumnDefinition Width="47*"/>
+                    <ColumnDefinition Width="221*"/>
+                </Grid.ColumnDefinitions>
+                <ListBox x:Name="lstSpecies" Margin="17,37,10,10" Grid.ColumnSpan="4">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsSelected}" Content="{Binding Genus}"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <CheckBox x:Name="chkSearchAllSpecies" Content="Search All Species" HorizontalAlignment="Left" Margin="17,10,0,0" VerticalAlignment="Top" Width="193" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=SearchAllSpecies, Mode=TwoWay}" Checked="chkSearchAllSpecies_CheckChange" Unchecked="chkSearchAllSpecies_CheckChange" Grid.ColumnSpan="4"/>
+            </Grid>
+        </GroupBox>
+
+        <Label Content="Min sequence tag length:" Margin="17,313,0,0" HorizontalAlignment="Left" Width="189" Height="28" VerticalAlignment="Top"/>
+        <CheckBox Content="Use thorough Protein search (Exhaustive)" IsChecked="{Binding UseThoroughSearch, Mode=TwoWay, Source={x:Static p:Settings.Default}}" HorizontalAlignment="Left" Margin="23,293,0,0" VerticalAlignment="Top"/>
+        <Label Content="Assumed Charge State:" HorizontalAlignment="Left" Margin="17,341,0,0" VerticalAlignment="Top" Width="175"/>
+        <ComboBox x:Name="cboAssumedCharge" HorizontalAlignment="Left" Margin="214,345,0,0" VerticalAlignment="Top" Width="71" SelectedIndex="2">
+            <ListBoxItem Content="1, 2, 3" />
+            <ListBoxItem Content="1, 2"/>
+            <ListBoxItem Content="1"/>
+            <ListBoxItem Content="None"/>
+        </ComboBox>
+
+        <Label Content="PPM" HorizontalAlignment="Left" Margin="254,50,0,0" VerticalAlignment="Top" Width="34" Height="23"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="218,53,0,0" TextWrapping="Wrap" Text="{Binding MassTolerancePPM, Source={x:Static p:Settings.Default}, Mode=TwoWay}" x:Name="txtMassTolerance" VerticalAlignment="Top" Width="36"/>
+        <!--Path=MassTolerancePPM, -->
+        <Label Content="Mass Tolerance for Ion Detection:" HorizontalAlignment="Left" Margin="23,50,0,0" VerticalAlignment="Top" Width="191" Height="26"/>
+        <TextBox Height="23" HorizontalAlignment="Left" Margin="220,106,0,0" x:Name="txtMonoMatchTolerance_Copy" Text="{Binding MinAgilentThresholdMS1, Mode=TwoWay, Source={x:Static p:Settings.Default}}" VerticalAlignment="Top" Width="35" />
+        <Label Content="MinThreshold MS1" Height="28" Margin="25,103,0,0" x:Name="label3_Copy" VerticalAlignment="Top" HorizontalAlignment="Left" Width="162" />
+        <Label Content="Counts" Height="28" HorizontalAlignment="Left" Margin="255,103,0,0" x:Name="label6_Copy" VerticalAlignment="Top" Width="62" />
+        <TextBox Height="23" HorizontalAlignment="Left" Margin="220,131,0,0" x:Name="txtMonoMatchTolerance_Copy1" Text="{Binding MinAgilentThresholdMS2, Mode=TwoWay, Source={x:Static p:Settings.Default}}" VerticalAlignment="Top" Width="35" />
+        <Label Content="MinThreshold MS2" Height="28" Margin="25,128,0,0" x:Name="label3_Copy1" VerticalAlignment="Top" HorizontalAlignment="Left" Width="162" />
+        <Label Content="Counts" Height="28" HorizontalAlignment="Left" Margin="255,128,0,0" x:Name="label6_Copy1" VerticalAlignment="Top" Width="62" />
+        <TextBox Height="23" HorizontalAlignment="Left" Margin="219,80,0,0" x:Name="txtMonoMatchTolerance" Text="{Binding MatchTolerancePPM, Mode=TwoWay, Source={x:Static p:Settings.Default}}" VerticalAlignment="Top" Width="35" />
+        <!-- Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, -->
+        <Label Content="Match Tolerance:" Height="28" Margin="24,77,0,0" x:Name="label3" VerticalAlignment="Top" HorizontalAlignment="Left" Width="101" />
+        <Label Content="PPM" Height="28" HorizontalAlignment="Left" Margin="254,77,0,0" x:Name="label6" VerticalAlignment="Top" Width="35" />
+        <CheckBox Content="Count Blast Hits for Sequence Tags" HorizontalAlignment="Left" IsChecked="{Binding CountBlastHits, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="23,271,0,0" VerticalAlignment="Top"/>
+        <ComboBox HorizontalAlignment="Left" Margin="217,20,0,0" x:Name="cmbInstrumentType" SelectionChanged="cmbInstrumentType_Selected" VerticalAlignment="Top" Width="120">
+            <ComboBoxItem Selector.IsSelected="True">
+                Agilent QTOF
+            </ComboBoxItem>
+            <ComboBoxItem>
+                Thermo Orbi
+            </ComboBoxItem>
+        </ComboBox>
+        <Label HorizontalAlignment="Left" Margin="24,20,0,0" Content="Instrument Type" VerticalAlignment="Top" Height="30" Width="95">
+        </Label>
+        <GroupBox Header="Instrument Specific Settings" HorizontalAlignment="Left" Margin="11,7,0,0" VerticalAlignment="Top" Height="149" Width="383"/>
+        <Label Content="Error Plot Units:" HorizontalAlignment="Left" Margin="16,434,0,0" VerticalAlignment="Top" Width="122"/>
+        <RadioButton Content="PPM" x:Name="rdbtnErrorPlotPPM" HorizontalAlignment="Left" Margin="192,439,0,0" VerticalAlignment="Top" GroupName="rdbtnerrpltgrp"/>
+        <RadioButton Content="Daltons (AMU)" x:Name="rdbtnErrorPlotAMU" HorizontalAlignment="Left" Margin="268,439,0,0" VerticalAlignment="Top" GroupName="rdbtnerrpltgrp"/>
+        <Label Content="Maximum modifications" HorizontalAlignment="Left" Margin="16,374,0,0" VerticalAlignment="Top" Width="145"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="213,376,0,0" TextWrapping="Wrap" Text="{Binding Source={x:Static p:Settings.Default}, Path=MaximumModifications, Mode=TwoWay}" VerticalAlignment="Top" Width="36"/>
+        <!--<CheckBox Content="Has Known Mods" HorizontalAlignment="Left" Margin="23,363,0,0" IsChecked="{Binding HaveKnownMods, Mode=TwoWay, Source={x:Static p:Settings.Default}}" x:Name="rdbtnKnownMods" VerticalAlignment="Top" Height="17" Width="221"/>-->
+        <!--<sdk:Label Height="28" HorizontalAlignment="Left" Margin="106,20,0,178" Name="label1" Width="260" Content="Tolerance for selection in Pixels" />-->
+    </Grid>
+</Window>

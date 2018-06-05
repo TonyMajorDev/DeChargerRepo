@@ -1,0 +1,249 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{01E6D5DA-91CD-4327-9512-3C71434F2A70}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MassSpectrometry</RootNamespace>
+    <AssemblyName>MassSpectrometry</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AutoPilot|AnyCPU'">
+    <OutputPath>bin\AutoPilot\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Test|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Test\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AutoPilot|x64'">
+    <OutputPath>bin\x64\AutoPilot\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Test|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Test\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="alglibnet2, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="BaseCommon, Version=6.0.633.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\MassHunterDataAccessAssembly_64bit\bin\BaseCommon.dll</HintPath>
+    </Reference>
+    <Reference Include="BaseDataAccess, Version=6.0.633.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\MassHunterDataAccessAssembly_64bit\bin\BaseDataAccess.dll</HintPath>
+    </Reference>
+    <Reference Include="BaseTof, Version=1.0.4686.24703, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\MassHunterDataAccessAssembly_64bit\bin\BaseTof.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\Ionic.Zip.dll</HintPath>
+    </Reference>
+    <Reference Include="MassSpecDataReader, Version=6.0.633.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\MassHunterDataAccessAssembly_64bit\bin\MassSpecDataReader.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Users\C173791\Downloads\Json100r3\Bin\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="ThermoFisher.CommonCore.BackgroundSubtraction, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1aef06afb5abd953, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\ThermoFisher.CommonCore.BackgroundSubtraction.dll</HintPath>
+    </Reference>
+    <Reference Include="ThermoFisher.CommonCore.Data, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1aef06afb5abd953, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\ThermoFisher.CommonCore.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="ThermoFisher.CommonCore.MassPrecisionEstimator, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\ThermoFisher.CommonCore.MassPrecisionEstimator.dll</HintPath>
+    </Reference>
+    <Reference Include="ThermoFisher.CommonCore.RawFileReader, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1aef06afb5abd953, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\ThermoFisher.CommonCore.RawFileReader.dll</HintPath>
+    </Reference>
+    <Reference Include="Thermofisher.Foundation.IO, Version=3.1.94.0, Culture=neutral, PublicKeyToken=7336a1ad73b8d604, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\Thermofisher.Foundation.IO.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BaseMSProvider.cs" />
+    <Compile Include="ChargeDetector.cs" />
+    <Compile Include="Chromatogram.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Helpers.cs" />
+    <Compile Include="IMSProvider.cs" />
+    <Compile Include="IsotopeCalc.cs" />
+    <Compile Include="kiss_fft.cs" />
+    <Compile Include="MassSpecExtensions.cs" />
+    <Compile Include="MassSpecSerializer.cs" />
+    <Compile Include="MassTolerance.cs" />
+    <Compile Include="MassToleranceUnits.cs" />
+    <Compile Include="MaxBy.cs" />
+    <Compile Include="MinBy.cs" />
+    <Compile Include="AgilentProvider.cs" />
+    <Compile Include="MSPeak.cs" />
+    <Compile Include="mzDataProvider.cs" />
+    <Compile Include="mzDataScan.cs" />
+    <Compile Include="mzMLProvider.cs" />
+    <Compile Include="mzMLScan.cs" />
+    <Compile Include="NewBlankclass.cs" />
+    <Compile Include="PeakList.cs" />
+    <Compile Include="PointSet.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RawProvider64.cs" />
+    <Compile Include="RMSProvider.cs" />
+    <Compile Include="SignalProcessor.cs" />
+    <Compile Include="Spectrum.cs" />
+    <Compile Include="SpectrumInfo.cs" />
+    <Compile Include="TextProvider.cs" />
+    <Compile Include="ZMSProvider.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ExampleIso.jpg" />
+    <Content Include="lib\alglibnet2.dll" />
+    <Content Include="lib\Ionic.Zip.dll" />
+    <Content Include="lib\MassHunterDataAccessAssembly_64bit\bin\agtsampleinforw.dll" />
+    <Content Include="lib\MassHunterDataAccessAssembly_64bit\bin\BaseCommon.dll" />
+    <Content Include="lib\MassHunterDataAccessAssembly_64bit\bin\BaseDataAccess.dll" />
+    <Content Include="lib\MassHunterDataAccessAssembly_64bit\bin\BaseError.dll" />
+    <Content Include="lib\MassHunterDataAccessAssembly_64bit\bin\BaseTof.dll" />
+    <Content Include="lib\MassHunterDataAccessAssembly_64bit\bin\MassSpecDataReader.dll" />
+    <Content Include="lib\ThermoFisher.CommonCore.BackgroundSubtraction.dll" />
+    <Content Include="lib\ThermoFisher.CommonCore.Data.dll" />
+    <Content Include="lib\ThermoFisher.CommonCore.MassPrecisionEstimator.dll" />
+    <Content Include="lib\ThermoFisher.CommonCore.RawFileReader.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="lib\MassHunterDataAccessAssembly_64bit\bin\BaseDataAccess.dll.config" />
+    <None Include="lib\MassHunterDataAccessAssembly_64bit\bin\Contents.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="lib\MassHunterDataAccessAssembly_64bit\bin\DefaultMassCal.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="lib\MassHunterDataAccessAssembly_64bit\bin\Devices.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="lib\MassHunterDataAccessAssembly_64bit\bin\MSActualDefs.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="lib\MassHunterDataAccessAssembly_64bit\bin\MSScan_XSpecific.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="lib\MassHunterDataAccessAssembly_64bit\bin\MSTS.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="lib\MassHunterDataAccessAssembly_64bit\bin\MSTS_XSpecific.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="lib\MassHunterDataAccessAssembly_64bit\bin\RegisterMassHunterDataAccess64.bat" />
+    <None Include="lib\MassHunterDataAccessAssembly_64bit\bin\UnregisterMassHunterDataAccess64.bat" />
+    <None Include="NeighborIsotopeIntensityDelta.xlsx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Science.Chemistry\Science.Chemistry.csproj">
+      <Project>{301b6c03-4552-485b-8304-903b9fa7f06b}</Project>
+      <Name>Science.Chemistry</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

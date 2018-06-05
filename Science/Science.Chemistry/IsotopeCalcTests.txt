@@ -1,0 +1,24 @@
+﻿The following is an example of how to calculate an isotope distribution on an ion is a charge state of 1 in negative ion mode.
+
+var ion = new Ion("C(80) H(112) N(16) O(16)", -1);
+            
+var result = MassSpectrometry.IsotopeCalc.CalcIsotopePeaks(ion);
+
+foreach (var peak in result)
+    System.Diagnostics.Debug.WriteLine(peak.Key.ToString() + ", " + peak.Value.ToString());
+
+
+1552.84356602573, 100
+1553.84657708013, 94.92129
+1554.84946185662, 47.85474
+1555.85226036895, 16.91836
+1556.85499618052, 4.68399
+1557.85768431387, 1.07706
+1558.86033500916, 0.2132868
+1559.8629556025, 0.03727188
+1560.86555155504, 0.005848799
+1561.86812705781, 0.0008349856
+1562.87068540825, 0.000109544
+1563.87322922106, 1.331248E-05
+1564.87575969048, 1.508323E-06
+1565.87827598445, 1.601765E-07

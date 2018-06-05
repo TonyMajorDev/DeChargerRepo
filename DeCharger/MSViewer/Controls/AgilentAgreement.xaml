@@ -1,0 +1,13 @@
+﻿<UserControl x:Class="MSViewer.Controls.AgilentAgreement"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="674" Width="690">
+    <Grid>
+        <Button Content="No" HorizontalAlignment="Right" Margin="0,0,9.6,9.6" VerticalAlignment="Bottom" Width="87" Height="27" x:Name="btnAgilentAgreementNo" Click="btnAgilentAgreementNo_Click" />
+        <Button Content="Yes" HorizontalAlignment="Right" Margin="0,0,101.6,9.6" VerticalAlignment="Bottom" Width="87" Height="27" x:Name="btnAgilentAgreementYes" Click="btnAgilentAgreementYes_Click" />
+        <TextBox BorderThickness="1" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsReadOnly="True" Height="618" Width="670" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"  x:Name="txtAgilentAgreement"/>
+    </Grid>
+</UserControl>

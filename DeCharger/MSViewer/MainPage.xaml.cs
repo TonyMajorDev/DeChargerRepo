@@ -7783,8 +7783,8 @@ namespace MSViewer
 
                     bgsequencesearchinfasta.RunWorkerAsync(sqsalldenovotgs);
                 }
-                else if (NetworkInterface.GetIsNetworkAvailable())
-                {
+                else if (NetworkInterface.GetIsNetworkAvailable() && string.IsNullOrWhiteSpace(db.DataSource) == false)
+                { //TODO: need a better way of detecting no SQL Server...
                     // A worker thread is created in order perform the database search to find if the sequence tag is a valid tag or not.
                     BackgroundWorker bgsequencesearchindb = new BackgroundWorker();
                     bgsequencesearchindb.DoWork += bgsequencesearchindb_DoWork;

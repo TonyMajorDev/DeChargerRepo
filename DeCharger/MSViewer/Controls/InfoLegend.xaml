@@ -6,8 +6,8 @@
              mc:Ignorable="d" d:DesignWidth="769" Height="601.143">
     <Grid>
         <Image HorizontalAlignment="Left" Height="172" Margin="10,4,0,0" Source="/Icons/DeChargerProteinLegend1.png" VerticalAlignment="Top" Width="749"/>
-        <Image Height="365" Margin="0,161,9.8,0" Source ="/Icons/DeChargerSpectrumLegend1.png" VerticalAlignment="Top"/>
-        <TextBlock Margin="10,531,150.8,0" Height="96" VerticalAlignment="Top" TextWrapping="Wrap">
+        <Image Height="345" Margin="0,161,9.8,0" Source ="/Icons/DeChargerSpectrumLegend1.png" VerticalAlignment="Top"/>
+        <TextBlock Margin="10,511,150.8,-26.2" Height="116" VerticalAlignment="Top" TextWrapping="Wrap">
             Acknowledgements for Library and Code Contributions:
 Thermo Fisher for Authorization to use and distribute file reading libraries, 
 Agilent for Authorization to use and distribute file reading libraries, 

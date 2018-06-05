@@ -730,6 +730,8 @@ public partial class RMSProvider
             {
                 if (_parent._rawFile == null)
                 {
+
+                    // This throws an exception that is not fatal, but I do not like this...  this cannot be right
                     _parent._rawFile = RawFileReaderAdapter.FileFactory(_parent._filePath.FullName); // new RawFile(_filePath.FullName);
                     _parent._rawFile.SelectInstrument(ThermoFisher.CommonCore.Data.Business.Device.MS, 1);
                     this.Clear();

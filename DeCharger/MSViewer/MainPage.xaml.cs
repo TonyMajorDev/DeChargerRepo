@@ -3605,7 +3605,7 @@ namespace MSViewer
                                 ParentMass = parentMass,
                                 DontShowall = Dontshowall,
                                 BlastedTagForTopProtein = sequence,
-                                RetentionTime = MainPointProvider != null ? CalculateRetentionTime(ScanNumbers) : ""
+                                RetentionTime = ScanNumbers != null ? CalculateRetentionTime(ScanNumbers) : ""
                             });
 
                             totalseqcount = true;

@@ -14216,7 +14216,7 @@ namespace MSViewer
                         topHit.DontShowall = true;
                         topHit.IsAutoScanIdentified = true;
                         topHit.TagCount = denovoTags.Count();
-                        topHit.allspectrums = scanInfoList;  //specs;
+                        topHit.allspectrums = aScanInfoGroup;  //specs;
                         topHit.TagForTopProtein = topHit.BlastedTagForTopProtein;  // denovoTags.MaxBy(t => t.Sequence.Length).Sequence;
 
                         // Add the search hit to our results collection VM bound to the UI
@@ -15005,7 +15005,7 @@ namespace MSViewer
                 }
                 else if (sr.ScanNumbers.Contains(","))
                 {
-                    DisplayNewSpectrum(sr.allspectrums);
+                    DisplayNewSpectrum(sr.allspectrums); //.Where(s => sr.S s.ScanNumber );
                     fromautoscan = true;
                 }
                 else

@@ -150,10 +150,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\ThermoFisher.CommonCore.RawFileReader.dll</HintPath>
     </Reference>
-    <Reference Include="Thermofisher.Foundation.IO, Version=3.1.94.0, Culture=neutral, PublicKeyToken=7336a1ad73b8d604, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\Thermofisher.Foundation.IO.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseMSProvider.cs" />

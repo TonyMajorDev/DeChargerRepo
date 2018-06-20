@@ -224,6 +224,7 @@
     </None>
     <None Include="lib\MassHunterDataAccessAssembly_64bit\bin\RegisterMassHunterDataAccess64.bat" />
     <None Include="lib\MassHunterDataAccessAssembly_64bit\bin\UnregisterMassHunterDataAccess64.bat" />
+    <None Include="lib\MassHunterDataAccessAssembly_64bit\License.rtf" />
     <None Include="NeighborIsotopeIntensityDelta.xlsx" />
   </ItemGroup>
   <ItemGroup>

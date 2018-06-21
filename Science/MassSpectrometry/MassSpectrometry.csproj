@@ -194,10 +194,12 @@
     <Content Include="lib\MassHunterDataAccessAssembly_64bit\bin\BaseError.dll" />
     <Content Include="lib\MassHunterDataAccessAssembly_64bit\bin\BaseTof.dll" />
     <Content Include="lib\MassHunterDataAccessAssembly_64bit\bin\MassSpecDataReader.dll" />
+    <Content Include="lib\Newtonsoft.Json.dll" />
     <Content Include="lib\ThermoFisher.CommonCore.BackgroundSubtraction.dll" />
     <Content Include="lib\ThermoFisher.CommonCore.Data.dll" />
     <Content Include="lib\ThermoFisher.CommonCore.MassPrecisionEstimator.dll" />
     <Content Include="lib\ThermoFisher.CommonCore.RawFileReader.dll" />
+    <Content Include="lib\ThermoLicense.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="lib\MassHunterDataAccessAssembly_64bit\bin\BaseDataAccess.dll.config" />

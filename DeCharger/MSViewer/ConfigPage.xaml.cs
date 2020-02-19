@@ -31,6 +31,7 @@ using System.Windows.Shapes;
 using System.IO.IsolatedStorage;
 using System.Data.SqlClient;
 using MSViewer.Classes;
+using System.Windows.Data;
 
 namespace MSViewer
 {
@@ -40,35 +41,48 @@ namespace MSViewer
 
         List<Species> AllSpecies = new List<Species>();
 
-        int MinThresholdAgilentMS1 = 0;
-        int MinThresholdAgilentMS2 = 0;
-
         public ConfigPage()
         {
             InitializeComponent();
 
-            MinThresholdAgilentMS1 = Properties.Settings.Default.MinAgilentThresholdMS1;
-            MinThresholdAgilentMS2 = Properties.Settings.Default.MinAgilentThresholdMS2;
+            Properties.Settings.Default.PropertyChanged += Default_PropertyChanged;
 
-            switch (MainWindow.MainViewModel.CurrentFileType)
+            //MinThresholdAgilentMS1 = Properties.Settings.Default.MinAgilentThresholdMS1;
+            //MinThresholdAgilentMS2 = Properties.Settings.Default.MinAgilentThresholdMS2;
+
+            cmbInstrumentType.Items.Clear();
+
+            //Populate Instrument List
+            //TODO: Populate this from an Enum maintained in the Mass Spectrometry Library ...  Or maybe leave it like this to allow for user added profiles in the future?
+            foreach (var anInstrument in Properties.Settings.Default.Instruments.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
             {
-                case Science.Blast.clsFileType.MSFileType.Agilent:
-                    txtMonoMatchTolerance.Text = Convert.ToString(Properties.Settings.Default.MatchTolerancePPMBasedonFileType[0]);
-                    txtMassTolerance.Text = Convert.ToString(Properties.Settings.Default.MassTolerancePPMBasedonFileType[0]);
-                    txtMonoMatchTolerance_Copy.Text = Convert.ToString(Properties.Settings.Default.MinAgilentThresholdMS1);
-                    txtMonoMatchTolerance_Copy1.Text = Convert.ToString(Properties.Settings.Default.MinAgilentThresholdMS2);
-                    cmbInstrumentType.SelectedIndex = 0;
-                    break;
-                case Science.Blast.clsFileType.MSFileType.Thermo:
-                    txtMonoMatchTolerance.Text = Convert.ToString(Properties.Settings.Default.MatchTolerancePPMBasedonFileType[1]);
-                    txtMassTolerance.Text = Convert.ToString(Properties.Settings.Default.MassTolerancePPMBasedonFileType[1]);
-                    txtMonoMatchTolerance_Copy.Text = "0";
-                    txtMonoMatchTolerance_Copy1.Text = "0";
-                    cmbInstrumentType.SelectedIndex = 1;
-                    break;
-                default:
-                    break;
+                cmbInstrumentType.Items.Add(new ComboBoxItem() { Content = anInstrument });
             }
+
+            if (cmbInstrumentType.Items.Count > 0) cmbInstrumentType.SelectedIndex = 0;  //
+
+
+            //switch (MainWindow.MainViewModel.CurrentFileType)
+            //{
+            //    case Science.Blast.clsFileType.MSFileType.Agilent:
+            //        cmbInstrumentType.SelectedIndex = 0;
+            //        txtMonoMatchTolerance.Text = Convert.ToString(Properties.Settings.Default.MatchTolerancePPMBasedonFileType[0]);
+            //        txtMassTolerance.Text = Convert.ToString(Properties.Settings.Default.MassTolerancePPMBasedonFileType[0]);
+            //        txtMinThresholdMS1.Text = Convert.ToString(Properties.Settings.Default.MinAgilentThresholdMS1);
+            //        txtMinThresholdMS2.Text = Convert.ToString(Properties.Settings.Default.MinAgilentThresholdMS2);
+
+            //        break;
+            //    case Science.Blast.clsFileType.MSFileType.Thermo:
+            //        cmbInstrumentType.SelectedIndex = 1;
+            //        txtMonoMatchTolerance.Text = Convert.ToString(Properties.Settings.Default.MatchTolerancePPMBasedonFileType[1]);
+            //        txtMassTolerance.Text = Convert.ToString(Properties.Settings.Default.MassTolerancePPMBasedonFileType[1]);
+            //        txtMinThresholdMS1.Text = Convert.ToString(Properties.Settings.Default.MinThermoThresholdMS1);
+            //        txtMinThresholdMS2.Text = Convert.ToString(Properties.Settings.Default.MinThermoThresholdMS2);
+
+            //        break;
+            //    default:
+            //        break;
+            //}
 
             if (Properties.Settings.Default.SortByDBHits)
                 rdbtnSortbyDBHits.IsChecked = true;
@@ -99,7 +113,21 @@ namespace MSViewer
             lstSpecies.ItemsSource = AllSpecies;
         }
 
+        private void Default_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            // if the ConnectionString property changed and it's not the same as what is set in the database connection, update the db object immediately
+            if (e.PropertyName == "ConnectionString" && (this.Owner as MainWindow).db.ConnectionString != Properties.Settings.Default.ConnectionString)
+            {
+                // this will recreate the db object
+                (this.Owner as MainWindow).InitializeDatabaseConnection();
 
+                System.Diagnostics.Debug.WriteLine("Called LoadSpecies");
+            }
+
+            //throw new NotImplementedException(); 
+
+
+        }
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
@@ -158,19 +186,19 @@ namespace MSViewer
                 }
 
 
-                if (MainWindow.MainViewModel.CurrentFileType == Science.Blast.clsFileType.MSFileType.Thermo)
-                {
-                    Properties.Settings.Default.MinAgilentThresholdMS1 = MinThresholdAgilentMS1;
-                    Properties.Settings.Default.MinAgilentThresholdMS2 = MinThresholdAgilentMS2;
-                }
+                //if (MainWindow.MainViewModel.CurrentFileType == Science.Blast.clsFileType.MSFileType.Thermo)
+                //{
+                //    Properties.Settings.Default.MinAgilentThresholdMS1 = MinThresholdAgilentMS1;
+                //    Properties.Settings.Default.MinAgilentThresholdMS2 = MinThresholdAgilentMS2;
+                //}
 
                 switch (MainWindow.MainViewModel.CurrentFileType)
                 {
                     case Science.Blast.clsFileType.MSFileType.Agilent:
                         (Properties.Settings.Default.MatchTolerancePPMBasedonFileType[0]) = txtMonoMatchTolerance.Text;
                         (Properties.Settings.Default.MassTolerancePPMBasedonFileType[0]) = txtMassTolerance.Text ;
-                        (Properties.Settings.Default.MinAgilentThresholdMS1) = (txtMonoMatchTolerance_Copy.Text != "" ? Convert.ToInt32(txtMonoMatchTolerance_Copy.Text) : 0);
-                        (Properties.Settings.Default.MinAgilentThresholdMS2) = (txtMonoMatchTolerance_Copy1.Text != "" ? Convert.ToInt32(txtMonoMatchTolerance_Copy1.Text) : 0);
+                        //(Properties.Settings.Default.MinAgilentThresholdMS1) = (txtMonoMatchTolerance_Copy.Text != "" ? Convert.ToInt32(txtMonoMatchTolerance_Copy.Text) : 0);
+                        //(Properties.Settings.Default.MinAgilentThresholdMS2) = (txtMonoMatchTolerance_Copy1.Text != "" ? Convert.ToInt32(txtMonoMatchTolerance_Copy1.Text) : 0);
                         cmbInstrumentType.SelectedIndex = 0;
                         break;
                     case Science.Blast.clsFileType.MSFileType.Thermo:
@@ -243,51 +271,72 @@ namespace MSViewer
 
         private void cmbInstrumentType_Selected(object sender, SelectionChangedEventArgs e)
         {
+            Binding aBinding = null;
+
             switch (Convert.ToString(((System.Windows.Controls.ContentControl)(cmbInstrumentType.SelectedValue)).Content))
             {
-                case "Thermo Orbi":
-                    MainWindow.MainViewModel.CurrentFileType = Science.Blast.clsFileType.MSFileType.Thermo;
-                    Properties.Settings.Default.MatchTolerancePPM = Convert.ToDouble(Properties.Settings.Default.MatchTolerancePPMBasedonFileType[1]);
-                    Properties.Settings.Default.MassTolerancePPM = Convert.ToDouble(Properties.Settings.Default.MassTolerancePPMBasedonFileType[1]);
+                case "Thermo Orbi":  // User changed the dropdown combo to Thermo Instrument
+
+                    // Change databindings to save to Thermo settings
+                    aBinding = new Binding("MinThermoThresholdMS1");
+                    aBinding.Source = Properties.Settings.Default;
+                    aBinding.Mode = BindingMode.TwoWay;
+                    BindingOperations.SetBinding(txtMinThresholdMS1, TextBox.TextProperty, aBinding);
+
+                    aBinding = new Binding("MinThermoThresholdMS2");
+                    aBinding.Source = Properties.Settings.Default;
+                    aBinding.Mode = BindingMode.TwoWay;
+                    BindingOperations.SetBinding(txtMinThresholdMS2, TextBox.TextProperty, aBinding);
+
                     txtMonoMatchTolerance.Text = Convert.ToString(Properties.Settings.Default.MatchTolerancePPMBasedonFileType[1]);
                     txtMassTolerance.Text = Convert.ToString(Properties.Settings.Default.MassTolerancePPMBasedonFileType[1]);
-                    txtMonoMatchTolerance_Copy.Text = "0";
-                    txtMonoMatchTolerance_Copy1.Text = "0";
-                    MinThresholdAgilentMS1 = Properties.Settings.Default.MinAgilentThresholdMS1;
-                    MinThresholdAgilentMS2 = Properties.Settings.Default.MinAgilentThresholdMS2;
+                    Properties.Settings.Default.MatchTolerancePPM = Convert.ToDouble(Properties.Settings.Default.MatchTolerancePPMBasedonFileType[1]);
+                    Properties.Settings.Default.MassTolerancePPM = Convert.ToDouble(Properties.Settings.Default.MassTolerancePPMBasedonFileType[1]);
+
                     break;
-                case "Agilent QTOF":
+                case "Agilent QTOF":  // User changed the dropdown combo to Agilent Instrument
+
+                    // Change databindings to save to Agilent settings
+                    aBinding = new Binding("MinAgilentThresholdMS1");
+                    aBinding.Source = Properties.Settings.Default;
+                    aBinding.Mode = BindingMode.TwoWay;
+                    BindingOperations.SetBinding(txtMinThresholdMS1, TextBox.TextProperty, aBinding);
+
+                    aBinding = new Binding("MinAgilentThresholdMS2");
+                    aBinding.Source = Properties.Settings.Default;
+                    aBinding.Mode = BindingMode.TwoWay;
+                    BindingOperations.SetBinding(txtMinThresholdMS2, TextBox.TextProperty, aBinding);
+
                     txtMonoMatchTolerance.Text = Convert.ToString(Properties.Settings.Default.MatchTolerancePPMBasedonFileType[0]);
                     txtMassTolerance.Text = Convert.ToString(Properties.Settings.Default.MassTolerancePPMBasedonFileType[0]);
                     Properties.Settings.Default.MatchTolerancePPM = Convert.ToDouble(Properties.Settings.Default.MatchTolerancePPMBasedonFileType[0]);
                     Properties.Settings.Default.MassTolerancePPM = Convert.ToDouble(Properties.Settings.Default.MassTolerancePPMBasedonFileType[0]);
-                    txtMonoMatchTolerance_Copy.Text = Convert.ToString(Properties.Settings.Default.MinAgilentThresholdMS1);
-                    txtMonoMatchTolerance_Copy1.Text = Convert.ToString(Properties.Settings.Default.MinAgilentThresholdMS2);
-                    MainWindow.MainViewModel.CurrentFileType = Science.Blast.clsFileType.MSFileType.Agilent;
+
+                    //MainWindow.MainViewModel.CurrentFileType = Science.Blast.clsFileType.MSFileType.Agilent;
                     break;
-                default:
-                    switch (MainWindow.MainViewModel.CurrentFileType)
-                    {
-                        case Science.Blast.clsFileType.MSFileType.Agilent:
-                            txtMonoMatchTolerance.Text = Convert.ToString(Properties.Settings.Default.MatchTolerancePPMBasedonFileType[0]);
-                            txtMassTolerance.Text = Convert.ToString(Properties.Settings.Default.MassTolerancePPMBasedonFileType[0]);
-                            Properties.Settings.Default.MatchTolerancePPM = Convert.ToDouble(Properties.Settings.Default.MatchTolerancePPMBasedonFileType[0]);
-                            Properties.Settings.Default.MassTolerancePPM = Convert.ToDouble(Properties.Settings.Default.MassTolerancePPMBasedonFileType[0]);
-                            txtMonoMatchTolerance_Copy.Text = Convert.ToString(Properties.Settings.Default.MinAgilentThresholdMS1);
-                            txtMonoMatchTolerance_Copy1.Text = Convert.ToString(Properties.Settings.Default.MinAgilentThresholdMS2);
-                            break;
-                        case Science.Blast.clsFileType.MSFileType.Thermo:
-                            txtMonoMatchTolerance.Text = Convert.ToString(Properties.Settings.Default.MatchTolerancePPMBasedonFileType[1]);
-                            txtMassTolerance.Text = Convert.ToString(Properties.Settings.Default.MassTolerancePPMBasedonFileType[1]);
-                            Properties.Settings.Default.MatchTolerancePPM = Convert.ToDouble(Properties.Settings.Default.MatchTolerancePPMBasedonFileType[1]);
-                            Properties.Settings.Default.MassTolerancePPM = Convert.ToDouble(Properties.Settings.Default.MassTolerancePPMBasedonFileType[1]);
-                            txtMonoMatchTolerance_Copy.Text = "0";
-                            txtMonoMatchTolerance_Copy1.Text = "0";
-                            MinThresholdAgilentMS1 = Properties.Settings.Default.MinAgilentThresholdMS1;
-                            MinThresholdAgilentMS2 = Properties.Settings.Default.MinAgilentThresholdMS2;
-                            break;
-                    }
-                    break;
+                //default:
+                //    switch (MainWindow.MainViewModel.CurrentFileType)
+                //    {
+                //        case Science.Blast.clsFileType.MSFileType.Agilent:
+                //            txtMonoMatchTolerance.Text = Convert.ToString(Properties.Settings.Default.MatchTolerancePPMBasedonFileType[0]);
+                //            txtMassTolerance.Text = Convert.ToString(Properties.Settings.Default.MassTolerancePPMBasedonFileType[0]);
+                //            Properties.Settings.Default.MatchTolerancePPM = Convert.ToDouble(Properties.Settings.Default.MatchTolerancePPMBasedonFileType[0]);
+                //            Properties.Settings.Default.MassTolerancePPM = Convert.ToDouble(Properties.Settings.Default.MassTolerancePPMBasedonFileType[0]);
+                //            txtMinThresholdMS1.Text = Convert.ToString(Properties.Settings.Default.MinAgilentThresholdMS1);
+                //            txtMinThresholdMS2.Text = Convert.ToString(Properties.Settings.Default.MinAgilentThresholdMS2);
+                //            break;
+                //        case Science.Blast.clsFileType.MSFileType.Thermo:
+                //            txtMonoMatchTolerance.Text = Convert.ToString(Properties.Settings.Default.MatchTolerancePPMBasedonFileType[1]);
+                //            txtMassTolerance.Text = Convert.ToString(Properties.Settings.Default.MassTolerancePPMBasedonFileType[1]);
+                //            Properties.Settings.Default.MatchTolerancePPM = Convert.ToDouble(Properties.Settings.Default.MatchTolerancePPMBasedonFileType[1]);
+                //            Properties.Settings.Default.MassTolerancePPM = Convert.ToDouble(Properties.Settings.Default.MassTolerancePPMBasedonFileType[1]);
+                //            txtMinThresholdMS1.Text = "0";
+                //            txtMinThresholdMS2.Text = "0";
+                //            MinThresholdAgilentMS1 = Properties.Settings.Default.MinAgilentThresholdMS1;
+                //            MinThresholdAgilentMS2 = Properties.Settings.Default.MinAgilentThresholdMS2;
+                //            break;
+                //    }
+                //    break;
             }
         }
 

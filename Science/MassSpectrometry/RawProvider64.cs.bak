@@ -46,19 +46,13 @@ public partial class RMSProvider
             internal FileInfo _filePath = null;
             internal IRawDataPlus _rawFile = null;
             internal SpectrumCollection _scans = null;
-            internal int MinThermoThresholdMS1 = 0;
-            internal int MinThermoThresholdMS2 = 0;
 
-            public RawProvider64(string FilePath, int MinThermoThresholdMS1 = 500, int MinThermoThresholdMS2 = 50)
+            public RawProvider64(string FilePath)
             {
                 if (File.Exists(FilePath))
                 {
                     _filePath = new FileInfo(FilePath);
                 }
-
-                this.MinThermoThresholdMS1 = MinThermoThresholdMS1;
-                this.MinThermoThresholdMS2 = MinThermoThresholdMS2;
-
             }
 
             private void InitRawFile()
@@ -336,7 +330,6 @@ public partial class RMSProvider
             {
                 get
                 {
-                    
                     // All code was moved into the "GetPoints" method because the HandleProcessCorruptedStateExceptions attribute can only be used on a method, not a property :(
                     return GetPoints();
                 }
@@ -391,11 +384,7 @@ public partial class RMSProvider
                         {
                             var labelPeaks = centroidStream.GetLabelPeaks();
 
-
-                            if (this.ScanType == "MS2") 
-                                _pointCache = new SpecPointCollection(labelPeaks, _parent.MinThermoThresholdMS2); // s.GetLabelPeaks().Cast<SpecPoint>().ToArray();
-                            else
-                                _pointCache = new SpecPointCollection(labelPeaks, _parent.MinThermoThresholdMS1);
+                            _pointCache = new SpecPointCollection(labelPeaks); // s.GetLabelPeaks().Cast<SpecPoint>().ToArray();
 
 
                             //Console.WriteLine("Spectrum (centroid/label) {0} - {1} points", this.ScanNumber.Value, centroidStream.Length);
@@ -541,12 +530,11 @@ public partial class RMSProvider
             private LabelPeak[] _source = null;
             private double[] _mz = null;
             private double[] _intensity = null;
-            private int _threshold = 0;
 
-            internal SpecPointCollection(LabelPeak[] source, int threshold = 0)
+
+            internal SpecPointCollection(LabelPeak[] source)
             {
                 _source = source;
-                _threshold = threshold;
             }
 
             internal SpecPointCollection(double[] mz, double[] intensity)
@@ -570,17 +558,14 @@ public partial class RMSProvider
             {
                 if (_source != null)
                 {
-                    foreach (var point in _source.Where(p => p.Intensity > _threshold))
+                    foreach (var point in _source)
                         yield return new SpecPoint() { Source = point };
                 }
                 else
                 {
                     for (int i = 0; i < _mz.Length; i++)
-                    {
-                        if (_intensity[i] < _threshold) continue;
                         yield return new SpecPoint() { _MZ = _mz[i], _Int = (float)_intensity[i] };
                 }
-            }
             }
 
             IEnumerator IEnumerable.GetEnumerator()

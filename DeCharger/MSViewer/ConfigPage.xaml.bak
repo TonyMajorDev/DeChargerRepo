@@ -92,10 +92,10 @@
         <TextBox HorizontalAlignment="Left" Height="23" Margin="219,67,0,0" TextWrapping="Wrap" Text="{Binding MassTolerancePPM, Source={x:Static p:Settings.Default}, Mode=TwoWay}" x:Name="txtMassTolerance" VerticalAlignment="Top" Width="36"/>
         <!--Path=MassTolerancePPM, -->
         <Label Content="Mass Tolerance for Ion Detection:" HorizontalAlignment="Left" Margin="23,64,0,0" VerticalAlignment="Top" Width="191" Height="26"/>
-        <TextBox Height="23" HorizontalAlignment="Left" Margin="220,120,0,0" x:Name="txtMinThresholdMS1" Text="{Binding MinThresholdMS1, Mode=TwoWay, Source={x:Static p:Settings.Default}}" VerticalAlignment="Top" Width="35" />
+        <TextBox Height="23" HorizontalAlignment="Left" Margin="220,120,0,0" x:Name="txtMonoMatchTolerance_Copy" Text="{Binding MinAgilentThresholdMS1, Mode=TwoWay, Source={x:Static p:Settings.Default}}" VerticalAlignment="Top" Width="35" />
         <Label Content="MinThreshold MS1" Height="28" Margin="25,117,0,0" x:Name="label3_Copy" VerticalAlignment="Top" HorizontalAlignment="Left" Width="162" />
         <Label Content="Counts" Height="28" HorizontalAlignment="Left" Margin="255,117,0,0" x:Name="label6_Copy" VerticalAlignment="Top" Width="62" />
-        <TextBox Height="23" HorizontalAlignment="Left" Margin="220,145,0,0" x:Name="txtMinThresholdMS2" Text="{Binding MinThresholdMS2, Mode=TwoWay, Source={x:Static p:Settings.Default}}" VerticalAlignment="Top" Width="35" />
+        <TextBox Height="23" HorizontalAlignment="Left" Margin="220,145,0,0" x:Name="txtMonoMatchTolerance_Copy1" Text="{Binding MinAgilentThresholdMS2, Mode=TwoWay, Source={x:Static p:Settings.Default}}" VerticalAlignment="Top" Width="35" />
         <Label Content="MinThreshold MS2" Height="28" Margin="25,142,0,0" x:Name="label3_Copy1" VerticalAlignment="Top" HorizontalAlignment="Left" Width="162" />
         <Label Content="Counts" Height="28" HorizontalAlignment="Left" Margin="255,142,0,0" x:Name="label6_Copy1" VerticalAlignment="Top" Width="62" />
         <TextBox Height="23" HorizontalAlignment="Left" Margin="220,94,0,0" x:Name="txtMonoMatchTolerance" Text="{Binding MatchTolerancePPM, Mode=TwoWay, Source={x:Static p:Settings.Default}}" VerticalAlignment="Top" Width="35" />
@@ -103,14 +103,14 @@
         <Label Content="Match Tolerance:" Height="28" Margin="24,91,0,0" x:Name="label3" VerticalAlignment="Top" HorizontalAlignment="Left" Width="101" />
         <Label Content="PPM" Height="28" HorizontalAlignment="Left" Margin="254,91,0,0" x:Name="label6" VerticalAlignment="Top" Width="35" />
         <CheckBox Content="Count Blast Hits for Sequence Tags" HorizontalAlignment="Left" IsChecked="{Binding CountBlastHits, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="23,293,0,0" VerticalAlignment="Top"/>
-        <ComboBox HorizontalAlignment="Left" Margin="220,34,0,0" x:Name="cmbInstrumentType" SelectionChanged="cmbInstrumentType_Selected" VerticalAlignment="Top" Width="120"/>
-        <!--<ComboBoxItem Selector.IsSelected="True">
+        <ComboBox HorizontalAlignment="Left" Margin="220,34,0,0" x:Name="cmbInstrumentType" SelectionChanged="cmbInstrumentType_Selected" VerticalAlignment="Top" Width="120">
+            <ComboBoxItem Selector.IsSelected="True">
                 Agilent QTOF
             </ComboBoxItem>
             <ComboBoxItem>
                 Thermo Orbi
             </ComboBoxItem>
-        </ComboBox>-->
+        </ComboBox>
         <Label HorizontalAlignment="Left" Margin="24,34,0,0" Content="Instrument Type" VerticalAlignment="Top" Height="30" Width="95">
         </Label>
         <GroupBox Header="Instrument Specific Settings" HorizontalAlignment="Left" Margin="11,8,0,0" VerticalAlignment="Top" Height="172" Width="383"/>

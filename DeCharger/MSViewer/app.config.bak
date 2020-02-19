@@ -181,6 +181,24 @@ the Department of Defense, DFARS 252.227-7015 (Technical Data – Commercial Ite
               <setting name="Species" serializeAs="String">
                     <value>Homo	Homo sapiens	human	Mus	Mus musculus	Rattus	Rattus norvegicus	Bos</value>
               </setting>
+              <setting name="MatchTolerancePPMBasedonFileType" serializeAs="Xml">
+                    <value>
+                          <ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                                <string>20</string>
+                                <string>5</string>
+                          </ArrayOfString>
+                    </value>
+              </setting>
+              <setting name="MassTolerancePPMBasedonFileType" serializeAs="Xml">
+                    <value>
+                          <ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                                <string>10</string>
+                                <string>5</string>
+                          </ArrayOfString>
+                    </value>
+              </setting>
               <setting name="PPMErrorPlot" serializeAs="String">
                     <value>True</value>
               </setting>
@@ -1609,33 +1627,6 @@ dHex(2)Hex(4)HexNAc(5)	dHex(2) Hex(4) HexNAc(5)	1955.723975</value>
               <setting name="ConnectionString" serializeAs="String">
                     <value />
               </setting>
-            <setting name="MatchTolerancePPMBasedonFileType" serializeAs="Xml">
-                <value>
-                    <ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                        xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-                        <string>20</string>
-                        <string>5</string>
-                    </ArrayOfString>
-                </value>
-            </setting>
-            <setting name="MassTolerancePPMBasedonFileType" serializeAs="Xml">
-                <value>
-                    <ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                        xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-                        <string>10</string>
-                        <string>5</string>
-                    </ArrayOfString>
-                </value>
-            </setting>
-            <setting name="MinThermoThresholdMS1" serializeAs="String">
-                <value>50</value>
-            </setting>
-            <setting name="MinThermoThresholdMS2" serializeAs="String">
-                <value>50</value>
-            </setting>
-            <setting name="Instruments" serializeAs="String">
-                <value>Thermo Orbi;Agilent QTOF;</value>
-            </setting>
         </MSViewer.Properties.Settings>
     </userSettings>
   <runtime>

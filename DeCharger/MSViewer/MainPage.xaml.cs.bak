@@ -99,7 +99,7 @@ namespace MSViewer
 
         int? CurrentScanNumber = 1;
 
-        internal SqlConnection db = new SqlConnection(Properties.Settings.Default.ConnectionString);
+        SqlConnection db = new SqlConnection(Properties.Settings.Default.ConnectionString);
 
         AnnotationBar lastbar = new AnnotationBar();
 
@@ -368,7 +368,7 @@ namespace MSViewer
                 HideAllViews();
 
                 if (App.Log != null) App.Log.WriteEntry("Before LoadSpecies", EventLogEntryType.Information);
-                InitializeDatabaseConnection();
+                LoadSpecies();
 
 
                 if (App.Log != null) App.Log.WriteEntry("Before MatchList", EventLogEntryType.Information);
@@ -874,10 +874,7 @@ namespace MSViewer
             }
         }
 
-        /// <summary>
-        /// Opens the Database connection after testing that the server is there, then loads the species list.
-        /// </summary>
-        public void InitializeDatabaseConnection()
+        void LoadSpecies()
         {
             List<Species> species = null;
             
@@ -891,9 +888,6 @@ namespace MSViewer
 
             //string[] st1 = { "Bos taurus", "Homo", "Homo sapiens", "human", "Mus", "Mus musculus", "Rattus", "Rattus norvegicus", "Bos" };
             string[] defaultSpecies = { "Bos", "Homo", "Mus", "Rattus" };
-
-            // Make sure we use the latest connection string in case it got updated  
-            db.ConnectionString = Properties.Settings.Default.ConnectionString;
 
             if (NetworkInterface.GetIsNetworkAvailable() && string.IsNullOrWhiteSpace(db.ConnectionString) == false)
             {
@@ -1263,7 +1257,7 @@ namespace MSViewer
                                 try
                                 {
                                     //if (Environment.Is64BitProcess)
-                                        MainPointProvider = new RMSProvider(aFile as FileInfo, Properties.Settings.Default.MinThermoThresholdMS1, Properties.Settings.Default.MinThermoThresholdMS2) { MassTolerance = Properties.Settings.Default.MassTolerancePPM };
+                                        MainPointProvider = new RMSProvider(aFile as FileInfo) { MassTolerance = Properties.Settings.Default.MassTolerancePPM };
                                     //else
                                     //    MainPointProvider = new RMSProvider32(aFile as FileInfo) { MassTolerance = Properties.Settings.Default.MassTolerancePPM };
 
@@ -2693,7 +2687,7 @@ namespace MSViewer
                 }
                 catch (Exception ex)
                 {
-                    Dispatcher.Invoke(new Action(() => System.Windows.MessageBox.Show(this, "Message: " + ex.Message + " Error :" + ex.InnerException, "Error while executing Search", MessageBoxButton.OK, MessageBoxImage.Error)));
+                    System.Windows.MessageBox.Show("Message: " + ex.Message + " Error :" + ex.InnerException);
                 }
                 finally
                 {
@@ -3361,10 +3355,6 @@ namespace MSViewer
                         {
                             tempdbsequences = DatabaseResults(cmd, sequenceforsearch, sequence, allsequencetags, crntins, sqsfordbsrch, parentMass, Dontshowall, totalseqcount, i);
                         }
-                        else
-                        {
-                            throw;
-                        }
                     }
 
                     if (Properties.Settings.Default.UseBlast && sequence.Length >= Properties.Settings.Default.SequenceTagLength)
@@ -3454,10 +3444,6 @@ namespace MSViewer
                         if (ex.Message.ToUpper().Contains("TIMEOUT"))
                         {
                             tempdbsequences = DatabaseResults(cmd, sequenceforsearch, sequence, allsequencetags, crntins, sqsfordbsrch, parentMass, Dontshowall, totalseqcount, i);
-                        }
-                        else
-                        {
-                            throw;
                         }
                     }
                     if (Properties.Settings.Default.UseBlast && sequence.Length > 4)
@@ -14398,7 +14384,7 @@ namespace MSViewer
 
         private IEnumerable<SearchResult> SortSequenceSearch(IEnumerable<SearchResult> searchresults, double ParentIon)
         {
-            var srhrlts = searchresults.Where(a => a.DeltaMassVersusProtein != null && a.YellowandGreenTagHits != null && a.DeltaMassVersusProtein >= 0).ToList();
+            var srhrlts = searchresults.Where(a => a.DeltaMassVersusProtein != null && a.YellowandGreenTagHits != null && a.DeltaMassVersusProtein >= 0 && a.YellowandGreenTagHits >= 6.0).ToList();
             searchresults = srhrlts.OrderByDescending(w => w.YellowandGreenTagHits).ThenByDescending(a => a.IsConfirmed).ThenByDescending(a => a.Sequence.IsValidSequence()).ThenBy(a => a.ExpectValue).ThenBy(x => Math.Abs(x.DeltaMassVersusProtein)).ThenBy(y => Math.Abs(y.Mass - ParentIon)).ThenBy(b => b.Description.ToLower().Contains("unknown") || b.Description.ToLower().Contains("uncharacterized"));  ///.ToList()
 
             return searchresults;

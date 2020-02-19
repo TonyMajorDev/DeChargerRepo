@@ -171,20 +171,6 @@ the Department of Defense, DFARS 252.227-7015 (Technical Data – Commercial Ite
     <Setting Name="Species" Type="System.String" Scope="User">
       <Value Profile="(Default)">Homo	Homo sapiens	human	Mus	Mus musculus	Rattus	Rattus norvegicus	Bos</Value>
     </Setting>
-    <Setting Name="MatchTolerancePPMBasedonFileType" Type="System.Collections.Specialized.StringCollection" Scope="User">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;string&gt;20&lt;/string&gt;
-  &lt;string&gt;5&lt;/string&gt;
-&lt;/ArrayOfString&gt;</Value>
-    </Setting>
-    <Setting Name="MassTolerancePPMBasedonFileType" Type="System.Collections.Specialized.StringCollection" Scope="User">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;string&gt;10&lt;/string&gt;
-  &lt;string&gt;5&lt;/string&gt;
-&lt;/ArrayOfString&gt;</Value>
-    </Setting>
     <Setting Name="MinThresholdMS1" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
@@ -1618,6 +1604,29 @@ dHex(2)Hex(4)HexNAc(5)	dHex(2) Hex(4) HexNAc(5)	1955.723975</Value>
     </Setting>
     <Setting Name="ConnectionString" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="MatchTolerancePPMBasedonFileType" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;20&lt;/string&gt;
+  &lt;string&gt;5&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="MassTolerancePPMBasedonFileType" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;10&lt;/string&gt;
+  &lt;string&gt;5&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="MinThermoThresholdMS1" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">50</Value>
+    </Setting>
+    <Setting Name="MinThermoThresholdMS2" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">50</Value>
+    </Setting>
+    <Setting Name="Instruments" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Thermo Orbi;Agilent QTOF;</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -45,7 +45,7 @@ public partial class RMSProvider : IMSProvider
         return fileOrFolder != null && fileOrFolder is FileInfo && fileOrFolder.Exists && fileOrFolder.Name.ToLower().EndsWith(".raw");
     }
 
-    public RMSProvider(FileInfo rmsFile, int MinThermoThresholdMS1 = 500, int MinThermoThresholdMS2 = 50)
+    public RMSProvider(FileInfo rmsFile)
     {
         Source = rmsFile;
         Source.Refresh();
@@ -54,7 +54,7 @@ public partial class RMSProvider : IMSProvider
 
         Debug.Assert(Source.Exists, "File is Missing! ");
 
-        rms = new RawProvider64(Source.FullName, MinThermoThresholdMS1, MinThermoThresholdMS2);
+        rms = new RawProvider64(Source.FullName);
 
         //var selection =
         //    from z in rms

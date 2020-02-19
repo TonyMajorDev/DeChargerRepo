@@ -71,7 +71,7 @@ public interface IMSProvider
     bool Contains(int scan);
     int? NextScan(int currentScan);
     int? PreviousScan(int currentScan);
-    List<Cluster> DetectIons(int scanNum = 1, int minCharge = 1, int maxCharge = 40, double massRangeMin = 0, double massRangeMax = double.MaxValue);
+    List<Cluster> DetectIons(int scanNum = 1, int minCharge = 1, int maxCharge = 30, double massRangeMin = 0, double massRangeMax = double.MaxValue);
     double? ParentMZ(int scan);
     string ScanType(int scan);
     bool ScanExists(int scan);

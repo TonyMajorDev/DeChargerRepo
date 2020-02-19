@@ -1,61 +1,51 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<configuration>
-    <configSections>
-        <sectionGroup name="userSettings" type="System.Configuration.UserSettingsGroup, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-            <section name="MSViewer.Properties.Settings" type="System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" allowExeDefinition="MachineToLocalUser" requirePermission="false" />
-        </sectionGroup>
-    </configSections>
-  <startup useLegacyV2RuntimeActivationPolicy="true">
-    <!-- http://stackoverflow.com/questions/3179028/mixed-mode-assembly-in-net-4 -->
-    <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.0,Profile=Client" />
-    <supportedRuntime version="v2.0.50727"></supportedRuntime>
-  </startup>
-  <userSettings>
-        <MSViewer.Properties.Settings>
-              <setting name="MinPeak" serializeAs="String">
-                    <value>3</value>
-              </setting>
-              <setting name="BinnedLabels" serializeAs="String">
-                    <value>False</value>
-              </setting>
-              <setting name="HighBin" serializeAs="String">
-                    <value>True</value>
-              </setting>
-              <setting name="Labels" serializeAs="String">
-                    <value>False</value>
-              </setting>
-              <setting name="ShowMassTips" serializeAs="String">
-                    <value>True</value>
-              </setting>
-              <setting name="ShowOnlyFTMS" serializeAs="String">
-                    <value>True</value>
-              </setting>
-              <setting name="JumpToXIC" serializeAs="String">
-                    <value>True</value>
-              </setting>
-              <setting name="ShowThermo" serializeAs="String">
-                    <value>False</value>
-              </setting>
-              <setting name="MassTolerancePPMs" serializeAs="String">
-                    <value>5</value>
-              </setting>
-              <setting name="SequenceTagLength" serializeAs="String">
-                    <value>4</value>
-              </setting>
-              <setting name="SortByDBHits" serializeAs="String">
-                    <value>True</value>
-              </setting>
-              <setting name="SortByScore" serializeAs="String">
-                    <value>False</value>
-              </setting>
-              <setting name="SequenceDetectionMode" serializeAs="String">
-                    <value>True</value>
-              </setting>
-              <setting name="MatchTolerancePPMs" serializeAs="String">
-                    <value>5</value>
-              </setting>
-              <setting name="MatchList" serializeAs="String">
-                    <value>        A	71.03711
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="MSViewer.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="MinPeak" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="BinnedLabels" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="HighBin" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="Labels" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ShowMassTips" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ShowOnlyFTMS" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="JumpToXIC" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ShowThermo" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="MassTolerancePPMs" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="SequenceTagLength" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">4</Value>
+    </Setting>
+    <Setting Name="SortByDBHits" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="SortByScore" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SequenceDetectionMode" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="MatchTolerancePPMs" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="MatchList" Type="System.String" Scope="User">
+      <Value Profile="(Default)">        A	71.03711
         R	156.10111
         N	114.04293
         D	115.02694
@@ -75,49 +65,49 @@
         T	101.04768
         W	186.07931
         Y	163.06333
-        V	99.06841</value>
-              </setting>
-              <setting name="Genus" serializeAs="String">
-                    <value>Bos	Homo	Mus	Rattus</value>
-              </setting>
-              <setting name="SearchAllSpecies" serializeAs="String">
-                    <value>True</value>
-              </setting>
-              <setting name="ShowHitsWithNoProteinID" serializeAs="String">
-                    <value>False</value>
-              </setting>
-              <setting name="ModifiedAminoAcids" serializeAs="String">
-                    <value>
+        V	99.06841</Value>
+    </Setting>
+    <Setting Name="Genus" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Bos	Homo	Mus	Rattus</Value>
+    </Setting>
+    <Setting Name="SearchAllSpecies" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ShowHitsWithNoProteinID" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ModifiedAminoAcids" Type="System.String" Scope="User">
+      <Value Profile="(Default)">
         e	44.026215	 // Ethanolation
         s	15.99491		// Sulfoxide
-      </value>
-              </setting>
-              <setting name="UseBlast" serializeAs="String">
-                    <value>True</value>
-              </setting>
-              <setting name="UseThoroughSearch" serializeAs="String">
-                    <value>True</value>
-              </setting>
-              <setting name="AgilentAgreed" serializeAs="String">
-                    <value>False</value>
-              </setting>
-              <setting name="Emails" serializeAs="String">
-                    <value />
-              </setting>
-              <setting name="MatchListProfile" serializeAs="String">
-                    <value />
-              </setting>
-              <setting name="MinAgilentThresholdMS1" serializeAs="String">
-                    <value>500</value>
-              </setting>
-              <setting name="MinAgilentThresholdMS2" serializeAs="String">
-                    <value>50</value>
-              </setting>
-              <setting name="CountBlastHits" serializeAs="String">
-                    <value>False</value>
-              </setting>
-              <setting name="AgilentEULA" serializeAs="String">
-                    <value>AGILENT TECHNOLOGIES, INC. SOFTWARE LICENSE TERMS
+      </Value>
+    </Setting>
+    <Setting Name="UseBlast" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="UseThoroughSearch" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="AgilentAgreed" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Emails" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="MatchListProfile" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="MinAgilentThresholdMS1" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">500</Value>
+    </Setting>
+    <Setting Name="MinAgilentThresholdMS2" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">50</Value>
+    </Setting>
+    <Setting Name="CountBlastHits" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="AgilentEULA" Type="System.String" Scope="User">
+      <Value Profile="(Default)">AGILENT TECHNOLOGIES, INC. SOFTWARE LICENSE TERMS
 FOR THE MASSHUNTER DATA ACCESS COMPONENT RUNTIME VERSION
 ATTENTION: USE OF THE SOFTWARE IS SUBJECT TO THE LICENSE TERMS SET FORTH
 BELOW.
@@ -176,25 +166,45 @@ U.S. Government Restricted Rights. Software and technical data rights granted to
 only those rights customarily provided to end user customers. Agilent provides this customary commercial license
 in Software and technical data pursuant to FAR 12.211 (Technical Data) and 12.212 (Computer Software) and, for
 the Department of Defense, DFARS 252.227-7015 (Technical Data – Commercial Items) and DFARS 227.7202-3
-(Rights in Commercial Computer Software or Computer Software Documentation).</value>
-              </setting>
-              <setting name="Species" serializeAs="String">
-                    <value>Homo	Homo sapiens	human	Mus	Mus musculus	Rattus	Rattus norvegicus	Bos</value>
-              </setting>
-              <setting name="PPMErrorPlot" serializeAs="String">
-                    <value>True</value>
-              </setting>
-              <setting name="DaltonErrorPlot" serializeAs="String">
-                    <value>False</value>
-              </setting>
-              <setting name="PPMErrorAxisMax" serializeAs="String">
-                    <value>100</value>
-              </setting>
-              <setting name="PPMErrorAxisMin" serializeAs="String">
-                    <value>-100</value>
-              </setting>
-              <setting name="ValidationModificationsList" serializeAs="String">
-                    <value>Oxidation	15.9949	ox
+(Rights in Commercial Computer Software or Computer Software Documentation).</Value>
+    </Setting>
+    <Setting Name="Species" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Homo	Homo sapiens	human	Mus	Mus musculus	Rattus	Rattus norvegicus	Bos</Value>
+    </Setting>
+    <Setting Name="MatchTolerancePPMBasedonFileType" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;20&lt;/string&gt;
+  &lt;string&gt;5&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="MassTolerancePPMBasedonFileType" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;10&lt;/string&gt;
+  &lt;string&gt;5&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="MinThresholdMS1" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="MinThresholdMS2" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="PPMErrorPlot" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="DaltonErrorPlot" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="PPMErrorAxisMax" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">100</Value>
+    </Setting>
+    <Setting Name="PPMErrorAxisMin" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">-100</Value>
+    </Setting>
+    <Setting Name="ValidationModificationsList" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Oxidation	15.9949	ox
 Deamidation	0.9840	da
 Ammonia-loss	-17.0265	am
 Water-Loss	-18.0100	water
@@ -203,13 +213,13 @@ Ethanolation	44.0262	eth
 Carboxyethyl	72.0211	crbx
 Glu-&gt;pyro-Glu	-18.0105	e-&gt;pg
 Gln-&gt;pyro-Glu	-17.0265	q-&gt;pg
-</value>
-              </setting>
-              <setting name="ValidationModificationsListAminoAcids" serializeAs="String">
-                    <value />
-              </setting>
-              <setting name="UnimodModifications" serializeAs="String">
-                    <value>Acetyl	Acetylation	42.010565
+</Value>
+    </Setting>
+    <Setting Name="ValidationModificationsListAminoAcids" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="UnimodModifications" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Acetyl	Acetylation	42.010565
 Amidated	Amidation	-0.984016
 Biotin	Biotinylation	226.077598
 Carbamidomethyl	Iodoacetamide derivative	57.021464
@@ -1559,92 +1569,55 @@ dHex(1)Hex(3)HexNAc(6)	dHex Hex(3) HexNAc(6)	1850.692615
 dHex(1)Hex(4)HexNAc(4)NeuAc(1)	dHex Hex(4) HexNAc(4) NeuAc	1897.68211
 dHex(3)Hex(4)HexNAc(4)	dHex(3) Hex(4) HexNAc(4)	1898.702511
 dHex(1)Hex(3)HexNAc(5)NeuAc(1)	dHex Hex(3) HexNAc(5) NeuAc	1938.708659
-dHex(2)Hex(4)HexNAc(5)	dHex(2) Hex(4) HexNAc(5)	1955.723975</value>
-              </setting>
-              <setting name="HaveKnownMods" serializeAs="String">
-                    <value>True</value>
-              </setting>
-              <setting name="MaximumModifications" serializeAs="String">
-                    <value>4</value>
-              </setting>
-              <setting name="FragementIonTolerance" serializeAs="String">
-                    <value>25</value>
-              </setting>
-              <setting name="UseHybridIntensities" serializeAs="String">
-                    <value>True</value>
-              </setting>
-              <setting name="SequenceSearchFileVersion" serializeAs="String">
-                    <value>3</value>
-              </setting>
-              <setting name="EnabledCZErrors" serializeAs="String">
-                    <value>False</value>
-              </setting>
-              <setting name="EnabledCZErrorsAMU" serializeAs="String">
-                    <value>False</value>
-              </setting>
-              <setting name="EnabledBYErrors" serializeAs="String">
-                    <value>False</value>
-              </setting>
-              <setting name="EnabledBYErrorsAMU" serializeAs="String">
-                    <value>False</value>
-              </setting>
-              <setting name="DebugLoggingEnabled" serializeAs="String">
-                    <value>False</value>
-              </setting>
-              <setting name="AutoMergingEnabled" serializeAs="String">
-                    <value>True</value>
-              </setting>
-              <setting name="ExpressSearch" serializeAs="String">
-                    <value>True</value>
-              </setting>
-              <setting name="NativeAveragingEnabled" serializeAs="String">
-                    <value>False</value>
-              </setting>
-              <setting name="PrecursorFromProductEnabled" serializeAs="String">
-                    <value>True</value>
-              </setting>
-              <setting name="ActivationOverride" serializeAs="String">
-                    <value />
-              </setting>
-              <setting name="ConnectionString" serializeAs="String">
-                    <value />
-              </setting>
-            <setting name="MatchTolerancePPMBasedonFileType" serializeAs="Xml">
-                <value>
-                    <ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                        xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-                        <string>20</string>
-                        <string>5</string>
-                    </ArrayOfString>
-                </value>
-            </setting>
-            <setting name="MassTolerancePPMBasedonFileType" serializeAs="Xml">
-                <value>
-                    <ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                        xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-                        <string>10</string>
-                        <string>5</string>
-                    </ArrayOfString>
-                </value>
-            </setting>
-            <setting name="MinThermoThresholdMS1" serializeAs="String">
-                <value>50</value>
-            </setting>
-            <setting name="MinThermoThresholdMS2" serializeAs="String">
-                <value>50</value>
-            </setting>
-            <setting name="Instruments" serializeAs="String">
-                <value>Thermo Orbi;Agilent QTOF;</value>
-            </setting>
-        </MSViewer.Properties.Settings>
-    </userSettings>
-  <runtime>
-    <legacyCorruptedStateExceptionsPolicy enabled="true" />
-    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
-      <dependentAssembly>
-        <assemblyIdentity name="Xceed.Wpf.Toolkit" publicKeyToken="3e4669d2f30244f4" culture="neutral" />
-        <bindingRedirect oldVersion="0.0.0.0-2.0.0.0" newVersion="2.0.0.0" />
-      </dependentAssembly>
-    </assemblyBinding>
-  </runtime>
-</configuration>
+dHex(2)Hex(4)HexNAc(5)	dHex(2) Hex(4) HexNAc(5)	1955.723975</Value>
+    </Setting>
+    <Setting Name="HaveKnownMods" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="MaximumModifications" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">4</Value>
+    </Setting>
+    <Setting Name="FragementIonTolerance" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">25</Value>
+    </Setting>
+    <Setting Name="UseHybridIntensities" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="SequenceSearchFileVersion" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="EnabledCZErrors" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="EnabledCZErrorsAMU" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="EnabledBYErrors" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="EnabledBYErrorsAMU" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="DebugLoggingEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="AutoMergingEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ExpressSearch" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="NativeAveragingEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="PrecursorFromProductEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ActivationOverride" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="ConnectionString" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+  </Settings>
+</SettingsFile>

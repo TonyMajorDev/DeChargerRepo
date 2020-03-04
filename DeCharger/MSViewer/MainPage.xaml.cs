@@ -1104,7 +1104,8 @@ namespace MSViewer
 
                     var unsupportedFiles = files.Where(f => supportedFiles.Select(x => x.FullName).Contains(f.FullName) == false);
 
-                    if (unsupportedFiles.Any())
+                    // apparently a .applcation file can sometimes be passed in by the ClickOnce startup.  Ignore that, but show error for anything else.  
+                    if (unsupportedFiles.Where(f => f.FullName.EndsWith(".application") == false).Any())
                     {
                         System.Windows.MessageBox.Show("Files of type " + string.Join(",", unsupportedFiles.Select(f => f.Extension).Distinct()) + " are not supported and will be skipped.  ", "File Rejection", MessageBoxButton.OK, MessageBoxImage.Warning);
                     }

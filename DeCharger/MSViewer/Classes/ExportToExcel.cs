@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 //using Excel = Microsoft.Office.Interop.Excel;
 //using Excel = OfficeOpenXml;
+using OfficeOpenXml;
 
 namespace MSViewer.Classes
 {
@@ -21,61 +22,67 @@ namespace MSViewer.Classes
 
             /// http://csharp.net-informations.com/excel/csharp-create-excel.htm
             /// http://www.codeproject.com/Articles/20228/Using-C-to-Create-an-Excel-Document
-            //try
-            //{
-            //    Excel.Application xlApp = new Excel.Application();
-            //    if (xlApp == null)
-            //    {
-            //        return;
-            //    }
+            try
+            {
+                //   Excel.Application xlApp = new Excel.Application();
+                OfficeOpenXml.ExcelPackage xlApp = new ExcelPackage();
+                if (xlApp == null)
+                {
+                    return;
+                }
 
-            //    Excel.Workbook xlWorkBook;
-            //    Excel.Worksheet xlWorkSheet;
-            //    object misValue = System.Reflection.Missing.Value;
-            //    xlWorkBook = xlApp.Workbooks.Add(misValue);
-            //    xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
+                OfficeOpenXml.ExcelWorkbook xlWorkBook;
+                OfficeOpenXml.ExcelWorksheet xlWorkSheet;
+                //
+                //object misValue = System.Reflection.Missing.Value;
                 
-            //    if (generateBandYIons)
-            //    {
-            //        CreateWorkSheet(Headers, bandyions, xlWorkSheet, currenttext);
-            //    }
-            //    else
-            //    {
-            //        int[] MaxStringlength = new int[AlltheColumns.Select(a => a.Count).First()]; //Find the maximum length of each column to set the column width in the excel document.
+                //xlWorkBook = xlApp.Workbooks.Add(misValue);
+                //xlWorkBook = xlApp.Workbook.Worksheets.Add(misValue);
 
-            //        for (int i = 0; i < AlltheColumns.Count; i++)
-            //        {
-            //            for (int j = 0; j < AlltheColumns.Select(a => a.Count).First(); j++)
-            //            {
-            //                MaxStringlength[j] = AlltheColumns[i][j] != null ? (Math.Max(AlltheColumns[i][j].Length, MaxStringlength[j])) : 0;
-            //            }
-            //        }
+                //xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
+                xlWorkSheet = xlApp.Workbook.Worksheets.FirstOrDefault();
+                if (generateBandYIons)
+                {
+                    CreateWorkSheet(Headers, bandyions, xlWorkSheet, currenttext);
+                }
+                else
+                {
+                    int[] MaxStringlength = new int[AlltheColumns.Select(a => a.Count).First()]; //Find the maximum length of each column to set the column width in the excel document.
 
-            //        for (int i = 0; i < Headers.Count; i++)
-            //        {
-            //            MaxStringlength[i] = Math.Max(MaxStringlength[i], Headers[i].Length);
-            //        }
-            //        if (createstyle)
-            //        {
-            //            xlWorkSheet = CreateWorkSheet(Headers, AlltheColumns, xlWorkSheet, MaxStringlength, true);
-            //        }
-            //        else
-            //        {
-            //            xlWorkSheet = CreateWorkSheet(Headers, AlltheColumns, xlWorkSheet, MaxStringlength);
-            //        }
-            //    }
+                    for (int i = 0; i < AlltheColumns.Count; i++)
+                    {
+                        for (int j = 0; j < AlltheColumns.Select(a => a.Count).First(); j++)
+                        {
+                            MaxStringlength[j] = AlltheColumns[i][j] != null ? (Math.Max(AlltheColumns[i][j].Length, MaxStringlength[j])) : 0;
+                        }
+                    }
 
-            //    xlApp.Visible = true;
-            //    releaseObject(xlWorkSheet);
-            //    releaseObject(xlWorkBook);
-            //    releaseObject(xlApp);
-            //}
-            //catch (Exception ex)
-            //{
-            //    string ex1 = ex.Message.ToString();
-            //    int ex1i = ex1.Length;
-            //    double aa = ex1i + 10;
-            //}
+                    for (int i = 0; i < Headers.Count; i++)
+                    {
+                        MaxStringlength[i] = Math.Max(MaxStringlength[i], Headers[i].Length);
+                    }
+                    if (createstyle)
+                    {
+                        xlWorkSheet = CreateWorkSheet(Headers, AlltheColumns, xlWorkSheet, MaxStringlength, true);
+                    }
+                    else
+                    {
+                        xlWorkSheet = CreateWorkSheet(Headers, AlltheColumns, xlWorkSheet, MaxStringlength);
+                    }
+                }
+
+                //xlApp.Visible = true;
+
+                releaseObject(xlWorkSheet);
+                releaseObject(xlWorkBook);
+                releaseObject(xlApp);
+            }
+            catch (Exception ex)
+            {
+                string ex1 = ex.Message.ToString();
+                int ex1i = ex1.Length;
+                double aa = ex1i + 10;
+            }
         }
 
         /// <summary>
@@ -89,7 +96,7 @@ namespace MSViewer.Classes
         {
 
 
-            //Excel.Worksheet xlWorkSheet = new Excel.Worksheet();
+            //ExcelWorksheet xlWorkSheet = new ExcelWorksheet();
             for (int i = 0; i < Headers.Count; i++)
             {
                 workSheet.SetValue(1, i + 1, Headers[i]);
@@ -172,7 +179,7 @@ namespace MSViewer.Classes
             //WorkSheet.Shapes.AddPicture(currentfilepath + "\\" + "ErrorPlot.jpeg", Microsoft.Office.Core.MsoTriState.msoFalse, Microsoft.Office.Core.MsoTriState.msoCTrue, 440, 40, 900, 300);
             //WorkSheet.Shapes.AddPicture(currentfilepath + "\\" + "Spectrum.jpeg", Microsoft.Office.Core.MsoTriState.msoFalse, Microsoft.Office.Core.MsoTriState.msoCTrue, 440, 340, 1200, 300);
 
-            ////WorkSheet.PasteSpecial()
+            //WorkSheet.PasteSpecial()
 
             //var ColumnsxlWorkSheet_Range = CreateColumnsStyleforBandYIons(Columns.Count, Columns, WorkSheet);
             //return WorkSheet;

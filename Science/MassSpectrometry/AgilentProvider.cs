@@ -1102,7 +1102,8 @@ public class AgilentProvider : IMSProvider, IDisposable
             if (parentmz.HasValue)
             {
                 // if parent m/z is an integer, open allowed delta to 1, otherwise, use somthing smaller just to weed out the junk.  
-                double delta = parentmz == (int)parentmz ? 1 : 0.01;
+                double delta = parentmz == (int)parentmz ? 1 : 0.1;
+                delta = 1;  //temporary fix 
                 ionCandidatesDetected = ionCandidatesDetected.Where(p => p.Peaks.Where(x => Math.Abs(parentmz.Value - x.MZ) < delta).Any()).ToList();
             }
 

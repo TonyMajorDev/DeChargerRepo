@@ -69,6 +69,9 @@ namespace MassSpectrometry
         {
             //TODO: activation stored in strings is error prone!  Refactor to enums or something later
 
+            //TODO: find a better way to handle missing activations...
+            if (string.IsNullOrWhiteSpace(ActivationString0) || string.IsNullOrWhiteSpace(ActivationString)) return false;
+
             ActivationString = ActivationString.Trim().ToUpper();
             ActivationString0 = ActivationString0.Trim().ToUpper();
 

@@ -36,7 +36,7 @@
     <PublisherName>DeCharger</PublisherName>
     <WebPage>index.htm</WebPage>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>547</ApplicationRevision>
+    <ApplicationRevision>548</ApplicationRevision>
     <ApplicationVersion>5.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -70,16 +70,16 @@
     <StartupObject>MSViewer.App</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>31B2FA11800DA1052252E984F99241453CD45B8B</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>6F675974B5C1EABCC2AB888E11A67D34B1288332</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>LillyLRL15YearCert.pfx</ManifestKeyFile>
+    <ManifestKeyFile>DeCharger.Alpha_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>false</SignManifests>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Test|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -99,6 +99,9 @@
   <PropertyGroup />
   <PropertyGroup />
   <PropertyGroup />
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="DotNetZip, Version=1.13.5.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetZip.1.13.5\lib\net40\DotNetZip.dll</HintPath>
@@ -308,6 +311,7 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="DeCharger.Alpha_TemporaryKey.pfx" />
     <None Include="Properties\app.manifest" />
     <None Include="publish\Application Files\DeCharger.Alpha_5_0_0_539\Actions-office-chart-line-stacked.ico.deploy" />
     <None Include="publish\Application Files\DeCharger.Alpha_5_0_0_539\agtsampleinforw.dll.deploy" />

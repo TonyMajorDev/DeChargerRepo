@@ -4441,7 +4441,7 @@ namespace MSViewer
                 {
                     var targetIon = chromChart.Tag as Cluster;
 
-                    if (chkMultiCharge.IsChecked.HasValue && chkMultiCharge.IsChecked.Value && this.MainPointProvider is RMSProvider) // || this.MainPointProvider is RMSProvider32))
+                    if (chkMultiCharge.IsChecked.HasValue && chkMultiCharge.IsChecked.Value && (this.MainPointProvider is RMSProvider || this.MainPointProvider is AgilentProvider))
                     {
                         var r = this.MainPointProvider;
 
@@ -4454,7 +4454,7 @@ namespace MSViewer
 
                             //if (r is RMSProvider)
                             //{
-                                points = (r as RMSProvider).ExtractIon(targetRange);
+                                points = r.ExtractIon(targetRange);
                             //}
                             //else
                             //{

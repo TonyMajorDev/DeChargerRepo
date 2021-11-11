@@ -1731,10 +1731,7 @@ namespace MSViewer.Properties {
                 this["Instruments"] = value;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+       
 
     }
 }

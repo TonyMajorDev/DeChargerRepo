@@ -1008,6 +1008,7 @@ public class AgilentProvider : IMSProvider, IDisposable
 
             Debug.Print("Detecting Parent of " + scanNumberOfMs2);
 
+            
             if (this.ScanType(scanNumberOfMs2) != "MS2") return null;
 
             //if (sInfo.ParentZ.HasValue && sInfo.ParentMass.HasValue) return;

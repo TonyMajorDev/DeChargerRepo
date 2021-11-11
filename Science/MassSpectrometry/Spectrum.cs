@@ -126,7 +126,7 @@ namespace MassSpectrometry
 
         public Cluster ParentIon
         {
-            get
+            get 
             {
                 // Select the best scoring parent ion as the parent for all the scans.  
                 return parentList.MaxBy(p => p.ParentIon.Score).ParentIon;

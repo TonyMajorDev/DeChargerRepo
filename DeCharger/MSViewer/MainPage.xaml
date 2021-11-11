@@ -1174,7 +1174,7 @@
                                                                                 <Setter Property="HorizontalAlignment" Value="Right" />
                                                                                 <Style.Triggers>
                                                                                     <DataTrigger Binding="{Binding Path=cioncolor}" Value="true">
-                                                                                        <Setter Property="Background" Value="DarkRed"/>
+                                                                                        <Setter Property="Background" Value="LightPink"/>
                                                                                     </DataTrigger>
                                                                                 </Style.Triggers>
                                                                             </Style>
@@ -1320,7 +1320,7 @@
                                                                             <vc:DataMapping MemberName="ToolTipText" Path="BionDescription"></vc:DataMapping>
                                                                         </vc:DataSeries.DataMappings>
                                                                     </vc:DataSeries>
-                                                                    <vc:DataSeries Color="DarkRed" RenderAs="Point" x:Name="CIonsPPM" Enabled="{Binding Source={x:Static p:Settings.Default}, Path=EnabledCZErrors, Mode=TwoWay}">
+                                                                    <vc:DataSeries Color="LightPink" RenderAs="Point" x:Name="CIonsPPM" Enabled="{Binding Source={x:Static p:Settings.Default}, Path=EnabledCZErrors, Mode=TwoWay}">
                                                                         <!-- Path=EnabledCZIons, Mode=TwoWay,Source=Application.Current}"   > -->
                                                                         <!--  Enabled="{Binding Source={x:Static p:Settings.Default}, Path=PPMErrorPlot, Mode=TwoWay}" Enabled="False" -->
                                                                         <vc:DataSeries.DataMappings>
@@ -1329,7 +1329,7 @@
                                                                             <vc:DataMapping MemberName="ToolTipText" Path="CionDaltonDescription"></vc:DataMapping>
                                                                         </vc:DataSeries.DataMappings>
                                                                     </vc:DataSeries>
-                                                                    <vc:DataSeries Color="DarkRed" RenderAs="Point" x:Name="CIonsAMU" Enabled="{Binding Source={x:Static p:Settings.Default}, Path=EnabledCZErrorsAMU, Mode=TwoWay}" >
+                                                                    <vc:DataSeries Color="LightPink" RenderAs="Point" x:Name="CIonsAMU" Enabled="{Binding Source={x:Static p:Settings.Default}, Path=EnabledCZErrorsAMU, Mode=TwoWay}" >
                                                                         <vc:DataSeries.DataMappings>
                                                                             <vc:DataMapping MemberName="XValue" Path="cionerror" />
                                                                             <vc:DataMapping MemberName="YValue" Path="CorZIon" />
@@ -1353,14 +1353,14 @@
                                                                             <vc:DataMapping MemberName="ToolTipText" Path="YionDescription"></vc:DataMapping>
                                                                         </vc:DataSeries.DataMappings>
                                                                     </vc:DataSeries>
-                                                                    <vc:DataSeries Color="DarkGreen" AxisYType="Secondary" RenderAs="Point"  x:Name="ZIonsAMU" Enabled="{Binding Source={x:Static p:Settings.Default}, Path=EnabledCZErrorsAMU, Mode=TwoWay}">
+                                                                    <vc:DataSeries Color="LightGreen" AxisYType="Secondary" RenderAs="Point"  x:Name="ZIonsAMU" Enabled="{Binding Source={x:Static p:Settings.Default}, Path=EnabledCZErrorsAMU, Mode=TwoWay}">
                                                                         <vc:DataSeries.DataMappings>
                                                                             <vc:DataMapping MemberName="XValue" Path="zionerror" />
                                                                             <vc:DataMapping MemberName="YValue" Path="ZionNumber" />
                                                                             <vc:DataMapping MemberName="ToolTipText" Path="YionDaltonDescription"></vc:DataMapping>
                                                                         </vc:DataSeries.DataMappings>
                                                                     </vc:DataSeries>
-                                                                    <vc:DataSeries Color="DarkGreen" AxisYType="Secondary" RenderAs="Point" x:Name="ZIonsPPM" Enabled="{Binding Source={x:Static p:Settings.Default}, Path=EnabledCZErrors, Mode=TwoWay}">
+                                                                    <vc:DataSeries Color="LightGreen" AxisYType="Secondary" RenderAs="Point" x:Name="ZIonsPPM" Enabled="{Binding Source={x:Static p:Settings.Default}, Path=EnabledCZErrors, Mode=TwoWay}">
                                                                         <vc:DataSeries.DataMappings>
                                                                             <vc:DataMapping MemberName="XValue" Path="zionPPM" />
                                                                             <vc:DataMapping MemberName="YValue" Path="ZionNumber" />

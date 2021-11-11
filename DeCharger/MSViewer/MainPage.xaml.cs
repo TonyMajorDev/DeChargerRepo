@@ -2534,7 +2534,7 @@ namespace MSViewer
             //    {
 
             //If the sequence length is less that 3 then ask the user to enter a longer sequence
-            if (sequenceforsearch.Length < 3 && filter == string.Empty)
+            if (sequenceforsearch.Length < 3 && sequenceforsearch.Length > 0 && filter == string.Empty)
             {
                 if (DechargerVM.UseFasta)
                 {
@@ -14118,7 +14118,7 @@ namespace MSViewer
                         if (Properties.Settings.Default.AutoMergingEnabled)
                         {
                             // find other scans close to si in RT and Parent Mass
-                            var scanGroup = scanInfoList.Where(s => s.ParentIon != null && (s.IsMergeMember == false) && (Math.Abs(s.ParentMass.Value - sil.ParentMass.Value) < groupingMassDelta) && (Math.Abs(s.RetentionTime.Value - sil.RetentionTime.Value) < groupingTimeDelta) && MassSpectrometry.MassSpecExtensions.CanMergeActivations(sil.Activation, s.Activation));
+                            var scanGroup = scanInfoList.Where(s => s.ParentIon != null && (s.IsMergeMember == false) && (Math.Abs(s.ParentMass.Value - sil.ParentMass.Value) < groupingMassDelta) && (Math.Abs(s.RetentionTime.Value - sil.RetentionTime.Value) < groupingTimeDelta) && (string.IsNullOrEmpty(Properties.Settings.Default.ActivationOverride) == false ? true : MassSpectrometry.MassSpecExtensions.CanMergeActivations(sil.Activation, s.Activation)));
                             mergeGroups.Add(scanGroup.ToList());
 
                             foreach (var aScan in scanGroup) aScan.IsMergeMember = true;

@@ -1735,13 +1735,6 @@ namespace MSViewer.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string ModifiedAminoAcids {
-            get {
-                return ((string)(this["ModifiedAminoAcids"]));
-            }
-            set {
-                this["ModifiedAminoAcids"] = value;
-            }
-        }
+
     }
 }

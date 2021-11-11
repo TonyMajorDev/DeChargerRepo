@@ -260,18 +260,6 @@ namespace MSViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\n        e\t44.026215\t // Ethanolation\n        s\t15.99491\t\t// Sulfoxide\n      ")]
-        public string ModifiedAminoAcids {
-            get {
-                return ((string)(this["ModifiedAminoAcids"]));
-            }
-            set {
-                this["ModifiedAminoAcids"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool UseBlast {
             get {
@@ -526,9 +514,9 @@ namespace MSViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Oxidation\t15.9949\tox\nDeamidation\t0.9840\tda\nAmmonia-loss\t-17.0265\tam\nWater-Loss\t-1" +
-            "8.0100\twater\nAcetylation\t42.0106\tac\nEthanolation\t44.0262\teth\nCarboxyethyl\t72.021" +
-            "1\tcrbx\nGlu->pyro-Glu\t-18.0105\te->pg\nGln->pyro-Glu\t-17.0265\tq->pg\n")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Oxidation\t15.9949\to\r\nDeamidation\t0.9840\tda\r\nAmmonia-loss\t-17.0265\tam\r\nWater-Loss\t" +
+            "-18.0100\twater\r\nAcetylation\t42.0106\tac\r\nEthanolation\t44.0262\teth\r\nCarboxyethyl\t7" +
+            "2.0211\tcrbx\r\nGlu->pyro-Glu\t-18.0105\te->pg\r\nGln->pyro-Glu\t-17.0265\tq->pg\r\n")]
         public string ValidationModificationsList {
             get {
                 return ((string)(this["ValidationModificationsList"]));
@@ -1646,7 +1634,7 @@ namespace MSViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("HCD,ETD")]
+        [global::System.Configuration.DefaultSettingValueAttribute("HCD, ETD")]
         public string ActivationOverride {
             get {
                 return ((string)(this["ActivationOverride"]));
@@ -1722,7 +1710,7 @@ namespace MSViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Thermo Orbi;Agilent QTOF;")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Agilent QTOF;Thermo Orbi;")]
         public string Instruments {
             get {
                 return ((string)(this["Instruments"]));
@@ -1731,7 +1719,17 @@ namespace MSViewer.Properties {
                 this["Instruments"] = value;
             }
         }
-       
-
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ModifiedAminoAcids {
+            get {
+                return ((string)(this["ModifiedAminoAcids"]));
+            }
+            set {
+                this["ModifiedAminoAcids"] = value;
+            }
+        }
     }
 }

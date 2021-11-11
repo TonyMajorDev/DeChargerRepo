@@ -1593,7 +1593,7 @@ dHex(2)Hex(4)HexNAc(5)	dHex(2) Hex(4) HexNAc(5)	1955.723975</Value>
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="ActivationOverride" Type="System.String" Scope="User">
-      <Value Profile="(Default)">HCD,ETD</Value>
+      <Value Profile="(Default)">HCD, ETD</Value>
     </Setting>
     <Setting Name="ConnectionString" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -1619,7 +1619,7 @@ dHex(2)Hex(4)HexNAc(5)	dHex(2) Hex(4) HexNAc(5)	1955.723975</Value>
       <Value Profile="(Default)">50</Value>
     </Setting>
     <Setting Name="Instruments" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Thermo Orbi;Agilent QTOF;</Value>
+      <Value Profile="(Default)">Agilent QTOF;Thermo Orbi;</Value>
     </Setting>
     <Setting Name="ModifiedAminoAcids" Type="System.String" Scope="User">
       <Value Profile="(Default)" />

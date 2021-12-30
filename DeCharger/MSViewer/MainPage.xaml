@@ -11,7 +11,7 @@
     x:Name="mainWindow"
     xmlns:this="clr-namespace:MSViewer"
         
-    mc:Ignorable="d" MinWidth="1025" MinHeight="698" KeyUp="UserControl_KeyUp" Title="Lilly Decharger" Width="1024" Height="698" WindowStartupLocation="CenterScreen" ContentRendered="mainWindow_ContentRendered">
+    mc:Ignorable="d" MinWidth="1025" MinHeight="698" KeyUp="UserControl_KeyUp" Title="Decharger" Width="1024" Height="698" WindowStartupLocation="CenterScreen" ContentRendered="mainWindow_ContentRendered">
 
     <Window.Resources>
         <!--<Style TargetType="{x:Type this:SimpleCheckBox}">
@@ -155,9 +155,8 @@
             <Grid Grid.Row="0">
                 <!--<Button Content="J" Width="99" Click="Button_Click_1" Height="36" />-->
                 <!--<Image Height="55" HorizontalAlignment="Right" Opacity="1" OpacityMask="White" Source="lilly.png" Stretch="Fill" VerticalAlignment="Top" Width="162" Margin="0,1,2,0" Grid.Column="2" />-->
-                <Image Height="44" HorizontalAlignment="Right" Opacity="1" OpacityMask="White" Source="Icons\lilly2.png" Stretch="Fill" VerticalAlignment="Top" Width="82" Margin="0,8,2,0" MouseLeftButtonDown="Image_MouseLeftButtonDown" />
                 <Label Content="Decharged Mass Spectrum Viewer" FontSize="26" Height="45" HorizontalAlignment="Left" Margin="0,-8,0,0" Name="label4" VerticalAlignment="Top" Width="428" />
-                <Label Height="25" Margin="0,16,240.4,0" Name="lblVersionAuthors" VerticalAlignment="Top" Content="Version 1.0.1234.1234 by Tony Major, Mike Knierman, and Anvesh Kodumuri" FontSize="9" HorizontalAlignment="Right" Width="368" BorderThickness="0" HorizontalContentAlignment="Right" />
+                <Label Height="25" Margin="0,16,240.4,0" Name="lblVersionAuthors" VerticalAlignment="Top" Content="Version 1.0.1234.1234 " FontSize="9" HorizontalAlignment="Right" Width="368" BorderThickness="0" HorizontalContentAlignment="Right" />
                 <Button Margin="0,13,123,0" ToolTip="Settings..." Background="#00DDDDDD" BorderThickness="0" Command="{Binding ConfigCommand}" Height="30" VerticalAlignment="Top" HorizontalAlignment="Right" HorizontalContentAlignment="Center" Width="31" >
                     <Image Source="Icons/Gear.png" />
                 </Button>
@@ -178,7 +177,6 @@
                     </Button.ToolTip>
                 </Button>
                 <!--<Image ToolTip="Save Workspace..." Height="27" HorizontalAlignment="Right" Margin="0,16,194.4,0" x:Name="imgSaveWorkspace" Stretch="Fill" VerticalAlignment="Top" Width="31" Source="Icons/save1.png" MouseLeftButtonUp="imgSave_MouseLeftButtonUp" />-->
-                <Label Content="An LRL Informatics Solution" Height="28" HorizontalAlignment="Left" Margin="0,34,0,0" x:Name="label5" VerticalAlignment="Top" Width="263" Grid.ColumnSpan="3" />
                 <Rectangle Fill="Black" Height="2" Margin="8,32,240.4,0" x:Name="rectangle1" Stroke="Black" VerticalAlignment="Top" />
                 <Label Content="FOR TESTING ONLY" Height="28" HorizontalAlignment="Right" Margin="20,4,308.242,0" x:Name="lblTest" VerticalAlignment="Top" Width="208" FontWeight="Bold" Foreground="Red" Visibility="Collapsed" FontSize="16" Grid.Column="2" />
                 <!--<Button Margin="0,13,128,0" Background="#00DDDDDD" ToolTip="Give Feedback" BorderThickness="0" Height="30" VerticalAlignment="Top" HorizontalAlignment="Right" Width="31" Click="btnFeedback_Click" >

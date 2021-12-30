@@ -21,7 +21,7 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
-    <PublishUrl>C:\temp\publish\</PublishUrl>
+    <PublishUrl>\publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -37,7 +37,7 @@
     <WebPage>index.htm</WebPage>
     <AutorunEnabled>true</AutorunEnabled>
     <ApplicationRevision>549</ApplicationRevision>
-    <ApplicationVersion>5.0.0.%2a</ApplicationVersion>
+    <ApplicationVersion>5.0.0.549</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>false</BootstrapperEnabled>
@@ -79,7 +79,7 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Test|x86'">
     <DebugSymbols>true</DebugSymbols>

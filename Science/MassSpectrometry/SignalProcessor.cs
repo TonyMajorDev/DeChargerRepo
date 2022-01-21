@@ -29,7 +29,8 @@ namespace SignalProcessing
 {
 
     public delegate void PercentChangeEventHandler(float percent, string title);
-
+    
+    
     public static class SignalProcessor
     {
         /// <summary>
@@ -42,6 +43,8 @@ namespace SignalProcessing
         public static bool FireChangeEvents = true;
 
         public static object ActiveProgressTarget = null;
+
+        public static Agilent.MassSpectrometry.DataAnalysis.IonPolarity IonPolarity;
 
 
         //[OperationContract, WebGet]

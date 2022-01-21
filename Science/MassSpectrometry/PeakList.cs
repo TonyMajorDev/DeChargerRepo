@@ -509,8 +509,16 @@ namespace SignalProcessing
             get
             {
                 if (_mass == -1 && _mz > -1 && this.Z > -1)
-                    _mass = (_mz * _z) - (_z * SignalProcessor.ProtonMass);
-
+                { 
+                    if (SignalProcessor.IonPolarity == Agilent.MassSpectrometry.DataAnalysis.IonPolarity.Negative)
+                    { 
+                        _mass = (_mz * _z) + (_z * SignalProcessor.ProtonMass);
+                    }
+                    else
+	                {
+                        _mass = (_mz * _z) - (_z * SignalProcessor.ProtonMass);
+	                }
+                }
                 return _mass;
             }
 
@@ -528,9 +536,28 @@ namespace SignalProcessing
                 if (_mz == -1 && _mass > -1)
                 {
                     if (_z > -1)
-                        _mz = (_mass + (_z * SignalProcessor.ProtonMass)) / _z;
+                    {
+                        if (SignalProcessor.IonPolarity == Agilent.MassSpectrometry.DataAnalysis.IonPolarity.Negative)
+                        { 
+                            _mz = (_mass - (_z * SignalProcessor.ProtonMass)) / _z;
+                        }
+                        else
+                        {
+                            _mz = (_mass + (_z * SignalProcessor.ProtonMass)) / _z;
+                        }
+                    }
                     else
-                        _mz = (_mass + (Z * SignalProcessor.ProtonMass)) / Z;
+                    {
+                        if (SignalProcessor.IonPolarity == Agilent.MassSpectrometry.DataAnalysis.IonPolarity.Negative)
+                        { 
+                            _mz = (_mass - (Z * SignalProcessor.ProtonMass)) / Z;
+                        }
+                        else
+	                    {
+                            _mz = (_mass + (Z * SignalProcessor.ProtonMass)) / Z;
+	                    }
+                    }
+                        
                 }
 
                 return _mz;
@@ -823,8 +850,10 @@ namespace SignalProcessing
                 {
                     if (this.MonoMZ < 0)
                         Debug.Print("BAD!");
-
-                    return (this.MonoMZ * (double)Z) - ((double)Z * SignalProcessor.ProtonMass);
+                    if (SignalProcessor.IonPolarity == Agilent.MassSpectrometry.DataAnalysis.IonPolarity.Negative)
+                        return (this.MonoMZ * (double)Z) + ((double)Z * SignalProcessor.ProtonMass);
+                    else
+                        return (this.MonoMZ * (double)Z) - ((double)Z * SignalProcessor.ProtonMass);
                 }
                 else
                 {
@@ -847,8 +876,10 @@ namespace SignalProcessing
             {
                 if (_secondarymonomass != null && _secondarymonomass != 0)
                     return _secondarymonomass;
-
-                return (this.SecondMonoMZ * (double)Z) - ((double)Z * SignalProcessor.ProtonMass);
+                if (SignalProcessor.IonPolarity == Agilent.MassSpectrometry.DataAnalysis.IonPolarity.Negative)
+                    return (this.SecondMonoMZ * (double)Z) + ((double)Z * SignalProcessor.ProtonMass);
+                else
+                    return (this.SecondMonoMZ * (double)Z) - ((double)Z * SignalProcessor.ProtonMass);
             }
             set
             {

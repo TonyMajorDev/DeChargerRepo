@@ -539,8 +539,9 @@ public class AgilentProvider : IMSProvider, IDisposable
     public string Title(int scan)
     {
         //var spec = spectra.Where(s => s.ScanNumber == scan).First();
+        SignalProcessor.IonPolarity = spectra[scan].IonPolarity;
 
-        return (spectra[scan].IonPolarity == IonPolarity.Positive ? "+" : "") + System.Enum.GetName(typeof(IonizationMode), spectra[scan].IonizationMode) + " " + ((spectra[scan].MSLevel == MSLevel.MSMS) ? "MS2 " : "MS ") + System.Enum.GetName(typeof(MSScanType), spectra[scan].MSScanType) + " (#" + scan + " - " + spectra[scan].RetentionTime.ToString("0.000") + " min)";
+        return (spectra[scan].IonPolarity == IonPolarity.Positive ? "+" : "-") + System.Enum.GetName(typeof(IonizationMode), spectra[scan].IonizationMode) + " " + ((spectra[scan].MSLevel == MSLevel.MSMS) ? "MS2 " : "MS ") + System.Enum.GetName(typeof(MSScanType), spectra[scan].MSScanType) + " (#" + scan + " - " + spectra[scan].RetentionTime.ToString("0.000") + " min)";
 
         //return "Scan " + spec.ScanNumber + ", " + spec.ScanMode + ", MS" + spec.MsLevel + ", FTMS";
     }

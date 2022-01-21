@@ -476,7 +476,7 @@ namespace MSViewer
                 string version = assembly.FullName.Split(',')[1];
                 string fullversion = version.Split('=')[1];
 
-                lblVersionAuthors.Content = "Version " + fullversion + " by Tony Major,";/// Mike Knierman and Anvesh Kodumuri";
+                lblVersionAuthors.Content = "Version " + fullversion ;
                 App.AssemblyLocation = FindCurrentAssemblyPath.GetAssemblyPath();
                 Items = new ObservableCollection<QuantitationItem>();
                 QuantitationListView.ItemsSource = Items;
@@ -7709,12 +7709,12 @@ namespace MSViewer
 
                 Version version = applicationDeployment.CurrentVersion;
 
-                lblVersionAuthors.Content = string.Format("Version {0}.{1}.{2}.{3} by Tony Major, Mike Knierman and Anvesh Kodumuri", version.Major, version.Minor, version.Build, version.Revision);
+                lblVersionAuthors.Content = string.Format("Version {0}.{1}.{2}.{3} ", version.Major, version.Minor, version.Build, version.Revision);
                 App.AppVersion = version.Major + "." + version.Minor + "." + version.Build + "." + version.Revision;
             }
             else
             {
-                lblVersionAuthors.Content = "by Tony Major, Mike Knierman and Anvesh Kodumuri";
+                lblVersionAuthors.Content = " ";
                 var assembly = Assembly.GetExecutingAssembly();
                 string version = assembly.FullName.Split(',')[1];
                 App.AppVersion = version.Split('=')[1];

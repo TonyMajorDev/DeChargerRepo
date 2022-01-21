@@ -3,22 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" d:DesignWidth="769" Height="601.143">
-    <Grid>
+             mc:Ignorable="d" d:DesignWidth="770" Height="700">
+    <Grid Margin="0,0,0,68">
         <Image HorizontalAlignment="Left" Height="172" Margin="10,4,0,0" Source="/Icons/DeChargerProteinLegend1.png" VerticalAlignment="Top" Width="749"/>
         <Image Height="345" Margin="0,161,9.8,0" Source ="/Icons/DeChargerSpectrumLegend1.png" VerticalAlignment="Top"/>
-        <TextBlock Margin="10,511,150.8,-26.2" Height="116" VerticalAlignment="Top" TextWrapping="Wrap">
-            Acknowledgements for Library and Code Contributions:
-Thermo Fisher for Authorization to use and distribute file reading libraries, 
-Agilent for Authorization to use and distribute file reading libraries, 
-NBug Open Source Project, 
-WPFToolkit Open Source Project, 
-Xceed Avalon Dock Open Source Project,  
-Visifire Chart Open Source Project, 
-NCBI for Blast executables, 
-Newtonsoft JSON library, 
-Ionic Zip library
+        <TextBlock Margin="10,511,10,19" TextWrapping="Wrap" xml:space="preserve">
+            Decharged Viewer Developed originally by Tony Major, Michael Knierman, and Anvesh Kodumuri 
+            Licensed under the Apache License, Version 2.0 (the "License") Copyright 2018 Eli Lilly and Company
+            Acknowledgements for Library and Code Contributions: Thermo Fisher for Authorization to use and distribute file reading libraries, 
+            Agilent for Authorization to use and distribute libraries, NBug Open Source Project, WPFToolkit Open Source Project, Xceed Avalon
+            Dock Open Source Project, Visifire Chart Open Source Project, NCBI for Blast executables, Newtonsoft JSON library, Ionic Zip library
         </TextBlock>
-        <Button x:Name="btnInfoClose" Content="Close" Click="btnInfoClose_Click" Margin="0,0,9.8,21.8" HorizontalAlignment="Right" Width="122" Height="30" VerticalAlignment="Bottom"/>
+        <Button x:Name="btnInfoClose" Content="Close" Click="btnInfoClose_Click" Margin="0,0,29,82" HorizontalAlignment="Right" Width="122" Height="30" VerticalAlignment="Bottom"/>
     </Grid>
 </UserControl>

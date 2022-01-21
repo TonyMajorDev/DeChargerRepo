@@ -156,7 +156,7 @@
                 <!--<Button Content="J" Width="99" Click="Button_Click_1" Height="36" />-->
                 <!--<Image Height="55" HorizontalAlignment="Right" Opacity="1" OpacityMask="White" Source="lilly.png" Stretch="Fill" VerticalAlignment="Top" Width="162" Margin="0,1,2,0" Grid.Column="2" />-->
                 <Label Content="Decharged Mass Spectrum Viewer" FontSize="26" Height="45" HorizontalAlignment="Left" Margin="0,-8,0,0" Name="label4" VerticalAlignment="Top" Width="428" />
-                <Label Height="25" Margin="0,16,240.4,0" Name="lblVersionAuthors" VerticalAlignment="Top" Content="Version 1.0.1234.1234 " FontSize="9" HorizontalAlignment="Right" Width="368" BorderThickness="0" HorizontalContentAlignment="Right" />
+                <Label Height="25" Margin="0,16,240.4,0" Name="lblVersionAuthors" VerticalAlignment="Top" Content=" Version 1.0.1234.1234 " FontSize="9" HorizontalAlignment="Right" Width="368" BorderThickness="0" HorizontalContentAlignment="Right" />
                 <Button Margin="0,13,123,0" ToolTip="Settings..." Background="#00DDDDDD" BorderThickness="0" Command="{Binding ConfigCommand}" Height="30" VerticalAlignment="Top" HorizontalAlignment="Right" HorizontalContentAlignment="Center" Width="31" >
                     <Image Source="Icons/Gear.png" />
                 </Button>

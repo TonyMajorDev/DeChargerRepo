@@ -1031,12 +1031,32 @@ namespace SignalProcessing
 
         private static IIon GenerateAveragine(double mw)
         {
-            float AveragineMW = 111.1254f;
-            float AverageC = 4.9384f;
-            float AverageH = 7.7583f;
-            float AverageN = 1.3577f;
-            float AverageO = 1.4773f;
-            float AverageS = 0.0417f;
+            // for proteins and peptides
+
+            //float AveragineMW = 111.1254f;
+            //float AverageC = 4.9384f;
+            //float AverageH = 7.7583f;
+            //float AverageN = 1.3577f;
+            //float AverageO = 1.4773f;
+            //float AverageS = 0.0417f;
+
+            //var roundNumAveragine = (int)Math.Round(mw / AveragineMW, 0);
+
+            //// Example: C(644) H(1012) N(177) O(193) S(5)
+            //var formula = "C(" + Math.Round(AverageC * roundNumAveragine, 0)
+            //          + ") H(" + Math.Round(AverageH * roundNumAveragine, 0)
+            //          + ") N(" + Math.Round(AverageN * roundNumAveragine, 0)
+            //          + ") O(" + Math.Round(AverageO * roundNumAveragine, 0)
+            //          + ") S(" + Math.Round(AverageS * roundNumAveragine, 0) + ")";
+
+            // for DNA oligos
+
+            float AveragineMW = 305.8335f;
+            float AverageC = 9.75f;
+            float AverageH = 12.30f;
+            float AverageN = 3.75f;
+            float AverageO = 5.90f;
+            float AverageP = 0.95f;
 
             var roundNumAveragine = (int)Math.Round(mw / AveragineMW, 0);
 
@@ -1045,7 +1065,10 @@ namespace SignalProcessing
                       + ") H(" + Math.Round(AverageH * roundNumAveragine, 0)
                       + ") N(" + Math.Round(AverageN * roundNumAveragine, 0)
                       + ") O(" + Math.Round(AverageO * roundNumAveragine, 0)
-                      + ") S(" + Math.Round(AverageS * roundNumAveragine, 0) + ")";
+                      + ") P(" + Math.Round(AverageP * roundNumAveragine, 0) + ")";
+
+
+
 
             return new Ion(formula, -1);
             //return new Molecule(formula);
@@ -1071,6 +1094,8 @@ namespace SignalProcessing
 
         private ConcurrentDictionary<int, double[]> LoadAveragineCache(int maxMass = 60000, int interval = 10)
         {
+           
+            // Mike: Change this to load oligo or Protein Averagine precomputed isotope patterns from files we will inculde
             var appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             var avgCacheFilename = System.IO.Path.Combine(appData, "avgCache.dat");
 

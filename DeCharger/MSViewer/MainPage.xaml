@@ -1581,7 +1581,7 @@
                                                 <Canvas Name="canvas1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="3" Margin="-41,0,-0.489,-0.466" Grid.RowSpan="3">
                                                     <Canvas.Background>
                                                         <RadialGradientBrush Center="0.1, 1.5" GradientOrigin="0.5, 1" RadiusX="1.4" RadiusY="0.84">
-                                                            <GradientStop Color="Red" Offset="0.01" />
+                                                            <GradientStop Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}" Offset="0.01" />
                                                             <GradientStop Color="White" Offset="0.9" />
                                                         </RadialGradientBrush>
                                                     </Canvas.Background>

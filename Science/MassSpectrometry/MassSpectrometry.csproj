@@ -198,6 +198,12 @@
     <Content Include="lib\ThermoLicense.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Files\OligoAveragineCache.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Files\ProteinAveragineCache.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="lib\MassHunterDataAccessAssembly_64bit\bin\BaseDataAccess.dll.config" />
     <None Include="lib\MassHunterDataAccessAssembly_64bit\bin\Contents.xsd">
       <SubType>Designer</SubType>
@@ -232,6 +238,7 @@
       <Name>Science.Chemistry</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

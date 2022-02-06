@@ -1550,7 +1550,7 @@ namespace MSViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool EnabledBYErrors {
             get {
                 return ((bool)(this["EnabledBYErrors"]));
@@ -1634,7 +1634,7 @@ namespace MSViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("HCD, ETD")]
+        [global::System.Configuration.DefaultSettingValueAttribute("HCD")]
         public string ActivationOverride {
             get {
                 return ((string)(this["ActivationOverride"]));
@@ -1653,34 +1653,6 @@ namespace MSViewer.Properties {
             }
             set {
                 this["ConnectionString"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
-            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
-            "tring>20</string>\r\n  <string>5</string>\r\n</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection MatchTolerancePPMBasedonFileType {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["MatchTolerancePPMBasedonFileType"]));
-            }
-            set {
-                this["MatchTolerancePPMBasedonFileType"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
-            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
-            "tring>10</string>\r\n  <string>5</string>\r\n</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection MassTolerancePPMBasedonFileType {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["MassTolerancePPMBasedonFileType"]));
-            }
-            set {
-                this["MassTolerancePPMBasedonFileType"] = value;
             }
         }
         
@@ -1729,6 +1701,46 @@ namespace MSViewer.Properties {
             }
             set {
                 this["ModifiedAminoAcids"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <s" +
+            "tring>20</string>\r\n  <string>5</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection MatchTolerancePPMBasedonFileType {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["MatchTolerancePPMBasedonFileType"]));
+            }
+            set {
+                this["MatchTolerancePPMBasedonFileType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <s" +
+            "tring>10</string>\r\n  <string>5</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection MassTolerancePPMBasedonFileType {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["MassTolerancePPMBasedonFileType"]));
+            }
+            set {
+                this["MassTolerancePPMBasedonFileType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("ProteinAveragineCache.dat;OligoAveragineCache.dat")]
+        public string IsotopeTable {
+            get {
+                return ((string)(this["IsotopeTable"]));
+            }
+            set {
+                this["IsotopeTable"] = value;
             }
         }
     }

@@ -62,6 +62,18 @@ namespace MSViewer
             if (cmbInstrumentType.Items.Count > 0) cmbInstrumentType.SelectedIndex = 0;  //
 
 
+            cmbIsotopeTable.Items.Clear();
+
+            //Populate Instrument List
+            //TODO: Populate this from an Enum maintained in the Mass Spectrometry Library ...  Or maybe leave it like this to allow for user added profiles in the future?
+            foreach (var anIsotopeTable in Properties.Settings.Default.IsotopeTable.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                cmbIsotopeTable.Items.Add(new ComboBoxItem() { Content = anIsotopeTable });
+            }
+
+            if (cmbInstrumentType.Items.Count > 0) cmbInstrumentType.SelectedIndex = 0;  //
+
+
             //switch (MainWindow.MainViewModel.CurrentFileType)
             //{
             //    case Science.Blast.clsFileType.MSFileType.Agilent:

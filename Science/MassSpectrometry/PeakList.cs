@@ -33,6 +33,7 @@ using System.IO;
 using System.Collections.Concurrent;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
+
 //using Newtonsoft.Json;
 
 namespace SignalProcessing
@@ -1096,6 +1097,8 @@ namespace SignalProcessing
         {
            
             // Mike: Change this to load oligo or Protein Averagine precomputed isotope patterns from files we will inculde
+            //string moleculeMode = 
+
             var appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             var avgCacheFilename = System.IO.Path.Combine(appData, "avgCache.dat");
 

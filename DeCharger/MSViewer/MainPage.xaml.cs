@@ -544,9 +544,10 @@ namespace MSViewer
 
                 //CreateSaveCommand();
 
+                //  turn off alpha beta label
                 // append beta to the title
-                if (App.IsBeta) this.Title += " - Beta";
-                if (App.IsAlpha) this.Title += " = Alpha";
+                //if (App.IsBeta) this.Title += " - Beta";
+                //if (App.IsAlpha) this.Title += " = Alpha";
 
                 if (AppDomain.CurrentDomain.SetupInformation.ActivationArguments != null && AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData != null && AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData.Any())
                 {
@@ -7714,7 +7715,7 @@ namespace MSViewer
             }
             else
             {
-                lblVersionAuthors.Content = " ";
+                //lblVersionAuthors.Content = " ";
                 var assembly = Assembly.GetExecutingAssembly();
                 string version = assembly.FullName.Split(',')[1];
                 App.AppVersion = version.Split('=')[1];
@@ -9820,7 +9821,7 @@ namespace MSViewer
                 //ConsolidatedMonomasses();
                 //ReverseConsolidatedMonomasses();
                 //monosfound = false;
-                //SetScaling();
+                SetScaling();
 
             }
             catch (Exception ex)
@@ -10049,27 +10050,29 @@ namespace MSViewer
                 MonoMassSeries.DataContext = CurrentMonoMasses;
             }));
 
-            Dispatcher.Invoke((Action)(() =>
-            {
-                if (CurrentSpectrum.Any())
-                {
-                    double min = 0;
-                    double max = sequencetagmass = CurrentSpectrum.ParentIon != null ? CurrentSpectrum.ParentIon.MonoMass : CurrentSpectrum.MaxBy(p => p.Mass).Mass;
+            //  MDK: disabled x axis reset when labeling mono peaks
 
-                    if (max <= CurrentSpectrum.ParentMass)
-                        max = CurrentSpectrum.ParentMass.Value;
+            //Dispatcher.Invoke((Action)(() =>
+            //{
+            //    if (CurrentSpectrum.Any())
+            //    {
+            //        double min = 0;
+            //        double max = sequencetagmass = CurrentSpectrum.ParentIon != null ? CurrentSpectrum.ParentIon.MonoMass : CurrentSpectrum.MaxBy(p => p.Mass).Mass;
 
-                    min = min - (max - min) * 0.035;  // This gives us a buffer on the ends of the X axis
-                    max = max + (max - min) * 0.035;  // This gives us a buffer on the ends of the X axis
+            //        if (max <= CurrentSpectrum.ParentMass)
+            //            max = CurrentSpectrum.ParentMass.Value;
 
-                    BottomChart.AxesX[0].AxisMinimum = min;
-                    BottomChart.AxesX[0].AxisMaximum = max;
+            //        min = min - (max - min) * 0.035;  // This gives us a buffer on the ends of the X axis
+            //        max = max + (max - min) * 0.035;  // This gives us a buffer on the ends of the X axis
 
-                    var theAxis = BottomChart.AxesX[0];
+            //        BottomChart.AxesX[0].AxisMinimum = min;
+            //        BottomChart.AxesX[0].AxisMaximum = max;
 
-                    zoom(theAxis, min, max);
-                }
-            }));
+            //        var theAxis = BottomChart.AxesX[0];
+
+            //        zoom(theAxis, min, max);
+            //    }
+            //}));
 
             btnFindSequenceinSpectrum.IsOpen = false;
         }

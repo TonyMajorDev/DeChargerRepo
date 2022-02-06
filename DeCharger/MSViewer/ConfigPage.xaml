@@ -25,6 +25,8 @@
             <RowDefinition Height="Auto" MinHeight="47" />
         </Grid.RowDefinitions>
 
+        <GroupBox Header="Instrument Specific Settings" HorizontalAlignment="Left" Margin="11,8,0,0" VerticalAlignment="Top" Height="172" Width="383"/>
+
         <Button x:Name="CancelButton" Content="Close" Click="CancelButton_Click" Width="100" HorizontalAlignment="Right" Margin="0,8.4,9.6,11.8" IsCancel="True" Grid.Row="1" />
         <Button x:Name="OKButton" Content="OK" Click="OKButton_Click" Width="100" HorizontalAlignment="Right" Margin="0,8.4,118.6,11.8" Grid.Row="1" IsDefault="True" />
         <!--<CheckBox Content="Show Binned Labels in Spectrum View (Experimental)" Margin="19,33,32,164" Name="chkBinnedLabels" />
@@ -32,28 +34,24 @@
         <CheckBox Content="Show Peak Labels in Spectrum View" Height="25" HorizontalAlignment="Left" Margin="19,56,0,0" Name="chkLabels" VerticalAlignment="Top" Width="327" />
         <CheckBox Content="Show Mass value Tooltips in spectrum" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=ShowMassTips, Mode=TwoWay}" Height="24" HorizontalAlignment="Left" Margin="19,79,0,0" Name="chkShowMassTips" VerticalAlignment="Top" Width="327" />-->
 
-        <CheckBox IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=ShowOnlyFTMS, Mode=TwoWay}" Content="Show Only FTMS" Height="16" Name="chkOnlyFTMS" Margin="23,231,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="387" Grid.ColumnSpan="2"  />
+        <CheckBox IsChecked="{Binding ShowOnlyFTMS, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Content="Show Only FTMS" Height="16" x:Name="chkOnlyFTMS" Margin="23,231,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="387" Grid.ColumnSpan="2"  />
 
-        <Label Height="28" HorizontalAlignment="Left" Margin="16,202,0,0" Name="label1" VerticalAlignment="Top" Width="153" Content="Minimum Peak Intensity: " />
-        <Label Height="28" HorizontalAlignment="Left" Margin="199,202,0,0" Name="label2" VerticalAlignment="Top" Width="123" Content="(Larger can be faster)" />
-        <TextBox Text="{Binding Source={x:Static p:Settings.Default}, Path=MinPeak, Mode=TwoWay}" ToolTipService.ToolTip="Number of pixels per peak (higher number yields better performance on noisy data)" Height="18" HorizontalAlignment="Left" Margin="158,206,0,0" Name="minPeak" VerticalAlignment="Top" Width="36" />
-        <!--<CheckBox IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=JumpToXIC, Mode=TwoWay}"  Content="Jump To XIC tab when a New XIC is computed" HorizontalAlignment="Left" Margin="23,61,0,0" VerticalAlignment="Top"/>-->
+        <Label Height="28" HorizontalAlignment="Left" Margin="16,202,0,0" x:Name="label1" VerticalAlignment="Top" Width="153" Content="Minimum Peak Intensity: " />
+        <Label Height="28" HorizontalAlignment="Left" Margin="199,202,0,0" x:Name="label2" VerticalAlignment="Top" Width="123" Content="(Larger can be faster)" />
+        <TextBox Text="{Binding MinPeak, Mode=TwoWay, Source={x:Static p:Settings.Default}}" ToolTipService.ToolTip="Number of pixels per peak (higher number yields better performance on noisy data)" Height="18" HorizontalAlignment="Left" Margin="158,206,0,0" x:Name="minPeak" VerticalAlignment="Top" Width="36" />
         <!--<CheckBox Content="Show Thermo Data" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=ShowThermo, Mode=TwoWay}" x:Name="ThermoData" HorizontalAlignment="Left" Margin="23,274,0,0" VerticalAlignment="Top"/>-->
-        <CheckBox Content="Use BLASTp for Protein Searches (as opposed to exact match)" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=UseBlast, Mode=TwoWay}" HorizontalAlignment="Left" Margin="23,272,0,0" VerticalAlignment="Top"/>
-        <TextBox  HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding Source={x:Static p:Settings.Default}, Path=SequenceTagLength, Mode=TwoWay}" VerticalAlignment="Top" Width="36" Margin="635,14,0,0">
+        <CheckBox Content="Use BLASTp for Protein Searches (as opposed to exact match)" IsChecked="{Binding UseBlast, Mode=TwoWay, Source={x:Static p:Settings.Default}}" HorizontalAlignment="Left" Margin="23,272,0,0" VerticalAlignment="Top"/>
+        <TextBox  HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding SequenceTagLength, Mode=TwoWay, Source={x:Static p:Settings.Default}}" VerticalAlignment="Top" Width="36" Margin="635,14,0,0">
             <TextBox.ToolTip>
-                <ToolTip  Style="{StaticResource TT}">
-                    This is the minimum number of contiguous amino acids to be considered a sequence tag.  4 is a good number for complete databases of multiple species.  Smaller, species-specific protein databases might be able to use 3.
-                </ToolTip>
+                <ToolTip  Style="{StaticResource TT}" Content="This is the minimum number of contiguous amino acids to be considered a sequence tag. 4 is a good number for complete databases of multiple species. Smaller, species-specific protein databases might be able to use 3."/>
             </TextBox.ToolTip>
         </TextBox>
         <Label Content="Sort sequences by" HorizontalAlignment="Left" Margin="437,102,0,0" VerticalAlignment="Top" Width="119"/>
-        <!--IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=SortByDBHits, Mode=TwoWay}"-->
         <!--IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=SortByScore, Mode=TwoWay}"-->
         <RadioButton GroupName="SortSequence" Content="DB Hits" HorizontalAlignment="Left" x:Name="rdbtnSortbyDBHits" Margin="612,108,0,0" VerticalAlignment="Top"/>
         <RadioButton GroupName="SortSequence" Content="Score" HorizontalAlignment="Left" x:Name="rdbtnSortbyScore" Margin="688,108,0,0" VerticalAlignment="Top"/>
         <!--<CheckBox Content="Sequence Detection Mode" HorizontalAlignment="Left" x:Name="chkSequenceDetectionMode" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=SequenceDetectionMode, Mode=TwoWay}" Margin="23,184,0,0" VerticalAlignment="Top" Width="161"/>-->
-        <CheckBox IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=JumpToXIC, Mode=TwoWay}"  Content="Jump To XIC tab when a New XIC is computed" HorizontalAlignment="Left" Margin="23,253,0,0" VerticalAlignment="Top" Height="16" Width="262"/>
+        <CheckBox IsChecked="{Binding JumpToXIC, Mode=TwoWay, Source={x:Static p:Settings.Default}}"  Content="Jump To XIC tab when a New XIC is computed" HorizontalAlignment="Left" Margin="23,253,0,0" VerticalAlignment="Top" Height="16" Width="262"/>
         <!--<CheckBox Content="Show Thermo Data" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=ShowThermo, Mode=TwoWay}" x:Name="ThermoData" HorizontalAlignment="Left" Margin="23,82,0,0" VerticalAlignment="Top" Height="16" Width="118"/>-->
 
 
@@ -72,7 +70,7 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <CheckBox x:Name="chkSearchAllSpecies" Content="Search All Species" HorizontalAlignment="Left" Margin="17,10,0,0" VerticalAlignment="Top" Width="193" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=SearchAllSpecies, Mode=TwoWay}" Checked="chkSearchAllSpecies_CheckChange" Unchecked="chkSearchAllSpecies_CheckChange" Grid.ColumnSpan="4"/>
+                <CheckBox x:Name="chkSearchAllSpecies" Content="Search All Species" HorizontalAlignment="Left" Margin="17,10,0,0" VerticalAlignment="Top" Width="193" IsChecked="{Binding SearchAllSpecies, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Checked="chkSearchAllSpecies_CheckChange" Unchecked="chkSearchAllSpecies_CheckChange" Grid.ColumnSpan="4"/>
             </Grid>
         </GroupBox>
 
@@ -89,7 +87,7 @@
         </ComboBox>
 
         <Label Content="PPM" HorizontalAlignment="Left" Margin="254,64,0,0" VerticalAlignment="Top" Width="34" Height="23"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="219,67,0,0" TextWrapping="Wrap" Text="{Binding MassTolerancePPM, Source={x:Static p:Settings.Default}, Mode=TwoWay}" x:Name="txtMassTolerance" VerticalAlignment="Top" Width="36"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="219,67,0,0" TextWrapping="Wrap" Text="{Binding MassTolerancePPM, Mode=TwoWay, Source={x:Static p:Settings.Default}}" x:Name="txtMassTolerance" VerticalAlignment="Top" Width="36"/>
         <!--Path=MassTolerancePPM, -->
         <Label Content="Mass Tolerance for Ion Detection:" HorizontalAlignment="Left" Margin="23,64,0,0" VerticalAlignment="Top" Width="191" Height="26"/>
         <TextBox Height="23" HorizontalAlignment="Left" Margin="220,120,0,0" x:Name="txtMinThresholdMS1" Text="{Binding MinThresholdMS1, Mode=TwoWay, Source={x:Static p:Settings.Default}}" VerticalAlignment="Top" Width="35" />
@@ -111,14 +109,12 @@
                 Thermo Orbi
             </ComboBoxItem>
         </ComboBox>-->
-        <Label HorizontalAlignment="Left" Margin="24,34,0,0" Content="Instrument Type" VerticalAlignment="Top" Height="30" Width="95">
-        </Label>
-        <GroupBox Header="Instrument Specific Settings" HorizontalAlignment="Left" Margin="11,8,0,0" VerticalAlignment="Top" Height="172" Width="383"/>
+        <Label HorizontalAlignment="Left" Margin="24,34,0,0" Content="Instrument Type" VerticalAlignment="Top" Height="30" Width="95"/>
         <Label Content="Error Plot Units:" HorizontalAlignment="Left" Margin="437,128,0,0" VerticalAlignment="Top" Width="122"/>
         <RadioButton Content="PPM" x:Name="rdbtnErrorPlotPPM" HorizontalAlignment="Left" Margin="613,133,0,0" VerticalAlignment="Top" GroupName="rdbtnerrpltgrp"/>
         <RadioButton Content="Daltons (AMU)" x:Name="rdbtnErrorPlotAMU" HorizontalAlignment="Left" Margin="689,133,0,0" VerticalAlignment="Top" GroupName="rdbtnerrpltgrp"/>
         <Label Content="Fragment Ion Tolerance" HorizontalAlignment="Left" Margin="437,73,0,0" VerticalAlignment="Top" Width="145"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="635,75,0,0" TextWrapping="Wrap" Text="{Binding Source={x:Static p:Settings.Default}, Path=FragementIonTolerance, Mode=TwoWay}" VerticalAlignment="Top" Width="36"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="635,75,0,0" TextWrapping="Wrap" Text="{Binding FragementIonTolerance, Mode=TwoWay, Source={x:Static p:Settings.Default}}" VerticalAlignment="Top" Width="36"/>
         <!--<Label Content="Merged Spectra Only" HorizontalAlignment="Left" Margin="444,155,0,0" VerticalAlignment="Top"/>-->
         <Label Content="PPM" HorizontalAlignment="Left" Margin="673,73,0,0" VerticalAlignment="Top"/>
         <CheckBox Content="Verbose Logging Enabled" ToolTip="Log method calls and other events to the Windows Application Event log. " IsChecked="{Binding DebugLoggingEnabled, Mode=TwoWay, Source={x:Static p:Settings.Default}}" HorizontalAlignment="Left" Margin="23,357,0,0" VerticalAlignment="Top"/>
@@ -126,9 +122,11 @@
         <CheckBox Content="Native Spectral Averaging" ToolTip="When Averaging spectra, use the native API (when available) to do the averaging.  " IsChecked="{Binding NativeAveragingEnabled, Mode=TwoWay, Source={x:Static p:Settings.Default}}" HorizontalAlignment="Left" Margin="23,396,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.45,0.467"/>
         <CheckBox Content="Use Product ion scan for Precursor Mass detection" ToolTip="Use unfragmented Precursor in Product scan to determine Precursor Mass.  " IsChecked="{Binding PrecursorFromProductEnabled, Mode=TwoWay, Source={x:Static p:Settings.Default}}" HorizontalAlignment="Left" Margin="23,416,0,0" VerticalAlignment="Top"/>
         <Label Height="28" HorizontalAlignment="Left" Margin="23,431,0,0" x:Name="label2_Copy" VerticalAlignment="Top" Width="123" Content="Activation Override:" Grid.RowSpan="2" />
-        <TextBox Text="{Binding Path=ConnectionString, Mode=TwoWay, Source={x:Static p:Settings.Default}}" ToolTipService.ToolTip="Enter the connection string of the SQL Server based Protein Database, if available.  Restart DeCharger for changes to take effect. " Height="18" Margin="471,179,9.6,0" VerticalAlignment="Top" />
+        <TextBox Text="{Binding ConnectionString, Mode=TwoWay, Source={x:Static p:Settings.Default}}" ToolTipService.ToolTip="Enter the connection string of the SQL Server based Protein Database, if available.  Restart DeCharger for changes to take effect. " Height="18" Margin="471,179,9.6,0" VerticalAlignment="Top" />
         <Label Content="Centralized Protein Database:" HorizontalAlignment="Left" Margin="437,154,0,0" VerticalAlignment="Top" Width="199"/>
         <TextBox Text="{Binding ActivationOverride, Mode=TwoWay, Source={x:Static p:Settings.Default}}" ToolTipService.ToolTip="Enter CID or ETD or HCD or whatever activation you want.  That will replace the activation supplied with the spectra.  Leave blank to use the supplied activation. " Height="18" HorizontalAlignment="Left" Margin="138,436,0,0" VerticalAlignment="Top" Width="62" Grid.RowSpan="2" />
+        <ComboBox x:Name="cmbIsotopeTable" HorizontalAlignment="Left" Margin="178,467,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Width="232"/>
+        <Label Content="Chose Molecule Type:" HorizontalAlignment="Left" Height="25" Margin="34,464,0,0" Grid.RowSpan="2" VerticalAlignment="Top" Width="132"/>
 
 
         <!--<CheckBox Content="Has Known Mods" HorizontalAlignment="Left" Margin="23,363,0,0" IsChecked="{Binding HaveKnownMods, Mode=TwoWay, Source={x:Static p:Settings.Default}}" x:Name="rdbtnKnownMods" VerticalAlignment="Top" Height="17" Width="221"/>-->

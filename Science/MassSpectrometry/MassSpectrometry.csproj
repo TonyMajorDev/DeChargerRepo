@@ -177,6 +177,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RawProvider64.cs" />
     <Compile Include="RMSProvider.cs" />
+    <Compile Include="Settings1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings1.settings</DependentUpon>
+    </Compile>
     <Compile Include="SignalProcessor.cs" />
     <Compile Include="Spectrum.cs" />
     <Compile Include="SpectrumInfo.cs" />
@@ -204,6 +209,7 @@
     <Content Include="Files\ProteinAveragineCache.dat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="app.config" />
     <None Include="lib\MassHunterDataAccessAssembly_64bit\bin\BaseDataAccess.dll.config" />
     <None Include="lib\MassHunterDataAccessAssembly_64bit\bin\Contents.xsd">
       <SubType>Designer</SubType>
@@ -231,6 +237,10 @@
     <None Include="lib\MassHunterDataAccessAssembly_64bit\License.rtf" />
     <None Include="NeighborIsotopeIntensityDelta.xlsx" />
     <None Include="packages.config" />
+    <None Include="Settings1.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings1.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Science.Chemistry\Science.Chemistry.csproj">

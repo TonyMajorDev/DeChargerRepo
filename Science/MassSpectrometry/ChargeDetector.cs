@@ -799,8 +799,11 @@ public class ChargeDetector
         var mzMax = massRangeMax == double.MaxValue ? double.MaxValue : massRangeMax.ToMZ(state);  // the MaxValue check is to prevent an overflow when calculating the Mass
 
         // Reverse for loop (forr + tab)
-        //for (int i = intensityList.Count - 1; i >= 0; --i)
-        for (int i = intensityList.Count - 1; i >= (int)(intensityList.Count * 0.2); --i)  // take only top 80% most intense peaks -- arbitrary
+        // Take all peaks
+        for (int i = intensityList.Count - 1; i >= 0; --i)
+        // Take top 80% peaks
+        //for (int i = intensityList.Count - 1; i >= (int)(intensityList.Count * 0.2); --i)  // take only top 80% most intense peaks -- arbitrary
+        
         {
             double aroundMZ = intensityList[intensityList.Keys[i]];
 
@@ -909,21 +912,42 @@ public static class MassSpec
 
     internal static Ion GenerateAveragine(double mw)
     {
-        float AveragineMW = 111.1254f;
-        float AverageC = 4.9384f;
-        float AverageH = 7.7583f;
-        float AverageN = 1.3577f;
-        float AverageO = 1.4773f;
-        float AverageS = 0.0417f;
+        //For Proteins and Peptides
+
+        //float AveragineMW = 111.1254f;
+        //float AverageC = 4.9384f;
+        //float AverageH = 7.7583f;
+        //float AverageN = 1.3577f;
+        //float AverageO = 1.4773f;
+        //float AverageS = 0.0417f;
+
+        //var roundNumAveragine = (int)Math.Round(mw / AveragineMW, 0);
+
+        //// Example: C(644) H(1012) N(177) O(193) S(5)
+        //var formula = "C(" + Math.Round(AverageC * roundNumAveragine, 0)
+        //          + ") H(" + Math.Round(AverageH * roundNumAveragine, 0)
+        //          + ") N(" + Math.Round(AverageN * roundNumAveragine, 0)
+        //          + ") O(" + Math.Round(AverageO * roundNumAveragine, 0)
+        //          + ") S(" + Math.Round(AverageS * roundNumAveragine, 0) + ")";
+
+        // for DNA oligos
+
+        float AveragineMW = 305.8335f;
+        float AverageC = 9.75f;
+        float AverageH = 12.30f;
+        float AverageN = 3.75f;
+        float AverageO = 5.90f;
+        float AverageP = 0.95f;
 
         var roundNumAveragine = (int)Math.Round(mw / AveragineMW, 0);
 
-        // Example: C(644) H(1012) N(177) O(193) S(5)
         var formula = "C(" + Math.Round(AverageC * roundNumAveragine, 0)
                   + ") H(" + Math.Round(AverageH * roundNumAveragine, 0)
                   + ") N(" + Math.Round(AverageN * roundNumAveragine, 0)
                   + ") O(" + Math.Round(AverageO * roundNumAveragine, 0)
-                  + ") S(" + Math.Round(AverageS * roundNumAveragine, 0) + ")";
+                  + ") P(" + Math.Round(AverageP * roundNumAveragine, 0) + ")";
+
+
 
         return new Ion(formula, -1);
     }

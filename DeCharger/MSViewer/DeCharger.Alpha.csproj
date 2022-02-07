@@ -314,6 +314,8 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="DeCharger.Alpha_TemporaryKey.pfx" />
+    <None Include="Files\OligoAveragineCache.dat" />
+    <None Include="Files\ProteinAveragineCache.dat" />
     <None Include="Properties\app.manifest" />
     <Resource Include="Gear.png" />
     <Content Include="..\..\Science\Science.Blast\Executables\advapi32.dll">
@@ -347,6 +349,8 @@
     <Compile Include="CurrentFiles\TextFile1.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
+    <Resource Include="Files\DNA_mass_list.txt" />
+    <Resource Include="Files\RNA_mass_list.txt" />
     <Content Include="Icons\File.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -150,6 +150,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AveragineCacheSettings.cs" />
     <Compile Include="BaseMSProvider.cs" />
     <Compile Include="ChargeDetector.cs" />
     <Compile Include="Chromatogram.cs" />

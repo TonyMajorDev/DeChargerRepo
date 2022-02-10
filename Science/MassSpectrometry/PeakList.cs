@@ -1,3 +1,7 @@
+//
+// Copyright (c) Andy Wright Ltd 2022, All rights reserved
+// Please see the license file accompanying this software for acceptable use
+//
 //-----------------------------------------------------------------------
 // Copyright 2018 Eli Lilly and Company
 //
@@ -38,28 +42,29 @@ using System.Threading.Tasks;
 
 namespace SignalProcessing
 {
-
     public class PeakList : List<ClusterPeak>
     {
         // Default sort order is by mass
-        public PeakList() { }
+        public PeakList()
+        { }
 
-        public PeakList(IEnumerable<ClusterPeak> peaks) : base(peaks) { }
+        public PeakList(IEnumerable<ClusterPeak> peaks) : base(peaks)
+        {
+        }
 
         public bool IsSortedByMass { get; private set; }
 
         public bool IsSortedByMZ { get; private set; }
 
+        //public SortedList<double, float> as
 
-        //public SortedList<double, float> as 
-
-        // User-defined conversion from Digit to double 
+        // User-defined conversion from Digit to double
         public static implicit operator SortedList<double, float>(PeakList input)
         {
             return new SortedList<double, float>(input.ToDictionary(k => k.MZ, v => v.Intensity));
         }
 
-        //  User-defined conversion from double to Digit 
+        //  User-defined conversion from double to Digit
         //public static implicit operator Digit(double d)
         //{
         //    return new Digit(d);
@@ -71,8 +76,6 @@ namespace SignalProcessing
             IsSortedByMass = false;
             IsSortedByMZ = false;
         }
-
-
 
         public void SortByMass()
         {
@@ -91,8 +94,6 @@ namespace SignalProcessing
             IsSortedByMass = false;
             IsSortedByMZ = true;
         }
-
-
 
         public ClusterPeak GetItemWithMaxYValueForXRange(double start, double end, bool useHybrid = false)
         {
@@ -133,8 +134,6 @@ namespace SignalProcessing
         {
             return this.Range(startMass, endMass, true);
         }
-
-
 
         /// <summary>
         /// Get the range of elements between the start and end specified
@@ -180,7 +179,6 @@ namespace SignalProcessing
 
         private IEnumerable<ClusterPeak> MZRange(double startkey, double endkey, bool includeEnds)
         {
-
             var startIndex = this.BinarySearch(new ClusterPeak() { MZ = Math.Min(startkey, endkey) }, ClusterPeak.sortByMassToCharge());
             var endIndex = this.BinarySearch(new ClusterPeak() { MZ = Math.Max(startkey, endkey) }, ClusterPeak.sortByMassToCharge());
 
@@ -218,7 +216,6 @@ namespace SignalProcessing
 
             return null;
         }
-
 
         private IEnumerable<ClusterPeak> MZRange(double startkey, double endkey, int numBins, float valueMin = 0)
         {
@@ -282,7 +279,6 @@ namespace SignalProcessing
             return result;
         }
 
-
         //public IEnumerable<ClusterPeak> Range(double startkey, double endkey, bool includeEnds)
         //{
         //    //using the Binary Search, find the closest value and use that!
@@ -310,7 +306,7 @@ namespace SignalProcessing
         //}
 
         /// <summary>
-        /// Find the closest X value to the target passed in using a binary search.  
+        /// Find the closest X value to the target passed in using a binary search.
         /// </summary>
         /// <param name="target">Target X Value</param>
         /// <returns>Closest X Value</returns>
@@ -328,9 +324,8 @@ namespace SignalProcessing
             return null;
         }
 
-
         /// <summary>
-        /// Find the closest X value to the target passed in using a binary search.  
+        /// Find the closest X value to the target passed in using a binary search.
         /// </summary>
         /// <param name="target">Target X Value</param>
         /// <returns>Closest X Value</returns>
@@ -361,7 +356,7 @@ namespace SignalProcessing
         }
 
         /// <summary>
-        /// Find the closest X value to the target passed in using a binary search.  
+        /// Find the closest X value to the target passed in using a binary search.
         /// </summary>
         /// <param name="target">Target X Value</param>
         /// <returns>Closest X Value</returns>
@@ -390,25 +385,16 @@ namespace SignalProcessing
             else
                 return null;
         }
-
-
-
-
-
-
-
     }
-
-
-
 
     public class ListOfClusterPeak : List<ClusterPeak>, IXmlSerializable
     {
-        public ListOfClusterPeak() : base() { }
+        public ListOfClusterPeak() : base()
+        {
+        }
 
         public ListOfClusterPeak(IEnumerable<ClusterPeak> peaks) : base(peaks)
         { }
-
 
         public XmlSchema GetSchema()
         {
@@ -419,13 +405,9 @@ namespace SignalProcessing
         {
             //reader.ReadContentAsBase64()
 
-
-
             //if (reader.MoveToContent() == XmlNodeType.Element && reader.LocalName == "ListOfClusterPeak")
             {
                 byte[] buffer = new byte[19];
-
-
 
                 //_name = reader["Name"];
                 //_enabled = Boolean.Parse(reader["Enabled"]);
@@ -433,7 +415,6 @@ namespace SignalProcessing
 
                 //  if (reader.ReadToDescendant("Peaks"))
                 {
-
                     //while (reader.MoveToContent() == XmlNodeType.Element && reader.LocalName == "ClusterPeak")
 
                     //TODO: read all the peak array binary data at once and loop through to read all the peaks
@@ -462,12 +443,10 @@ namespace SignalProcessing
 
         public void WriteXml(XmlWriter writer)
         {
-
             foreach (var aPeak in this)
             {
                 writer.WriteBase64(aPeak.ToBytes(), 0, 19);
             }
-
 
             //writer.WriteAttributeString("Name", _name);
             //writer.WriteAttributeString("Enabled", _enabled.ToString());
@@ -485,9 +464,9 @@ namespace SignalProcessing
     [Serializable]
     public class ClusterPeak : IComparable<ClusterPeak>
     {
-        Cluster _parent;
+        private Cluster _parent;
 
-        // Based on: http://support.microsoft.com/kb/320727        
+        // Based on: http://support.microsoft.com/kb/320727
         //[NonSerialized]
         [XmlIgnore]
         public Cluster Parent
@@ -504,21 +483,22 @@ namespace SignalProcessing
 
         public int Index;
 
-        double _mass = -1;
+        private double _mass = -1;
+
         public double Mass
         {
             get
             {
                 if (_mass == -1 && _mz > -1 && this.Z > -1)
-                { 
+                {
                     if (SignalProcessor.IonPolarity == Agilent.MassSpectrometry.DataAnalysis.IonPolarity.Negative)
-                    { 
+                    {
                         _mass = (_mz * _z) + (_z * SignalProcessor.ProtonMass);
                     }
                     else
-	                {
+                    {
                         _mass = (_mz * _z) - (_z * SignalProcessor.ProtonMass);
-	                }
+                    }
                 }
                 return _mass;
             }
@@ -530,6 +510,7 @@ namespace SignalProcessing
         }
 
         private double _mz = -1;
+
         public double MZ
         {
             get
@@ -539,7 +520,7 @@ namespace SignalProcessing
                     if (_z > -1)
                     {
                         if (SignalProcessor.IonPolarity == Agilent.MassSpectrometry.DataAnalysis.IonPolarity.Negative)
-                        { 
+                        {
                             _mz = (_mass - (_z * SignalProcessor.ProtonMass)) / _z;
                         }
                         else
@@ -550,15 +531,14 @@ namespace SignalProcessing
                     else
                     {
                         if (SignalProcessor.IonPolarity == Agilent.MassSpectrometry.DataAnalysis.IonPolarity.Negative)
-                        { 
+                        {
                             _mz = (_mass - (Z * SignalProcessor.ProtonMass)) / Z;
                         }
                         else
-	                    {
+                        {
                             _mz = (_mass + (Z * SignalProcessor.ProtonMass)) / Z;
-	                    }
+                        }
                     }
-                        
                 }
 
                 return _mz;
@@ -571,6 +551,7 @@ namespace SignalProcessing
         }
 
         private double _z = -1;
+
         public int Z
         {
             get
@@ -609,7 +590,7 @@ namespace SignalProcessing
                 if (IsCorePeak) return Intensity;
                 if (MZ < Parent.MonoMZ) return 0;
                 if (IsoIndex >= Parent.IsoPattern.Count()) return 0;
-                return Math.Min(Intensity, (float)Parent.IsoPattern[IsoIndex] * Parent.IsoScale);  // use a calculated Intensity value for peaks that are more intense than expected.  
+                return Math.Min(Intensity, (float)Parent.IsoPattern[IsoIndex] * Parent.IsoScale);  // use a calculated Intensity value for peaks that are more intense than expected.
             }
         }
 
@@ -617,14 +598,14 @@ namespace SignalProcessing
         {
             /// Format:
             /// Each ClusterPeak contains:
-            /// byte 0   - Index as byte (0-255) 
+            /// byte 0   - Index as byte (0-255)
             /// byte 1-4 - Delta as single precision float
             /// byte 5-12 - Mass as double precision double
             /// MZ is skipped (calculated by ClusterPeak Class from Mass and Z
             /// byte 13 - Charge Z as sbyte (-128 - 128) (set to 0 if null)
             /// byte 14-17 - Intensity as single precision float
             /// byte 18 - IsCorePeak as byte (true/false)
-            /// 
+            ///
 
             var result = new List<byte>(19);
 
@@ -642,14 +623,14 @@ namespace SignalProcessing
         {
             /// Format:
             /// Each ClusterPeak contains:
-            /// byte 0   - Index as byte (0-255) 
+            /// byte 0   - Index as byte (0-255)
             /// byte 1-4 - Delta as single precision float
             /// byte 5-12 - Mass as double precision double
             /// MZ is skipped (calculated by ClusterPeak Class from Mass and Z
             /// byte 13 - Charge Z as sbyte (-128 - 128) (set to 0 if null)
             /// byte 14-17 - Intensity as single precision float
             /// byte 18 - IsCorePeak as byte (true/false)
-            /// 
+            ///
 
             this.Index = unchecked((byte)buffer[0]);
             this.Delta = BitConverter.ToSingle(buffer, 1);
@@ -659,20 +640,20 @@ namespace SignalProcessing
             this.IsCorePeak = buffer[18] != 0;
         }
 
-
         public float Intensity { get; set; }
+
         public string Description
         {
             get
             {
                 //return string.Empty;
 
-                //return "Mass = " + this.Mass.ToString("0.0000") + "\nMZ = " + MZ.ToString("0.0000") + " *" + this.Z.ToString() + "\nCorePeak? " + (IsCorePeak ? "Yes" : "No") + "\nIsMono? " + (IsMonoisotopic ? "Yes" : "No");  // + "\nDelta? " + ((this.Delta < 0.001) ? "0" : ((this.Delta > 1) ? ">1" : this.Delta.ToString("0.000"))); 
+                //return "Mass = " + this.Mass.ToString("0.0000") + "\nMZ = " + MZ.ToString("0.0000") + " *" + this.Z.ToString() + "\nCorePeak? " + (IsCorePeak ? "Yes" : "No") + "\nIsMono? " + (IsMonoisotopic ? "Yes" : "No");  // + "\nDelta? " + ((this.Delta < 0.001) ? "0" : ((this.Delta > 1) ? ">1" : this.Delta.ToString("0.000")));
                 return "Mass = " + this.Mass.ToString("0.0000") + "\nMZ = " + MZ.ToString("0.0000") + " *" + this.Z.ToString() + "\nCorePeak? " + (IsCorePeak ? "Yes" : "No") + "\nIntensity? " + this.Intensity + "\nIsMono? " + (IsMonoisotopic ? "Yes" : "No") + (this.Parent != null ? ("\nScore = " + this.Parent.Score.ToString("0")) : "") +
                         ((this.Parent != null && this.Parent.ConsolidatedCharges != null && this.Parent.ConsolidatedCharges.Distinct().Count() > 1) ? ("\nAll Z=" + string.Join(",", this.Parent.ConsolidatedCharges.Distinct().OrderBy(p => p))) : "");
 
                 //return "Mass = " + this.Mass.ToString("0.0000") + "\nMZ = " + MZ.ToString("0.0000") + " *" + this.Z.ToString() + "\nCorePeak? " + (IsCorePeak ? "Yes" : "No") + "\nHyIntensity? " + this.HybridIntensity + "\nIntensity? " + this.Intensity + "\nIsMono? " + (IsMonoisotopic ? "Yes" : "No") + (this.Parent != null ? ("\nScore = " + this.Parent.Score.ToString("0")) : "") +
-                //        ((this.Parent != null && this.Parent.ConsolidatedCharges != null && this.Parent.ConsolidatedCharges.Distinct().Count() > 1) ? ("\nAll Z=" + string.Join(",", this.Parent.ConsolidatedCharges.Distinct().OrderBy(p => p))) : "");            
+                //        ((this.Parent != null && this.Parent.ConsolidatedCharges != null && this.Parent.ConsolidatedCharges.Distinct().Count() > 1) ? ("\nAll Z=" + string.Join(",", this.Parent.ConsolidatedCharges.Distinct().OrderBy(p => p))) : "");
             }
         }
 
@@ -682,7 +663,7 @@ namespace SignalProcessing
             {
                 //return string.Empty;
 
-                //return "Mass = " + this.Mass.ToString("0.0000") + "\nMZ = " + MZ.ToString("0.0000") + " *" + this.Z.ToString() + "\nCorePeak? " + (IsCorePeak ? "Yes" : "No") + "\nIsMono? " + (IsMonoisotopic ? "Yes" : "No");  // + "\nDelta? " + ((this.Delta < 0.001) ? "0" : ((this.Delta > 1) ? ">1" : this.Delta.ToString("0.000"))); 
+                //return "Mass = " + this.Mass.ToString("0.0000") + "\nMZ = " + MZ.ToString("0.0000") + " *" + this.Z.ToString() + "\nCorePeak? " + (IsCorePeak ? "Yes" : "No") + "\nIsMono? " + (IsMonoisotopic ? "Yes" : "No");  // + "\nDelta? " + ((this.Delta < 0.001) ? "0" : ((this.Delta > 1) ? ">1" : this.Delta.ToString("0.000")));
                 return "Mass = " + this.Mass.ToString("0.0000") + "\nMZ = " + MZ.ToString("0.0000") + " *" + this.Z.ToString() + "\nIntensity? " + this.Intensity + "\nIsMono? " + (IsMonoisotopic ? "Yes" : "No") +
                         ((this.Parent != null && this.Parent.ConsolidatedCharges != null && this.Parent.ConsolidatedCharges.Distinct().Count() > 1) ? ("\nAll Z=" + string.Join(",", this.Parent.ConsolidatedCharges.Distinct().OrderBy(p => p))) : "");
             }
@@ -704,13 +685,11 @@ namespace SignalProcessing
         //private bool? _isCorePeak = null;
         public bool IsCorePeak
         {
-
-
             //get
             //{
             //    if (!_isCorePeak.HasValue)
             //    {
-            //        // Find CorePeaks - peaks close to the apex of the predicted pattern and have actual intensity of at least 30% of max intensity predicted                    
+            //        // Find CorePeaks - peaks close to the apex of the predicted pattern and have actual intensity of at least 30% of max intensity predicted
             //        if (this.Parent != null && this.Parent.IsoPattern != null && this.Parent.IsoScale > 0 && (this.Parent.IsoPattern.Length > this.Index - this.Parent.MonoOffset) && (0 <= this.Index - this.Parent.MonoOffset))
             //        {
             //            var predictedIntensity = this.Parent.IsoPattern[this.Index - this.Parent.MonoOffset] * this.Parent.IsoScale;
@@ -731,17 +710,16 @@ namespace SignalProcessing
             set;
         }
 
+        public override string ToString()
+        { return "mz" + MZ.ToString("0.000") + ", z" + this.Z.ToString() + ", m" + this.Mass.ToString("0.000") + ", i" + this.Intensity.ToString("0") + (this.IsCorePeak ? " +" : ""); }
 
-        public override string ToString() { return "mz" + MZ.ToString("0.000") + ", z" + this.Z.ToString() + ", m" + this.Mass.ToString("0.000") + ", i" + this.Intensity.ToString("0") + (this.IsCorePeak ? " +" : ""); }
-
-
-        // Method to return IComparer object for sort helper.        
+        // Method to return IComparer object for sort helper.
         public static IComparer<ClusterPeak> sortByMass()
         {
             return new ByMass();
         }
 
-        // Method to return IComparer object for sort helper.        
+        // Method to return IComparer object for sort helper.
         public static IComparer<ClusterPeak> sortByMassToCharge()
         {
             return new ByMassToCharge();
@@ -767,7 +745,6 @@ namespace SignalProcessing
         {
             return this.Mass.CompareTo(other.Mass);
         }
-
     }
 
     public class ClusterSimilarityComparer : IEqualityComparer<Cluster>
@@ -785,19 +762,17 @@ namespace SignalProcessing
         }
     }
 
-    class ClusterEqualityComparer : IEqualityComparer<Cluster>
+    internal class ClusterEqualityComparer : IEqualityComparer<Cluster>
     {
         public bool Equals(Cluster b1, Cluster b2)
         {
             return (b1.Score == b2.Score && b1.Peaks.Count == b2.Peaks.Count && b1.MonoMZ == b2.MonoMZ && b1.Z == b2.Z);
         }
 
-
         public int GetHashCode(Cluster obj)
         {
             int hCode = (int)obj.MonoMZ * 1000000 + obj.Z * 10000000;
             return hCode.GetHashCode();
-
         }
     }
 
@@ -817,13 +792,14 @@ namespace SignalProcessing
         //    //Child.Parent = this;
         //}
 
-
         //[XmlIgnore]
         public ListOfClusterPeak Peaks { get; set; }
+
         public float IsoScale { get; set; }
 
         [XmlIgnore]
         public float SecondaryIsoScale { get; set; }
+
         public float Score { get; set; }
 
         public string Activation { get; set; }
@@ -836,7 +812,7 @@ namespace SignalProcessing
         [XmlIgnore]
         public double MonoMassforunittests { get; set; }
 
-        double _monomass;
+        private double _monomass;
 
         public double MonoMass
         {
@@ -867,10 +843,9 @@ namespace SignalProcessing
             }
         }
 
-        double? _secondarymonomass = 0;
+        private double? _secondarymonomass = 0;
 
         [XmlIgnore]
-        //[JsonIgnore]
         public double? SecondaryMonoMass
         {
             get
@@ -887,9 +862,10 @@ namespace SignalProcessing
                 _secondarymonomass = value;
             }
         }
+
         //public double SecondaryMono { get { return } }
 
-        float _intensity;
+        private float _intensity;
 
         [XmlIgnore]
         public float Intensity
@@ -906,7 +882,7 @@ namespace SignalProcessing
             }
         }
 
-        string _description = null;
+        private string _description = null;
 
         [XmlIgnore]
         public string Description
@@ -925,7 +901,6 @@ namespace SignalProcessing
         private double[] _isoPattern = null;
 
         [XmlIgnore]
-        //[JsonIgnore]
         public double[] IsoPattern
         {
             get
@@ -946,10 +921,8 @@ namespace SignalProcessing
             set
             {
                 _isoPattern = value;
-
             }
         }
-
 
         private string _xmlisoPattern = string.Empty;
 
@@ -983,7 +956,6 @@ namespace SignalProcessing
             return values.SelectMany(value => BitConverter.GetBytes(value)).ToArray();
         }
 
-
         /// <summary>
         /// Convert array of bytes to array of doubles
         /// </summary>
@@ -996,10 +968,10 @@ namespace SignalProcessing
                 .ToArray();
         }
 
-
         private double? _SmonoMZ = -1;
 
         private int _monoOffset = int.MaxValue;
+
         public int MonoOffset
         {
             get
@@ -1016,7 +988,6 @@ namespace SignalProcessing
         private int _secondaryMonoOffset = int.MaxValue;
 
         [XmlIgnore]
-        //[JsonIgnore]
         public int SecondaryMonoOffset
         {
             get
@@ -1068,17 +1039,12 @@ namespace SignalProcessing
                       + ") O(" + Math.Round(AverageO * roundNumAveragine, 0)
                       + ") P(" + Math.Round(AverageP * roundNumAveragine, 0) + ")";
 
-
-
-
             return new Ion(formula, -1);
             //return new Molecule(formula);
         }
 
         [XmlIgnore]
-        //[JsonIgnore]
-
-        private static IDictionary<int, double[]> AveragineCache; 
+        private static IDictionary<int, double[]> AveragineCache;
 
         private static object lockvar = new object();
 
@@ -1092,29 +1058,29 @@ namespace SignalProcessing
             return ((int)Math.Round(i / 10.0)) * 10;
         }
 
-
         private ConcurrentDictionary<int, double[]> LoadAveragineCache(int maxMass = 60000, int interval = 10)
         {
-           
+            // ADW:  AveragineClassSettings
+            AveragineCacheSettings settings = AveragineCacheSettings.Instance;
+            var newCacheName = settings.SelectedCacheFile;
             // Mike: Change this to load oligo or Protein Averagine precomputed isotope patterns from files we will inculde
-            //string moleculeMode = 
+            //string moleculeMode =
 
             var appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             var avgCacheFilename = System.IO.Path.Combine(appData, "avgCache.dat");
-
+            avgCacheFilename = System.IO.Path.Combine(@".\Files", newCacheName);
             FileStream fs;
             ConcurrentDictionary<int, double[]> cache = null;
 
             if (File.Exists(avgCacheFilename))
             {
-                //Deserilaize object            
+                //Deserilaize object           
                 using (fs = new FileStream(avgCacheFilename, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
                     var Debf = new BinaryFormatter();
                     cache = Debf.Deserialize(fs) as ConcurrentDictionary<int, double[]>;
                 }
             }
-
 
             if (cache == null)
             {
@@ -1124,8 +1090,9 @@ namespace SignalProcessing
 
                 cache = new ConcurrentDictionary<int, double[]>();
 
-                Parallel.For(1, prlop.MaxDegreeOfParallelism + 1, prlop, index => {
-                    for (int i = index; i <= maxMass/interval; i += prlop.MaxDegreeOfParallelism)
+                Parallel.For(1, prlop.MaxDegreeOfParallelism + 1, prlop, index =>
+                {
+                    for (int i = index; i <= maxMass / interval; i += prlop.MaxDegreeOfParallelism)
                     {
                         var ion = GenerateAveragine(i * interval);
                         var pattern = MassSpectrometry.IsotopeCalc.CalcIsotopePeaks(ion, 1f);
@@ -1133,7 +1100,6 @@ namespace SignalProcessing
                         cache.TryAdd(i * interval, isoPattern);
                     }
                 });
-
 
                 //cache = new SortedList<int, double[]>();
 
@@ -1147,7 +1113,7 @@ namespace SignalProcessing
                 //    cache.Add(i, isoPattern);
                 //}
 
-                //Serilaize object -- Save the cache for quick load next time.  
+                //Serilaize object -- Save the cache for quick load next time.
 
                 using (fs = new FileStream(avgCacheFilename, FileMode.Create))
                 {
@@ -1158,7 +1124,7 @@ namespace SignalProcessing
                     }
                     catch (SerializationException ex)
                     {
-                        // failing to serialize is not fatal, just slows startup performance.  So don't throw anything.  
+                        // failing to serialize is not fatal, just slows startup performance.  So don't throw anything.
                         Debug.Print(ex.Message);
                     }
                 }
@@ -1167,16 +1133,12 @@ namespace SignalProcessing
             return cache;
         }
 
-
         /// <summary>
-        /// Finds the Monoisotopic M/Z and Core Peaks and sets the Cluster properties accordingly.  
+        /// Finds the Monoisotopic M/Z and Core Peaks and sets the Cluster properties accordingly.
         /// </summary>
         /// <returns></returns>
         public double SetMonoAndCorePeaks()
         {
-
-
-
             //System.Diagnostics.Debug.WriteLine("Executing FindMono");
 
             //double mass = cluster.Peaks.Where(p => p.IsCorePeak).OrderByDescending(p => p.Intensity).First().MZ * cluster.Z;
@@ -1191,75 +1153,63 @@ namespace SignalProcessing
 
             //TODO: Fix AverageCache  exception: Collection was modified after the enumerator was instantiated.
 
-
-
-
             // Retrieve or generate predicted Averagine isotope pattern for this mass
 
-                // Lookup value in Averagine Cache
-                //var ip = ;
+            // Lookup value in Averagine Cache
+            //var ip = ;
 
-                if (AveragineCache.ContainsKey(RoundOff(mass)))
-                {
-                    //var ip = AveragineCache.Where(m => m.Key == RoundOff(mass)).First();
+            if (AveragineCache.ContainsKey(RoundOff(mass)))
+            {
+                //var ip = AveragineCache.Where(m => m.Key == RoundOff(mass)).First();
 
-                    isoPattern = AveragineCache[RoundOff(mass)];
-                }
-                else
-                {
+                isoPattern = AveragineCache[RoundOff(mass)];
+            }
+            else
+            {
+                // To prevent using a ton of memory for the averaginecache, we have to trim it when it has a signicant number of values
+                //if (AveragineCache.Count > 100) AveragineCache = new SortedDictionary<double, double[]>(AveragineCache.Skip(AveragineCache.Count - 50).ToDictionary(k => k, v => v));
+                //if (AveragineCache.Count > 100) AveragineCache.Clear();
 
-                    // To prevent using a ton of memory for the averaginecache, we have to trim it when it has a signicant number of values
-                    //if (AveragineCache.Count > 100) AveragineCache = new SortedDictionary<double, double[]>(AveragineCache.Skip(AveragineCache.Count - 50).ToDictionary(k => k, v => v));
-                    //if (AveragineCache.Count > 100) AveragineCache.Clear();
+                //var start = DateTime.Now;
 
-                    //var start = DateTime.Now;
+                var theoIon = GenerateAveragine(RoundOff(mass));
 
-                    var theoIon = GenerateAveragine(RoundOff(mass));
+                var pattern = MassSpectrometry.IsotopeCalc.CalcIsotopePeaks(theoIon, 1f);
 
-                    var pattern = MassSpectrometry.IsotopeCalc.CalcIsotopePeaks(theoIon, 1f);
+                isoPattern = pattern.Select(p => (double)p.Value).ToArray();
 
-                    isoPattern = pattern.Select(p => (double)p.Value).ToArray();
+                //var stop = DateTime.Now;
 
-                    //var stop = DateTime.Now;
+                //var newTotal = stop.Subtract(start).TotalMilliseconds;
 
-                    //var newTotal = stop.Subtract(start).TotalMilliseconds;
+                //start = DateTime.Now;
 
-                    //start = DateTime.Now;
+                //var theoString = GenerateAveragineString(mass);
 
+                //isoPattern = MassSpectrometry.IsotopeCalc.CalcIsotopePeaks(theoString);
 
+                //stop = DateTime.Now;
 
-                    //var theoString = GenerateAveragineString(mass);
+                //var oldTotal = stop.Subtract(start).TotalMilliseconds;
 
-                    //isoPattern = MassSpectrometry.IsotopeCalc.CalcIsotopePeaks(theoString);
+                //Debug.WriteLine("New (PNNL): " + newTotal + " ms vs. Old (Mercury): " + oldTotal + " ms");
 
+                //string resultStr = "Predicted Points\n";
 
-                    //stop = DateTime.Now;
+                //foreach (var peak in pattern)
+                //    resultStr += peak.Key.ToString() + ", " + peak.Value.ToString() + "\n";
 
-                    //var oldTotal = stop.Subtract(start).TotalMilliseconds;
+                //System.Diagnostics.Debug.WriteLine(resultStr);
 
-                    //Debug.WriteLine("New (PNNL): " + newTotal + " ms vs. Old (Mercury): " + oldTotal + " ms");
+                //resultStr = "Observed Points\n";
 
+                //foreach (var peak in cluster.Peaks)
+                //    resultStr += peak.MZ.ToString() + ", " + peak.Intensity.ToString() + "\n";
 
-                    //string resultStr = "Predicted Points\n";
+                //System.Diagnostics.Debug.WriteLine(resultStr);
 
-                    //foreach (var peak in pattern)
-                    //    resultStr += peak.Key.ToString() + ", " + peak.Value.ToString() + "\n";
-
-                    //System.Diagnostics.Debug.WriteLine(resultStr);
-
-
-                    //resultStr = "Observed Points\n";
-
-                    //foreach (var peak in cluster.Peaks)
-                    //    resultStr += peak.MZ.ToString() + ", " + peak.Intensity.ToString() + "\n";
-
-                    //System.Diagnostics.Debug.WriteLine(resultStr);            
-
-
-                    AveragineCache.Add(RoundOff(mass), isoPattern);
-                }
-
-            
+                AveragineCache.Add(RoundOff(mass), isoPattern);
+            }
 
             this.IsoPattern = isoPattern;
 
@@ -1312,7 +1262,7 @@ namespace SignalProcessing
 
                     if (differential > bestDifferential)
                     {
-                        // we have a better fit! 
+                        // we have a better fit!
 
                         if (bestAlignmentIndex != p)
                         {
@@ -1327,7 +1277,6 @@ namespace SignalProcessing
                         bestDifferential = differential;
                         bestScale = scale;
                     }
-
 
                     //Debug.WriteLine("Peak " + count++ + ": " + (aPeak.Intensity / i).ToString("0.00"));
 
@@ -1350,13 +1299,9 @@ namespace SignalProcessing
                 this.SecondaryIsoScale = nextBestScale;
             }
 
-
-
-
-
             if (this.Peaks.Count <= 0) return this.Peaks[bestAlignmentIndex].MZ;
 
-            // Calculate an Accurate Monoisotopic Mass value by making use of all info available -- Intensity fit (through core peak flag), Weight by core peak            
+            // Calculate an Accurate Monoisotopic Mass value by making use of all info available -- Intensity fit (through core peak flag), Weight by core peak
             // Back calculate the Mono by using an intensity weighted average of the Mono calculation of each of the core peaks.
             var weightedMassSum = 0d;
             var weightSum = 0d;
@@ -1380,13 +1325,12 @@ namespace SignalProcessing
                 weightedMassSum = 0d;
                 weightSum = 0d;
 
-
                 // Find the Core Peaks of the Isotope Pattern and MonoMass by weighted average
                 foreach (var aPeak in this.Peaks)
                 {
                     aPeak.IsCorePeak = false;
 
-                    // Find CorePeaks - peaks close to the apex of the predicted pattern and have actual intensity of at least 30% of max intensity predicted                    
+                    // Find CorePeaks - peaks close to the apex of the predicted pattern and have actual intensity of at least 30% of max intensity predicted
                     if (this.IsoPattern != null && clusterScale > 0 && (this.IsoPattern.Length > aPeak.Index - offset) && (0 <= aPeak.Index - offset))
                     {
                         //TODO: include a mass tolerance criteria as well
@@ -1403,7 +1347,6 @@ namespace SignalProcessing
                     }
                     //else
                     //{
-
                     ////    return false;
                     //}
                 }
@@ -1423,12 +1366,9 @@ namespace SignalProcessing
 
             _monoMZ = this.FindMonoMzWithMin();
 
-
-
             foreach (var aPeak in this.Peaks)
             {
-
-                // Find CorePeaks - peaks close to the apex of the predicted pattern and have actual intensity of at least 30% of max intensity predicted                    
+                // Find CorePeaks - peaks close to the apex of the predicted pattern and have actual intensity of at least 30% of max intensity predicted
                 if (this.IsoPattern != null && this.IsoScale > 0 && (this.IsoPattern.Length > aPeak.Index - this.MonoOffset) && (0 <= aPeak.Index - this.MonoOffset))
                 {
                     //TODO: include a mass tolerance criteria as well
@@ -1446,21 +1386,13 @@ namespace SignalProcessing
             //// find predicted apex of pattern, then find peaks that fit the model best
             //foreach (var anIsoPeak in this.Peaks.Where(p => this.IsoPattern[p.IsoIndex] >  )
             //{
-
             //}
 
-
-
-
-
             //this.MonoOffset
-
-
-
         }
 
-
         public double _monoMZ = -1;
+
         public double MonoMZ
         {
             get
@@ -1474,10 +1406,9 @@ namespace SignalProcessing
             }
         }
 
-        double? _secondmonomz = 0;
+        private double? _secondmonomz = 0;
 
         [XmlIgnore]
-        //[JsonIgnore]
         public double? SecondMonoMZ
         {
             get
@@ -1499,7 +1430,8 @@ namespace SignalProcessing
         //    throw new NotImplementedException();
         //}
 
-        public override string ToString() { return MonoMZ.ToString() + ", " + Z.ToString() + ", Score = " + Score.ToString() + ", MonoMass = " + MonoMass.ToString(); }
+        public override string ToString()
+        { return MonoMZ.ToString() + ", " + Z.ToString() + ", Score = " + Score.ToString() + ", MonoMass = " + MonoMass.ToString(); }
 
         public static bool SimilarClusters(Cluster x, Cluster y)
         {

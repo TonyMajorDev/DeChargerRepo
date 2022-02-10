@@ -49,6 +49,11 @@ namespace MassSpectrometry
             // Initialize
             // Paths
             programDataPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), @"DeCharger");
+
+            // Check to see if we have a folder
+            if (!Directory.Exists(programDataPath))
+                Directory.CreateDirectory(programDataPath);
+
             cacheFileSettingsPath = System.IO.Path.Combine(programDataPath, "Averagine.xml");
 
             AveragineDataFiles = new ObservableCollection<string>();

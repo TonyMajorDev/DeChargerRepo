@@ -26,7 +26,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Science.Chemistry")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Eli Lilly")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Science.Chemistry")]
 [assembly: AssemblyCopyright("Copyright © Eli Lilly 2013")]
 [assembly: AssemblyTrademark("")]

@@ -579,10 +579,11 @@ namespace MSViewer.Classes
 
             if (Message != null)
             {
-                string imgpath = System.IO.Path.GetDirectoryName(uriCodeBase.LocalPath.ToString()) + "\\Icons\\" + "lilly2.png";
+                //string imgpath = System.IO.Path.GetDirectoryName(uriCodeBase.LocalPath.ToString()) + "\\Icons\\" + "lilly2.png";
                 sb.AppendLine("<table><tr> <td  style='width:75%; border:none;'>");
                 sb.AppendLine(" </td> <td style='width:25%; border:none;'> ");
-                sb.Append("<img src='" + imgpath + "'\\>  </td> </tr> </table> <br /><br />");
+                //sb.Append("<img src='" + imgpath + "'\\>  </td> </tr> </table> <br /><br />");
+                sb.Append("</td> </tr> </table> <br /><br />");
 
                 if (Message != "")
                 {

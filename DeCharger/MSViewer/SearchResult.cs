@@ -2105,7 +2105,7 @@ namespace MSViewer
 
     public class Curation
     {
-        //Note: UserID is guaranteed to always be available, but if someone is working offline, or is not in Lilly, the UserName and UserEmail will be null!  
+        //Note: UserID is guaranteed to always be available, but if someone is working offline, the UserName and UserEmail will be null!  
 
         public string UserID { get; set; }
         public string UserName { get; set; }

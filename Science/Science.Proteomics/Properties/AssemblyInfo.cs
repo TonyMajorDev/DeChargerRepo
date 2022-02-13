@@ -26,7 +26,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Science.Proteomics")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Eli Lilly and Company")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Science.Proteomics")]
 [assembly: AssemblyCopyright("Copyright © Eli Lilly and Company 2014")]
 [assembly: AssemblyTrademark("")]

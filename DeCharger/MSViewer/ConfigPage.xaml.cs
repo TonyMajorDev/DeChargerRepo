@@ -364,6 +364,7 @@ namespace MSViewer
             AveragineCacheSettings averagineCacheSettings = AveragineCacheSettings.Instance;
             averagineCacheSettings.SelectedCacheFile = cmbIsotopeTable.SelectedItem.ToString();
             averagineCacheSettings.Save();
+
         }
 
         //private void cmbInstrumentType_Selected(object sender, SelectionChangedEventArgs e)

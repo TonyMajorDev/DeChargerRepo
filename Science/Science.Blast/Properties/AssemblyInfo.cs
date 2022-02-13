@@ -26,7 +26,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Science.Blast")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Eli Lilly and Company")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Science.Blast")]
 [assembly: AssemblyCopyright("Copyright © Eli Lilly and Company 2014")]
 [assembly: AssemblyTrademark("")]

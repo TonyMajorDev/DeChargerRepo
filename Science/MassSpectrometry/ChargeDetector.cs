@@ -37,6 +37,7 @@ public class ChargeDetector
     private const double Tolerance = 0.0035d;  // tight tolerance used for initial detection
     //public static double PpmTolerance = 1;  // 1 ppm is was a well tuned OrbiTrap should achieve
 
+    //DEBUG:  if set to true clusters that are rejected will have thier failure evidence printed to output
     private const bool verbose = false;
 
     public ChargeDetector(SortedList<double, float> points, float minIntensity = 0)
@@ -219,6 +220,7 @@ public class ChargeDetector
     /// <returns></returns>
     private List<Cluster> FindIsotopeGroups(List<double> input, int charge, double massTolerance, bool applyNoiseFilter = true)
     {
+        if (verbose) Debug.Print("first cluster input mass:  " + input.First());
         var clusters = new List<Cluster>();
 
         //double LooseTolerance = Math.Min(charge > 3 ? 0.0050 : 0.011, (1.0078d / (double)charge) - (1.0078d / ((double)charge+1d)));
@@ -440,12 +442,13 @@ public class ChargeDetector
 
             foreach (var currentPeak in currentCluster.Peaks.Where(p => p.IsCorePeak && p.Index >= coreStartIndex && p.Index <= coreEndIndex))
             {
+                
                 if (lastPeak == null)
                 {
                     lastPeak = currentPeak;
                     continue;
                 }
-
+                
                 AverageDeviation += currentPeak.MZ - lastPeak.MZ;
                 VarianceInRun += ((currentPeak.MZ - lastPeak.MZ) - (SignalProcessor.ProtonMass / (double)charge)) * ((currentPeak.MZ - lastPeak.MZ) - (SignalProcessor.ProtonMass / (double)charge));
 
@@ -453,52 +456,61 @@ public class ChargeDetector
                 {
                     localNoise += (mzList.Values[j] > ((Math.Min(lastPeak.Intensity, currentPeak.Intensity)) * 0.65)) ? Math.Min(1, mzList.Values[j] / secondLargestIntensity) : 0;
                 }
-
+                if (verbose) Debug.Print("Current Peak:  " + currentPeak.MZ);
+                if (verbose) Debug.Print("Local Noise:  " + localNoise);
                 lastPeak = currentPeak;
             }
-
+            if (verbose) Debug.Print("Current cluster Mono,mono mz:  " + currentCluster.MonoMass.ToString() + ", "+ currentCluster.MonoMZ.ToString());
+            
 
             //for (int i = firstRunPeak; i < lastRunPeak; i++)
             //{
 
-            //    //distribution[i].IsCorePeak = true;
-            //    //distribution[i+1].IsCorePeak = true;  
+                //    //distribution[i].IsCorePeak = true;
+                //    //distribution[i+1].IsCorePeak = true;  
 
-            //    // Computer factors for Score calculation
-            //    AverageDeviation += distribution[i + 1].MZ - distribution[i].MZ;
-            //    VarianceInRun += ((distribution[i + 1].MZ - distribution[i].MZ) - (SignalProcessor.ProtonMass / (double)charge)) * ((distribution[i + 1].MZ - distribution[i].MZ) - (SignalProcessor.ProtonMass / (double)charge));
+                //    // Computer factors for Score calculation
+                //    AverageDeviation += distribution[i + 1].MZ - distribution[i].MZ;
+                //    VarianceInRun += ((distribution[i + 1].MZ - distribution[i].MZ) - (SignalProcessor.ProtonMass / (double)charge)) * ((distribution[i + 1].MZ - distribution[i].MZ) - (SignalProcessor.ProtonMass / (double)charge));
 
-            //    //peaks.Add(distribution[i], mzList[distribution[i]]);
+                //    //peaks.Add(distribution[i], mzList[distribution[i]]);
 
-            //    // Estimate local noise level by intensity of peaks between isotope peaks...
-            //    // We keep a tally of each peak gap - noisy or clean.  Then weight against intensity of the core peaks
+                //    // Estimate local noise level by intensity of peaks between isotope peaks...
+                //    // We keep a tally of each peak gap - noisy or clean.  Then weight against intensity of the core peaks
 
-            //    //double noiseContribution = 0;
+                //    //double noiseContribution = 0;
 
 
-            //    // Local Noise does not seem to be adding value and the calls to FindClosestIndex are VERY costly
+                //    // Local Noise does not seem to be adding value and the calls to FindClosestIndex are VERY costly
 
-            //    for (int j = mzList.FindClosestIndex(distribution[i].MZ) + 1; j < mzList.FindClosestIndex(distribution[i + 1].MZ); j++)
-            //    {
-            //        localNoise += (mzList.Values[j] > ((Math.Min(distribution[i].Intensity, distribution[i + 1].Intensity)) * 0.65)) ? Math.Min(1, mzList.Values[j] / secondLargestIntensity) : 0;
-            //    }
+                //    for (int j = mzList.FindClosestIndex(distribution[i].MZ) + 1; j < mzList.FindClosestIndex(distribution[i + 1].MZ); j++)
+                //    {
+                //        localNoise += (mzList.Values[j] > ((Math.Min(distribution[i].Intensity, distribution[i + 1].Intensity)) * 0.65)) ? Math.Min(1, mzList.Values[j] / secondLargestIntensity) : 0;
+                //    }
 
-            //    //localNoise += noiseContribution;
+                //    //localNoise += noiseContribution;
 
-            //    //var moreNoise =  mzList.Where(m => m.Key > distribution[i].MZ && m.Key < distribution[i + 1].MZ && m.Value > ((Math.Min(distribution[i].Intensity, distribution[i + 1].Intensity)) * 0.65)).ToArray();
+                //    //var moreNoise =  mzList.Where(m => m.Key > distribution[i].MZ && m.Key < distribution[i + 1].MZ && m.Value > ((Math.Min(distribution[i].Intensity, distribution[i + 1].Intensity)) * 0.65)).ToArray();
 
-            //    //localNoise += moreNoise.Length;
+                //    //localNoise += moreNoise.Length;
 
-            //    //localNoise += mzList.Where(m => m.Key > distribution[i].MZ && m.Key < distribution[i + 1].MZ && m.Value > ((Math.Min(distribution[i].Intensity, distribution[i + 1].Intensity)) * 0.65)).Count();                
+                //    //localNoise += mzList.Where(m => m.Key > distribution[i].MZ && m.Key < distribution[i + 1].MZ && m.Value > ((Math.Min(distribution[i].Intensity, distribution[i + 1].Intensity)) * 0.65)).Count();                
+                //}
+
+                if (verbose) Debug.Print("Evaluating Distribution of length = " + runLength.ToString() + ", charge = " + charge.ToString());
+
+            // DEBUG INVESTIGATION: System exception with scan 193 of 21-mer MSMS 7CS 18CE.d  This break stops the exception for this cluster mass 
+            //if (currentCluster.MonoMass < 896.3 && currentCluster.MonoMass > 896.2)
+            //{
+            //    break;
             //}
-
-            if (verbose) Debug.Print("Evaluating Distribution of length = " + runLength.ToString() + ", charge = " + charge.ToString());
 
             if (applyNoiseFilter && (localNoise / ((coreEndIndex - coreStartIndex) * zSpace)) > 4)
             {
                 if (verbose) Debug.Print("Reject - Local Noise " + (localNoise / (coreEndIndex - coreStartIndex)).ToString("0.0000"));
                 continue;
             }
+            // DEBUG
 
             // WRONG, this is not the core count!!!!
 
@@ -518,11 +530,8 @@ public class ChargeDetector
             score += (int)(100d / ((Math.Abs(detectedCharge - (double)charge) * 8d) + 0.01));
             score += (int)(0.03 / (StandardDev + 0.000001));
 
-
-
-
             currentCluster.Score = score;
-
+            if (verbose) Debug.Print("Current Cluster Score: " + score.ToString() );
 
             // Calling FindMono here because the next "if" statement would call it automatically by checking the "IsMonoisotopic property, but we want to prepopulate, so we don't try to populate later
             //currentCluster.FindMono();
@@ -557,9 +566,7 @@ public class ChargeDetector
 
             if (verbose) Debug.Print("Score = " + score.ToString() + "; A good one at charge " + charge.ToString() + "?  " + runLength.ToString() + " continuous peaks at m/z => " + distribution[firstRunPeak].MZ.ToString("0.0000") + " to " + distribution[lastRunPeak].MZ.ToString("0.0000"));
 
-
-
-
+          
             //var PeakRemoveCount = currentCluster.Peaks.Where(p => p.Mass < (currentCluster.MonoMass - 1.5)).Count();
             //currentCluster.Peaks.RemoveRange(0, PeakRemoveCount); 
 
@@ -646,8 +653,9 @@ public class ChargeDetector
             //TODO: use cross correlation fit on the distribution to assess quality and set the Cluster.Score property
 
             //clusters.Add(new Cluster() { Peaks = new SortedList<double,float>(distribution.ToDictionary(k => k.Key, v => v.Value)), Z = charge });
-        }
-
+        
+          }
+        
         return clusters;
     }
 
@@ -738,6 +746,8 @@ public class ChargeDetector
             //    Debug.WriteLine("Found a peak (Z=" + chargeState + "): " + aPeak);
 
             //Debug.Print("Charge States Assigned = " + result.Count);
+
+
 
         });
 

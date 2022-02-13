@@ -487,6 +487,19 @@ namespace MSViewer
                 string version = assembly.FullName.Split(',')[1];
                 string fullversion = version.Split('=')[1];
 
+                //MDK update main title to reflece isotope set loaded
+                AveragineCacheSettings settings = AveragineCacheSettings.Instance;
+                var CacheSetting = settings.SelectedCacheFile;
+
+                if (CacheSetting.Contains("Protein"))
+                    {
+                    label4.Content = "Decharged MS Viewer" + " - Protein";
+                    }
+                if (CacheSetting.Contains("Oligo"))
+                    {
+                    label4.Content = "Decharged MS Viewer" + " - Oligo";
+                    }
+
                 lblVersionAuthors.Content = "Version " + fullversion;
                 App.AssemblyLocation = FindCurrentAssemblyPath.GetAssemblyPath();
                 Items = new ObservableCollection<QuantitationItem>();
@@ -908,7 +921,7 @@ namespace MSViewer
                 // Test the connection with a ping because it's quicker than trying to open a connection to a
                 // server that isn't there and letting it fail.  That is the default scenario for external users
                 // and I don't want the startup time to be slow for that use-case.  I could clear the connection details,
-                // but Lilly is my primary use case...
+
                 var builder = new SqlConnectionStringBuilder(db.ConnectionString);
                 var dataSource = builder.DataSource.Split('\\')[0];
 
@@ -6614,6 +6627,20 @@ namespace MSViewer
             {
                 // OK was clicked
                 ApplySettings();
+
+                // MDK refresh main page
+                AveragineCacheSettings settings = AveragineCacheSettings.Instance;
+                var CacheSetting = settings.SelectedCacheFile;
+
+                if (CacheSetting.Contains("Protein"))
+                {
+                    this.label4.Content = "Decharged MS Viewer" + " - Protein";
+                }
+                if (CacheSetting.Contains("Oligo"))
+                {
+                    this.label4.Content = "Decharged MS Viewer" + " - Oligo";
+                }
+                
             }
         }
 
@@ -19422,7 +19449,8 @@ namespace MSViewer
 
         private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Process.Start("https://www.lilly.com/");
+            //Changed to google web address - not sure what this does 
+        //    Process.Start("https://www.google.com/");
         }
 
         //Based on: http://www.dotnetcurry.com/wpf/1130/wpf-commanding-enable-button

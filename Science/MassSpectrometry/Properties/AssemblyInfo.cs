@@ -26,7 +26,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("MassSpectrometry")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Eli Lilly")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("MassSpectrometry")]
 [assembly: AssemblyCopyright("Copyright © Microsoft 2013")]
 [assembly: AssemblyTrademark("")]

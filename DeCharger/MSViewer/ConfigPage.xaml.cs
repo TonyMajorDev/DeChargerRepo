@@ -1,4 +1,8 @@
-﻿//-----------------------------------------------------------------------
+﻿//
+// Copyright (c) Andy Wright Ltd 2022, All rights reserved
+// Please see the license file accompanying this software for acceptable use
+//
+//-----------------------------------------------------------------------
 // Copyright 2018 Eli Lilly and Company
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +20,6 @@
 // limitations under the License.
 //-----------------------------------------------------------------------
 
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +35,9 @@ using System.IO.IsolatedStorage;
 using System.Data.SqlClient;
 using MSViewer.Classes;
 using System.Windows.Data;
+using System.IO;
+using System.Xml.Linq;
+using MassSpectrometry;
 
 namespace MSViewer
 {
@@ -39,7 +45,7 @@ namespace MSViewer
     {
         // private static IsolatedStorageSettings appSettings = IsolatedStorageSettings.ApplicationSettings;
 
-        List<Species> AllSpecies = new List<Species>();
+        private List<Species> AllSpecies = new List<Species>();
 
         public ConfigPage()
         {
@@ -61,14 +67,23 @@ namespace MSViewer
 
             if (cmbInstrumentType.Items.Count > 0) cmbInstrumentType.SelectedIndex = 0;  //
 
-
             cmbIsotopeTable.Items.Clear();
 
-            //Pick isotope cache to match molecule analyzed
-            foreach (var anIsotopeTable in Properties.Settings.Default.IsotopeTable.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+            ////Pick isotope cache to match molecule analyzed
+            //foreach (var anIsotopeTable in Properties.Settings.Default.IsotopeTable.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+            //{
+            //    cmbIsotopeTable.Items.Add(new ComboBoxItem() { Content = anIsotopeTable });
+            //}
+
+            // ADW: Get the elenents from averagine.xml file in ProgramData\DeCharger
+            AveragineCacheSettings averagineCacheSettings = AveragineCacheSettings.Instance;
+            foreach (string dat in averagineCacheSettings.AveragineDataFiles)
             {
-                cmbIsotopeTable.Items.Add(new ComboBoxItem() { Content = anIsotopeTable });
+                cmbIsotopeTable.Items.Add(dat);
             }
+
+            // ADW:  Select the entry in the combo matching the selected value of the selected value from averagine.xml
+            cmbIsotopeTable.SelectedIndex = cmbIsotopeTable.Items.IndexOf(averagineCacheSettings.SelectedCacheFile);
 
             //switch (MainWindow.MainViewModel.CurrentFileType)
             //{
@@ -132,16 +147,13 @@ namespace MSViewer
                 System.Diagnostics.Debug.WriteLine("Called LoadSpecies");
             }
 
-            //throw new NotImplementedException(); 
-
-
+            //throw new NotImplementedException();
         }
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-
                 //TODO: make this more dynamic and savable!
 
                 switch (this.cboAssumedCharge.SelectedIndex)
@@ -149,17 +161,19 @@ namespace MSViewer
                     case 3:
                         ChargeDetector.AssumedCharges = new int[0];
                         break;
+
                     case 2:
                         ChargeDetector.AssumedCharges = new int[] { 1 };
                         break;
+
                     case 1:
                         ChargeDetector.AssumedCharges = new int[] { 1, 2 };
                         break;
+
                     default:
                         ChargeDetector.AssumedCharges = new int[] { 1, 2, 3 };
                         break;
                 }
-
 
                 if (rdbtnSortbyDBHits.IsChecked.Value)
                 {
@@ -193,7 +207,6 @@ namespace MSViewer
                     App.PPMErrorPlot = false;
                 }
 
-
                 //if (MainWindow.MainViewModel.CurrentFileType == Science.Blast.clsFileType.MSFileType.Thermo)
                 //{
                 //    Properties.Settings.Default.MinAgilentThresholdMS1 = MinThresholdAgilentMS1;
@@ -204,24 +217,25 @@ namespace MSViewer
                 {
                     case Science.Blast.clsFileType.MSFileType.Agilent:
                         (Properties.Settings.Default.MatchTolerancePPMBasedonFileType[0]) = txtMonoMatchTolerance.Text;
-                        (Properties.Settings.Default.MassTolerancePPMBasedonFileType[0]) = txtMassTolerance.Text ;
+                        (Properties.Settings.Default.MassTolerancePPMBasedonFileType[0]) = txtMassTolerance.Text;
                         //(Properties.Settings.Default.MinAgilentThresholdMS1) = (txtMonoMatchTolerance_Copy.Text != "" ? Convert.ToInt32(txtMonoMatchTolerance_Copy.Text) : 0);
                         //(Properties.Settings.Default.MinAgilentThresholdMS2) = (txtMonoMatchTolerance_Copy1.Text != "" ? Convert.ToInt32(txtMonoMatchTolerance_Copy1.Text) : 0);
                         cmbInstrumentType.SelectedIndex = 0;
                         break;
+
                     case Science.Blast.clsFileType.MSFileType.Thermo:
                         (Properties.Settings.Default.MatchTolerancePPMBasedonFileType[1]) = txtMonoMatchTolerance.Text;
                         (Properties.Settings.Default.MassTolerancePPMBasedonFileType[1]) = txtMassTolerance.Text;
                         cmbInstrumentType.SelectedIndex = 1;
                         break;
+
                     default:
                         break;
                 }
-                
 
-                Properties.Settings.Default.MatchTolerancePPM = Convert.ToDouble(txtMonoMatchTolerance.Text); 
+                Properties.Settings.Default.MatchTolerancePPM = Convert.ToDouble(txtMonoMatchTolerance.Text);
                 Properties.Settings.Default.MassTolerancePPM = Convert.ToDouble(txtMassTolerance.Text);
-               
+
                 Properties.Settings.Default.Save();
                 App.SaveorNot = true;
 
@@ -235,9 +249,6 @@ namespace MSViewer
                 MessageBox.Show(ex.Message + ex.Source);
             }
 
-
-            
-
             this.Close();
         }
 
@@ -246,7 +257,7 @@ namespace MSViewer
             this.Close();
         }
 
-        void savespecies()
+        private void savespecies()
         {
             Properties.Settings.Default.Genus = "";
             var selectedspecies = AllSpecies.Where(a => a.IsSelected).Select(a => a.Genus).ToList();
@@ -273,7 +284,6 @@ namespace MSViewer
             lstSpecies.IsEnabled = !chkSearchAllSpecies.IsChecked.Value;
             if (!chkSearchAllSpecies.IsChecked.Value)
             {
-
             }
         }
 
@@ -302,6 +312,7 @@ namespace MSViewer
                     Properties.Settings.Default.MassTolerancePPM = Convert.ToDouble(Properties.Settings.Default.MassTolerancePPMBasedonFileType[1]);
 
                     break;
+
                 case "Agilent QTOF":  // User changed the dropdown combo to Agilent Instrument
 
                     // Change databindings to save to Agilent settings
@@ -322,36 +333,41 @@ namespace MSViewer
 
                     //MainWindow.MainViewModel.CurrentFileType = Science.Blast.clsFileType.MSFileType.Agilent;
                     break;
-                //default:
-                //    switch (MainWindow.MainViewModel.CurrentFileType)
-                //    {
-                //        case Science.Blast.clsFileType.MSFileType.Agilent:
-                //            txtMonoMatchTolerance.Text = Convert.ToString(Properties.Settings.Default.MatchTolerancePPMBasedonFileType[0]);
-                //            txtMassTolerance.Text = Convert.ToString(Properties.Settings.Default.MassTolerancePPMBasedonFileType[0]);
-                //            Properties.Settings.Default.MatchTolerancePPM = Convert.ToDouble(Properties.Settings.Default.MatchTolerancePPMBasedonFileType[0]);
-                //            Properties.Settings.Default.MassTolerancePPM = Convert.ToDouble(Properties.Settings.Default.MassTolerancePPMBasedonFileType[0]);
-                //            txtMinThresholdMS1.Text = Convert.ToString(Properties.Settings.Default.MinAgilentThresholdMS1);
-                //            txtMinThresholdMS2.Text = Convert.ToString(Properties.Settings.Default.MinAgilentThresholdMS2);
-                //            break;
-                //        case Science.Blast.clsFileType.MSFileType.Thermo:
-                //            txtMonoMatchTolerance.Text = Convert.ToString(Properties.Settings.Default.MatchTolerancePPMBasedonFileType[1]);
-                //            txtMassTolerance.Text = Convert.ToString(Properties.Settings.Default.MassTolerancePPMBasedonFileType[1]);
-                //            Properties.Settings.Default.MatchTolerancePPM = Convert.ToDouble(Properties.Settings.Default.MatchTolerancePPMBasedonFileType[1]);
-                //            Properties.Settings.Default.MassTolerancePPM = Convert.ToDouble(Properties.Settings.Default.MassTolerancePPMBasedonFileType[1]);
-                //            txtMinThresholdMS1.Text = "0";
-                //            txtMinThresholdMS2.Text = "0";
-                //            MinThresholdAgilentMS1 = Properties.Settings.Default.MinAgilentThresholdMS1;
-                //            MinThresholdAgilentMS2 = Properties.Settings.Default.MinAgilentThresholdMS2;
-                //            break;
-                //    }
-                //    break;
+                    //default:
+                    //    switch (MainWindow.MainViewModel.CurrentFileType)
+                    //    {
+                    //        case Science.Blast.clsFileType.MSFileType.Agilent:
+                    //            txtMonoMatchTolerance.Text = Convert.ToString(Properties.Settings.Default.MatchTolerancePPMBasedonFileType[0]);
+                    //            txtMassTolerance.Text = Convert.ToString(Properties.Settings.Default.MassTolerancePPMBasedonFileType[0]);
+                    //            Properties.Settings.Default.MatchTolerancePPM = Convert.ToDouble(Properties.Settings.Default.MatchTolerancePPMBasedonFileType[0]);
+                    //            Properties.Settings.Default.MassTolerancePPM = Convert.ToDouble(Properties.Settings.Default.MassTolerancePPMBasedonFileType[0]);
+                    //            txtMinThresholdMS1.Text = Convert.ToString(Properties.Settings.Default.MinAgilentThresholdMS1);
+                    //            txtMinThresholdMS2.Text = Convert.ToString(Properties.Settings.Default.MinAgilentThresholdMS2);
+                    //            break;
+                    //        case Science.Blast.clsFileType.MSFileType.Thermo:
+                    //            txtMonoMatchTolerance.Text = Convert.ToString(Properties.Settings.Default.MatchTolerancePPMBasedonFileType[1]);
+                    //            txtMassTolerance.Text = Convert.ToString(Properties.Settings.Default.MassTolerancePPMBasedonFileType[1]);
+                    //            Properties.Settings.Default.MatchTolerancePPM = Convert.ToDouble(Properties.Settings.Default.MatchTolerancePPMBasedonFileType[1]);
+                    //            Properties.Settings.Default.MassTolerancePPM = Convert.ToDouble(Properties.Settings.Default.MassTolerancePPMBasedonFileType[1]);
+                    //            txtMinThresholdMS1.Text = "0";
+                    //            txtMinThresholdMS2.Text = "0";
+                    //            MinThresholdAgilentMS1 = Properties.Settings.Default.MinAgilentThresholdMS1;
+                    //            MinThresholdAgilentMS2 = Properties.Settings.Default.MinAgilentThresholdMS2;
+                    //            break;
+                    //    }
+                    //    break;
             }
+        }
+
+        private void cmbIsotopeTable_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            AveragineCacheSettings averagineCacheSettings = AveragineCacheSettings.Instance;
+            averagineCacheSettings.SelectedCacheFile = cmbIsotopeTable.SelectedItem.ToString();
+            averagineCacheSettings.Save();
         }
 
         //private void cmbInstrumentType_Selected(object sender, SelectionChangedEventArgs e)
         //{
-
         //}
     }
 }
-

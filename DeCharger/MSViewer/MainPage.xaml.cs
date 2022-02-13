@@ -1,4 +1,8 @@
-﻿//-----------------------------------------------------------------------
+﻿//
+// Copyright (c) Andy Wright Ltd 2022, All rights reserved
+// Please see the license file accompanying this software for acceptable use
+//
+//-----------------------------------------------------------------------
 // Copyright 2018 Eli Lilly and Company
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +19,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //-----------------------------------------------------------------------
-
 
 using System;
 using System.Collections.Generic;
@@ -77,17 +80,15 @@ using System.Xml;
 using System.Xml.Serialization;
 using Ionic.Zip;
 using static Science.Proteomics.AminoAcidHelpers;
+
 //using System.Web.Script.Serialization;
 //using Newtonsoft.Json;
-
 
 //using CommonClasses;
 //using MSViewer;
 
 namespace MSViewer
 {
-
-
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private bool usingParallel = true;
@@ -95,39 +96,42 @@ namespace MSViewer
         private string ToolsDockTitleRoot = "Tools";
         private string MassValueFormat = "F4";  // floating point with 4 decimal places
 
-        double OffsetStart = double.NaN;
+        private double OffsetStart = double.NaN;
 
-        int? CurrentScanNumber = 1;
+        private int? CurrentScanNumber = 1;
 
         internal SqlConnection db = new SqlConnection(Properties.Settings.Default.ConnectionString);
 
-        AnnotationBar lastbar = new AnnotationBar();
+        private AnnotationBar lastbar = new AnnotationBar();
 
-        IMSProvider MainPointProvider;
+        private IMSProvider MainPointProvider;
         //IMSProvider mergespectrarms;
         //SignalProcessor signalProcessor = new SignalProcessor();
 
-        List<BackgroundWorker> fileLoadWorkers = new List<BackgroundWorker>();
-        int LocalAccessionIndex = 1;
+        private List<BackgroundWorker> fileLoadWorkers = new List<BackgroundWorker>();
+        private int LocalAccessionIndex = 1;
 
         //bool ShiftIsDown = false;
 
-        PlotArea PlotWithFocus = null;
-        Spectrum CurrentSpectrum = new Spectrum();
-        Spectrum ReverseCurrentSpectrum = new Spectrum();
-        List<Cluster> CurrentIons = new List<Cluster>();
-        List<Cluster> TempCurrentIons = new List<Cluster>();
+        private PlotArea PlotWithFocus = null;
+        private Spectrum CurrentSpectrum = new Spectrum();
+        private Spectrum ReverseCurrentSpectrum = new Spectrum();
+        private List<Cluster> CurrentIons = new List<Cluster>();
+        private List<Cluster> TempCurrentIons = new List<Cluster>();
+
         //double parentmass = 0;
-        bool firsttimestoryboard = false; ///To check if this is the first time the story board being set.
-                                          /// <summary>
-                                          /// Decharged Clusters from one or more scans that are combined into a single list
-                                          /// </summary>
-        List<Cluster> MergedIons = new List<Cluster>();
-        List<Cluster> TempMergedIons = new List<Cluster>();
+        private bool firsttimestoryboard = false; ///To check if this is the first time the story board being set.
 
-        List<AminoAcidMatch> MassFlags = new List<AminoAcidMatch>();
+                                                  /// <summary>
+                                                  /// Decharged Clusters from one or more scans that are combined into a single list
+                                                  /// </summary>
+        private List<Cluster> MergedIons = new List<Cluster>();
 
-        CancellationTokenSource cTokenSource = null;
+        private List<Cluster> TempMergedIons = new List<Cluster>();
+
+        private List<AminoAcidMatch> MassFlags = new List<AminoAcidMatch>();
+
+        private CancellationTokenSource cTokenSource = null;
 
         /// <summary>
         /// Used to set scaling based on forward or reverse spectrum is selected
@@ -136,22 +140,22 @@ namespace MSViewer
         /// True scales to the forward spectrum
         /// False scales to the reverse spectr
         /// </summary>
-        bool? forwardorreverse = null;
+        private bool? forwardorreverse = null;
 
-        string assemblyname = string.Empty;
+        private string assemblyname = string.Empty;
 
-        bool fromautoscan = false; //To display spectra while autoscan.
+        private bool fromautoscan = false; //To display spectra while autoscan.
 
-        StringBuilder stringbuilderforBlastp = new StringBuilder();
+        private StringBuilder stringbuilderforBlastp = new StringBuilder();
 
-        List<List<Cluster>> MergeCurrentIons = new List<List<Cluster>>();
+        private List<List<Cluster>> MergeCurrentIons = new List<List<Cluster>>();
 
-        List<double?> parentmasses = new List<double?>();
-        ChartMode CurrentMode = ChartMode.Mass;
-        // bool merging = false; //This is to check if there is any merging going on. 
+        private List<double?> parentmasses = new List<double?>();
+        private ChartMode CurrentMode = ChartMode.Mass;
+        // bool merging = false; //This is to check if there is any merging going on.
         //ObservableCollection<Sequences> Sequences = new ObservableCollection<Sequences>();
 
-        enum scaleby
+        private enum scaleby
         {
             Mono,
             Primary,
@@ -159,102 +163,115 @@ namespace MSViewer
             Thermo
         };
 
-        string SequenceforAutoScan = string.Empty; //Set the sequence tag while auto scaning.
+        private string SequenceforAutoScan = string.Empty; //Set the sequence tag while auto scaning.
 
-        List<FindSequenceTags.SequenceTag> sqsalldenovotgs = new List<FindSequenceTags.SequenceTag>();
-        List<AminoAcidIndex> aai = new List<AminoAcidIndex>();
-        List<AminoAcidIndex> aaiforsequencematches = new List<AminoAcidIndex>();
-        List<AminoAcidGap> aag = new List<AminoAcidGap>();
+        private List<FindSequenceTags.SequenceTag> sqsalldenovotgs = new List<FindSequenceTags.SequenceTag>();
+        private List<AminoAcidIndex> aai = new List<AminoAcidIndex>();
+        private List<AminoAcidIndex> aaiforsequencematches = new List<AminoAcidIndex>();
+        private List<AminoAcidGap> aag = new List<AminoAcidGap>();
+
         /// <summary>
         /// Connection string for the database.
         /// </summary>
         //string cnx = "Data Source=sanger;Initial Catalog=Proteomics_dev;Integrated Security=True;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False;";
         //Collection of all the MonoMasses found out for the current graph loaded
-        ObservableCollection<DataPoint> CurrentMonoMasses = new ObservableCollection<DataPoint>();
-        ObservableCollection<DataPoint> CurrentMonoMassesforsequences = new ObservableCollection<DataPoint>();
-        List<MonoPeak> CurrentMonos = new List<MonoPeak>();
-        List<MonoPeak> SecondaryCurrentMonos = new List<MonoPeak>();
-        List<MonoPeak> ReverseCurrentMonos = new List<MonoPeak>();
-        List<DataPoint> ReverseCurrentMonomasses = new List<DataPoint>();
-        List<MonoPeak> ReverseSecondaryCurrentMonos = new List<MonoPeak>();
+        private ObservableCollection<DataPoint> CurrentMonoMasses = new ObservableCollection<DataPoint>();
+
+        private ObservableCollection<DataPoint> CurrentMonoMassesforsequences = new ObservableCollection<DataPoint>();
+        private List<MonoPeak> CurrentMonos = new List<MonoPeak>();
+        private List<MonoPeak> SecondaryCurrentMonos = new List<MonoPeak>();
+        private List<MonoPeak> ReverseCurrentMonos = new List<MonoPeak>();
+        private List<DataPoint> ReverseCurrentMonomasses = new List<DataPoint>();
+        private List<MonoPeak> ReverseSecondaryCurrentMonos = new List<MonoPeak>();
+
         //ObservableCollection<DataPoint> SecondaryCurrentMonoMasses = new ObservableCollection<DataPoint>();
-        bool SelectingRange = false;
-        bool monosfound = false;
+        private bool SelectingRange = false;
+
+        private bool monosfound = false;
+
         //List<FindSequenceTags.SequenceTag> currentTags = new List<FindSequenceTags.SequenceTag>();
         //List<FindSequenceTags.SequenceTag> reversesequences = new List<FindSequenceTags.SequenceTag>();
-        ObservableCollection<AnnotationBar> sequencetagbars = new ObservableCollection<AnnotationBar>();
-        ObservableCollection<SpectrumInfo> mgrspectra = new ObservableCollection<SpectrumInfo>();
+        private ObservableCollection<AnnotationBar> sequencetagbars = new ObservableCollection<AnnotationBar>();
+
+        private ObservableCollection<SpectrumInfo> mgrspectra = new ObservableCollection<SpectrumInfo>();
         //ObservableCollection<SpectrumInfo> fullmgrspectra = new ObservableCollection<SpectrumInfo>();
 
-        ListCollectionView mergeView = null;
+        private ListCollectionView mergeView = null;
 
-        bool SelectingQuantRange = false;
-        List<MainSequenceTagmatches> aminoacidsforsequence = new List<MainSequenceTagmatches>(); ///Using this for sequence tag matching
-        Range CurrentScanRange = new Range() { Start = float.NaN, End = float.NaN };
+        private bool SelectingQuantRange = false;
+        private List<MainSequenceTagmatches> aminoacidsforsequence = new List<MainSequenceTagmatches>(); ///Using this for sequence tag matching
+        private Range CurrentScanRange = new Range() { Start = float.NaN, End = float.NaN };
+
         //List<SpectrumInfo> mspec = new List<SpectrumInfo>();
-        List<RMSProvider.SpecPoint> ThermoPoint = new List<RMSProvider.SpecPoint>();
-        string SequenceMatch = string.Empty;
-        List<Chart> Chromatograms = new List<Chart>();
-        int PixelTolerance = 6;
-        double AnnotationbarScore = 0;
+        private List<RMSProvider.SpecPoint> ThermoPoint = new List<RMSProvider.SpecPoint>();
+
+        private string SequenceMatch = string.Empty;
+        private List<Chart> Chromatograms = new List<Chart>();
+        private int PixelTolerance = 6;
+        private double AnnotationbarScore = 0;
+
         //double LastSnappedXPosition = 0;
-        scaleby setscale = scaleby.Primary;
+        private scaleby setscale = scaleby.Primary;
+
         //BackgroundWorker UpdateCurrentSpectrum = new BackgroundWorker() { WorkerSupportsCancellation = true, WorkerReportsProgress = true };
-        double maxofpredictedvalues = new double();
+        private double maxofpredictedvalues = new double();
+
         //List<SignalProcessing.Point> predictedvalues = new List<SignalProcessing.Point>();
         //It has the masses of all the Amino Acids available
         public ObservableCollection<QuantitationItem> Items { get; private set; }
-        string Pairmatch = string.Empty;
-        Dictionary<double, string> MassLookup;
+
+        private string Pairmatch = string.Empty;
+        private Dictionary<double, string> MassLookup;
+
         //It has the combinations of all the Amino Acids available
-        Dictionary<double, string> ComboMassLookup;
-        Dictionary<double, string> MassLookupToUse;
-        Dictionary<double, string> FlagMassLookup = new Dictionary<double, string>();
+        private Dictionary<double, string> ComboMassLookup;
 
-        Dictionary<double, string> ThreeComboMassLookup = new Dictionary<double, string>();
+        private Dictionary<double, string> MassLookupToUse;
+        private Dictionary<double, string> FlagMassLookup = new Dictionary<double, string>();
 
-        List<SearchResult> BoundSequences = new List<SearchResult>();
-        List<SearchResult> fastasequences = new List<SearchResult>();
+        private Dictionary<double, string> ThreeComboMassLookup = new Dictionary<double, string>();
+
+        private List<SearchResult> BoundSequences = new List<SearchResult>();
+        private List<SearchResult> fastasequences = new List<SearchResult>();
 
         //List<SequenceSearch> VerifiedSequences = new List<SequenceSearch>();
 
-        SearchResult CurrentValidatedSequence = new SearchResult();
+        private SearchResult CurrentValidatedSequence = new SearchResult();
 
-        clsParentInfo currentparent = new clsParentInfo();
+        private clsParentInfo currentparent = new clsParentInfo();
 
-        int SqlcommandTimeout = 60; //Timeout for sql commands
+        private int SqlcommandTimeout = 60; //Timeout for sql commands
 
         //string accessionFilter;
 
-        string FASTAFileName = string.Empty;
-        string lblFASTAFileName = string.Empty;
+        private string FASTAFileName = string.Empty;
+        private string lblFASTAFileName = string.Empty;
 
-        SpectrumModel context = new SpectrumModel();
+        private SpectrumModel context = new SpectrumModel();
 
-        bool SequenceDirectionRightToLeft = false;
+        private bool SequenceDirectionRightToLeft = false;
 
-        ObservableDictionary<int, PeakList> merged = new ObservableDictionary<int, PeakList>();
+        private ObservableDictionary<int, PeakList> merged = new ObservableDictionary<int, PeakList>();
 
-        double zoomWidth = 0;
-        double lastScrollLocation = 50;
-        System.Timers.Timer scrollTimer = new System.Timers.Timer();
+        private double zoomWidth = 0;
+        private double lastScrollLocation = 50;
+        private System.Timers.Timer scrollTimer = new System.Timers.Timer();
+
         //bool CrossFader = false;
         private Range SpecRightClickSpot;
 
-        FilterSequenceSearch filtersearch = new FilterSequenceSearch();
-        FilterSequenceSearch alreadyfilteredsearch = new FilterSequenceSearch();
+        private FilterSequenceSearch filtersearch = new FilterSequenceSearch();
+        private FilterSequenceSearch alreadyfilteredsearch = new FilterSequenceSearch();
         private object lockObj = new object();
 
         public List<DataPoint> MonosforDBSequence = new List<DataPoint>();
 
-        DispatcherTimer genTimer = new DispatcherTimer();
+        private DispatcherTimer genTimer = new DispatcherTimer();
 
         /// <summary>
         /// Main instance of the View/Model for use in Data Binding throughout DeCharger
         /// </summary>
         public DeChargerViewModel DechargerVM = new DeChargerViewModel();
-
-
 
         public static DeChargerViewModel MainViewModel
         {
@@ -264,9 +281,9 @@ namespace MSViewer
             }
         }
 
-
         // props
         private double busyProgress;
+
         public double BusyProgressValue
         {
             get
@@ -280,6 +297,7 @@ namespace MSViewer
         }
 
         private string busyProgressText;
+
         public string BusyProgressText
         {
             get
@@ -294,9 +312,9 @@ namespace MSViewer
             }
         }
 
-
         // props
         private double fileBusyProgress;
+
         public double FileBusyProgressValue
         {
             get
@@ -310,6 +328,7 @@ namespace MSViewer
         }
 
         private string fileBusyProgressText;
+
         public string FileBusyProgressText
         {
             get
@@ -325,6 +344,7 @@ namespace MSViewer
         }
 
         private bool isFileBusyProgressIndeterminate;
+
         public bool IsFileBusyProgressIndeterminate
         {
             get
@@ -360,7 +380,6 @@ namespace MSViewer
 
             try
             {
-
                 if (App.Log != null) App.Log.WriteEntry("Starting DeCharger", EventLogEntryType.Information);
 
                 InitializeComponent();
@@ -369,7 +388,6 @@ namespace MSViewer
 
                 if (App.Log != null) App.Log.WriteEntry("Before LoadSpecies", EventLogEntryType.Information);
                 InitializeDatabaseConnection();
-
 
                 if (App.Log != null) App.Log.WriteEntry("Before MatchList", EventLogEntryType.Information);
 
@@ -384,6 +402,9 @@ namespace MSViewer
                 string[] splitline = { "\n" };
 
                 btnSequenceSearchSource.ToolTip = db.Database;
+
+                // ADW: Initialize cache file
+                InitializeAveragineCache();
 
                 ApplySettings();
 
@@ -403,15 +424,11 @@ namespace MSViewer
 
                 ApplyMatchList();
 
-
-
                 StringBuilder sbmods = new StringBuilder();
-
 
                 //if (Properties.Settings.Default.UnimodModifications == "")
                 {
                     var unimods = Science.Chemistry.ReadModifications.ReadMods();
-
 
                     foreach (var mod in unimods)
                     {
@@ -425,7 +442,6 @@ namespace MSViewer
 
                 App.uniMods = new List<Science.Chemistry.Modifications>();
 
-
                 foreach (var mod in Properties.Settings.Default.UnimodModifications.Split(splitline, StringSplitOptions.RemoveEmptyEntries))
                 {
                     string[] md = mod.Split(splittab, StringSplitOptions.RemoveEmptyEntries);
@@ -438,9 +454,7 @@ namespace MSViewer
                     });
                 }
 
-
                 PopulateValidateModificationList();
-
 
                 if (Properties.Settings.Default.MatchTolerancePPMBasedonFileType == null)
                 {
@@ -458,13 +472,10 @@ namespace MSViewer
                     Properties.Settings.Default.Save();
                 }
 
-
-
                 PPMCalc.MassTolerancePPM = Properties.Settings.Default.MassTolerancePPM;
 
                 //this.DataContext = CurrentMonoMasses;
                 CurrentMonoMasses.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(CurrentMonoMasses_CollectionChanged);
-
 
                 //Allows visual feedback when drag-dropping a file.
                 this.AllowDrop = true;
@@ -476,7 +487,7 @@ namespace MSViewer
                 string version = assembly.FullName.Split(',')[1];
                 string fullversion = version.Split('=')[1];
 
-                lblVersionAuthors.Content = "Version " + fullversion ;
+                lblVersionAuthors.Content = "Version " + fullversion;
                 App.AssemblyLocation = FindCurrentAssemblyPath.GetAssemblyPath();
                 Items = new ObservableCollection<QuantitationItem>();
                 QuantitationListView.ItemsSource = Items;
@@ -533,7 +544,6 @@ namespace MSViewer
 
                 DechargerVM.SaveAsCommand.ExecuteAction = x => SaveWorkspace_Click(true);
 
-
                 DechargerVM.ConfigCommand.ExecuteAction = x =>
                 {
                     var cw = new ConfigPage();
@@ -562,7 +572,6 @@ namespace MSViewer
                 {
                     LaunchArgument = App.Args[0];
                 }
-
             }
             catch (Exception ex)
             {
@@ -574,7 +583,6 @@ namespace MSViewer
                 //GetProperties();
                 Properties.Settings.Default.PPMErrorAxisMax = Properties.Settings.Default.FragementIonTolerance;
                 Properties.Settings.Default.PPMErrorAxisMin = -(Properties.Settings.Default.FragementIonTolerance);
-
             }
         }
 
@@ -593,12 +601,16 @@ namespace MSViewer
         //    }
         //}
 
-
+        private void InitializeAveragineCache()
+        {
+            // Create the AveragineCacheSettins Instance
+            AveragineCacheSettings averagineCacheSettingsInstance = AveragineCacheSettings.Instance;
+        }
 
         /// <summary>
         /// Hides all the views except for the main view before a file is loaded
         /// </summary>
-        void HideAllViews()
+        private void HideAllViews()
         {
             layoutanchorable3.Hide();
             layoutanchorable2.Hide();
@@ -619,7 +631,7 @@ namespace MSViewer
         /// <summary>
         /// Shows all the views in the main view after a file is loaded
         /// </summary>
-        void LoadAllViews()
+        private void LoadAllViews()
         {
             layoutanchorable3.Show();
             layoutanchorable2.Show();
@@ -646,10 +658,9 @@ namespace MSViewer
             dtgrdsearchmargin.Right = 2;
 
             dtgrdSearchSequence.Margin = dtgrdsearchmargin;
-
         }
 
-        void EnableAllViews()
+        private void EnableAllViews()
         {
             tabTIC.IsEnabled = true;
             tabBPI.IsEnabled = true;
@@ -668,7 +679,7 @@ namespace MSViewer
             btnPrevious.IsEnabled = false;
         }
 
-        void LoadMatchList()
+        private void LoadMatchList()
         {
             App.strDictionary = clsStringDictionary.Deserialize(Properties.Settings.Default.MatchListProfile);
 
@@ -728,11 +739,11 @@ namespace MSViewer
             newmatchlistvalue.ShowDialog();
         }
 
-        string returnvalue = string.Empty;
+        private string returnvalue = string.Empty;
 
         //bool modtomatchlist = false;
 
-        void newmatchlistvalue_Closing(object sender, CancelEventArgs e)
+        private void newmatchlistvalue_Closing(object sender, CancelEventArgs e)
         {
             if (ReturnValue.returnvalue == null || ReturnValue.returnvalue == returnvalue)
                 return;
@@ -769,13 +780,11 @@ namespace MSViewer
             SelectMatchList();
         }
 
-        void savenewmatchlist()
+        private void savenewmatchlist()
         {
-
         }
 
-
-        int indexofstringvalue(StringDictionary str, string key)
+        private int indexofstringvalue(StringDictionary str, string key)
         {
             List<string> strvalues = new List<string>();
 
@@ -789,7 +798,7 @@ namespace MSViewer
             return indexofval;
         }
 
-        bool savingfromthedefaultlist = false;
+        private bool savingfromthedefaultlist = false;
 
         private void btnSaveMatchList_Click(object sender, RoutedEventArgs e)
         {
@@ -835,7 +844,7 @@ namespace MSViewer
             prompt.ShowDialog();
         }
 
-        void prompt_Closing(object sender, CancelEventArgs e)
+        private void prompt_Closing(object sender, CancelEventArgs e)
         {
             if (TrueorFalse.trueorfalse)
             {
@@ -851,13 +860,13 @@ namespace MSViewer
             }
         }
 
-        void SelectMatchList()
+        private void SelectMatchList()
         {
             int index = indexofstringvalue(App.strDictionary, ReturnValue.returnvalue.Trim().ToLower());
             cmbMatchList.SelectedIndex = index;
         }
 
-        void LoadAllCurrentMatchList()
+        private void LoadAllCurrentMatchList()
         {
             cmbMatchList.Items.Clear();
             List<string> allkeys = new List<string>();
@@ -881,24 +890,22 @@ namespace MSViewer
         public void InitializeDatabaseConnection()
         {
             List<Species> species = null;
-            
+
             string[] delimiter = { "\t" };
 
             if (App.Log != null) App.Log.WriteEntry("Species List in settings: " + Properties.Settings.Default.Genus, EventLogEntryType.Information);
 
-
             string[] st = Properties.Settings.Default.Genus.Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
-
 
             //string[] st1 = { "Bos taurus", "Homo", "Homo sapiens", "human", "Mus", "Mus musculus", "Rattus", "Rattus norvegicus", "Bos" };
             string[] defaultSpecies = { "Bos", "Homo", "Mus", "Rattus" };
 
-            // Make sure we use the latest connection string in case it got updated  
+            // Make sure we use the latest connection string in case it got updated
             db.ConnectionString = Properties.Settings.Default.ConnectionString;
 
             if (NetworkInterface.GetIsNetworkAvailable() && string.IsNullOrWhiteSpace(db.ConnectionString) == false)
             {
-                // Test the connection with a ping because it's quicker than trying to open a connection to a 
+                // Test the connection with a ping because it's quicker than trying to open a connection to a
                 // server that isn't there and letting it fail.  That is the default scenario for external users
                 // and I don't want the startup time to be slow for that use-case.  I could clear the connection details,
                 // but Lilly is my primary use case...
@@ -912,7 +919,6 @@ namespace MSViewer
                 {
                     try
                     {
-
                         //throw new Exception("login failed");  // uncomment to test access denied dialog
 
                         if (db.State == ConnectionState.Closed) db.Open();
@@ -979,7 +985,7 @@ namespace MSViewer
             App.DistinctSpecies = species.OrderBy(a => !(a.DefaultSpecies)).ThenBy(a => a.Genus).ThenBy(a => a.IsSelected == false).ToList();
         }
 
-        void scrollTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        private void scrollTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             scrollTimer.Stop();
 
@@ -989,9 +995,7 @@ namespace MSViewer
             {
                 try
                 {
-
                     CurrentSpectrum.SortByMass();
-
 
                     var YMax = Math.Max(CurrentSpectrum.GetMaxYValueForXRange((double)BottomChart.AxesX[0].ViewMinimum, (double)BottomChart.AxesX[0].ViewMaximum), ReverseCurrentSpectrum.GetMaxYValueForXRange((double)BottomChart.AxesX[0].ViewMinimum, (double)BottomChart.AxesX[0].ViewMaximum));
 
@@ -1000,18 +1004,14 @@ namespace MSViewer
                     Debug.WriteLine("Calculating new YMax: " + YMax.ToString() + ", " + BottomChart.AxesX[0].ViewMinimum + " - " + BottomChart.AxesX[0].ViewMaximum);
 
                     SetScaling();
-
                 }
                 catch { }
                 //}), DispatcherPriority.Background);
-
             }
             // Code was hanging here at the Dispatcher.Invoke, so added the Dispatcher Priority per this thread: http://stackoverflow.com/questions/16298600/dispatcher-invoke-hangs-main-window
-
         }
 
-
-        void MainWindow_Scroll(object sender, AxisScrollEventArgs e)
+        private void MainWindow_Scroll(object sender, AxisScrollEventArgs e)
         {
             scrollTimer.Stop();
 
@@ -1022,8 +1022,7 @@ namespace MSViewer
             scrollTimer.Start();
         }
 
-
-        void CurrentMonoMasses_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void CurrentMonoMasses_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             dtgridMonoMasses.DataContext = CurrentMonoMasses;
             //txtMonoMasses.Text = string.Join("\n", CurrentMonoMasses.Select(m => ((double)m.XValue).ToString("0.00000") + "\t" + m.YValue.ToString("0000.0000") + "\t" + m.ZValue.ToString()));
@@ -1031,24 +1030,23 @@ namespace MSViewer
             btnFindAA.ToolTip = CurrentMonoMasses.Count() + " MonoIsotopes detected.";
         }
 
-        void MainPage_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        private void MainPage_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             e.Handled = true;
         }
 
-        List<SpectrumInfo> specs = new List<SpectrumInfo>();
+        private List<SpectrumInfo> specs = new List<SpectrumInfo>();
 
-        bool loadraworagilent = true;
+        private bool loadraworagilent = true;
 
-        bool PreviousXMLFileloaded = false;
+        private bool PreviousXMLFileloaded = false;
 
-        FileSystemInfo flsinfo;
+        private FileSystemInfo flsinfo;
 
         private void RootElement_Drop(object sender, DragEventArgs e)
         {
             RootElement_Drop(sender, e, null);
         }
-
 
         // Handle drag/drop
         private void RootElement_Drop(object sender, DragEventArgs e, string path)
@@ -1070,10 +1068,8 @@ namespace MSViewer
                 //System.Windows.MessageBox.Show(this, "files: " + string.Join(", ", (e.Data.GetData("FileDrop") as string[])));
                 //System.Windows.MessageBox.Show(this, "files: " + string.Join(", ", (e.Data.GetData("FileDrop") as string[])));
 
-
                 if (path != null || e.Data.GetDataPresent("FileDrop"))
                 {
-
                     //An array of dropped-in files.
                     IEnumerable<FileSystemInfo> files = null;
 
@@ -1086,15 +1082,12 @@ namespace MSViewer
                     {
                         files = (e.Data.GetData("FileDrop") as string[]).Where(f => Directory.Exists(f) || File.Exists(f)).Select(f => File.GetAttributes(f).HasFlag(FileAttributes.Directory) ? new DirectoryInfo(f) as FileSystemInfo : new FileInfo(f) as FileSystemInfo);
 
-                        if (App.Log != null) App.Log.WriteEntry("Files were dragged/dropped into DeCharger = " + string.Join("; ", files.Select(f =>f.FullName)), EventLogEntryType.Information);
-
+                        if (App.Log != null) App.Log.WriteEntry("Files were dragged/dropped into DeCharger = " + string.Join("; ", files.Select(f => f.FullName)), EventLogEntryType.Information);
                     }
                     else
                     {
                         return; // no valid file was passed
                     }
-
-
 
                     VisualStateManager.GoToState(this, "Normal", false);
 
@@ -1105,7 +1098,7 @@ namespace MSViewer
 
                     var unsupportedFiles = files.Where(f => supportedFiles.Select(x => x.FullName).Contains(f.FullName) == false);
 
-                    // apparently a .applcation file can sometimes be passed in by the ClickOnce startup.  Ignore that, but show error for anything else.  
+                    // apparently a .applcation file can sometimes be passed in by the ClickOnce startup.  Ignore that, but show error for anything else.
                     if (unsupportedFiles.Where(f => f.FullName.EndsWith(".application") == false).Any())
                     {
                         System.Windows.MessageBox.Show("Files of type " + string.Join(",", unsupportedFiles.Select(f => f.Extension).Distinct()) + " are not supported and will be skipped.  ", "File Rejection", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -1116,15 +1109,13 @@ namespace MSViewer
                         supportedFiles = supportedFiles.OrderByDescending(a => a.Extension.ToUpper() == ".SSR").ToList();
                     }
 
-
-
                     if (supportedFiles != null && supportedFiles.Any() && supportedFiles.Any(f => f.Extension.ToUpper() == ".FASTA" || f.Extension.ToUpper() == ".FSA"))
                     {
                         stringbuilderforBlastp.Clear();
                         if (fileLoadWorkers.Any())
                         {
                             foreach (var aWorker in fileLoadWorkers) aWorker.CancelAsync();  // cancel any workers that are already loading a fasta file because a new file was just dropped
-                            Thread.Sleep(100);  // wait for threads to cancel?  
+                            Thread.Sleep(100);  // wait for threads to cancel?
                         }
 
                         App.lstFasta = new List<FASTA>();
@@ -1195,7 +1186,6 @@ namespace MSViewer
 
                                 MainPointProvider = new mzMLProvider((aFile as FileInfo).OpenRead()) { MassTolerance = 5 };
 
-
                                 if (DechargerVM.SpectralDataFilename != aFile.Name)
                                 {
                                     DechargerVM.ClearResults();
@@ -1204,17 +1194,16 @@ namespace MSViewer
 
                                 DechargerVM.SpectralDataFilename = aFile.Name;
 
-
                                 //TODO: hardcoded to Thermo file type to set that masstoleranceppm and matchtoleranceppm
                                 // Make this file mode detected by reading the instrument values from the file and exposing them in the IMSProvider Interface
-                                // Like these: 
+                                // Like these:
                                 // <referenceableParamGroupList count="1">
                                 // < referenceableParamGroup id = "CommonInstrumentParams" >
                                 // < cvParam value = "" name = "LTQ Orbitrap Velos" accession = "MS:1001742" cvRef = "MS" />
-                                // or look for an orbitrap analyzer: 
+                                // or look for an orbitrap analyzer:
                                 // <analyzer order="2">
                                 //< cvParam value = "" name = "orbitrap" accession = "MS:1000484" cvRef = "MS" />
-                                // 
+                                //
 
                                 DechargerVM.CurrentFileType = clsFileType.MSFileType.Thermo;
                                 App.CurrentFileType = clsFileType.MSFileType.Thermo;
@@ -1222,12 +1211,10 @@ namespace MSViewer
                                 Properties.Settings.Default.MatchTolerancePPM = Convert.ToDouble(Properties.Settings.Default.MatchTolerancePPMBasedonFileType[1]);
                                 Properties.Settings.Default.MassTolerancePPM = Convert.ToDouble(Properties.Settings.Default.MassTolerancePPMBasedonFileType[1]);
 
-
                                 break;  // we can only load one Mass Spec file
                             }
                             else if (RMSProvider.CanReadFormat(aFile))
                             {
-
                                 if (string.IsNullOrWhiteSpace(DechargerVM.WorkspaceFilename) == false)
                                 {
                                     // We currently have a workspace loaded...
@@ -1237,11 +1224,13 @@ namespace MSViewer
                                         case LoadCurrentFile.Load: ///If the response is to load then do nothing
                                             PreviousXMLFileloaded = true;
                                             break;
+
                                         case LoadCurrentFile.Unload: ///If the response is to unload then unload the current ssr xml file.
                                             App.XMLFileName = string.Empty;
                                             UnloadSequenceSearchResults();
                                             //UnloadSSRXMLFile();
                                             break;
+
                                         case LoadCurrentFile.Pass: ///If the response is to Pass then continue the loop without loading the current file.
                                             loadraworagilent = false;
                                             continue;
@@ -1259,18 +1248,17 @@ namespace MSViewer
                                 EnableAllViews();
 
                                 //txtblkSequenceSearchResult.Visibility = System.Windows.Visibility.Hidden;
-                                ///If there is any XML file already loaded then check if it has the same name as the file loaded. 
+                                ///If there is any XML file already loaded then check if it has the same name as the file loaded.
 
                                 //lblTheoreticalMass.Content = "";
                                 try
                                 {
                                     //if (Environment.Is64BitProcess)
-                                        MainPointProvider = new RMSProvider(aFile as FileInfo, Properties.Settings.Default.MinThermoThresholdMS1, Properties.Settings.Default.MinThermoThresholdMS2) { MassTolerance = Properties.Settings.Default.MassTolerancePPM };
+                                    MainPointProvider = new RMSProvider(aFile as FileInfo, Properties.Settings.Default.MinThermoThresholdMS1, Properties.Settings.Default.MinThermoThresholdMS2) { MassTolerance = Properties.Settings.Default.MassTolerancePPM };
                                     //else
                                     //    MainPointProvider = new RMSProvider32(aFile as FileInfo) { MassTolerance = Properties.Settings.Default.MassTolerancePPM };
 
                                     //MainPointProvider = new RMSProvider(aFile.FullName) { MassTolerance = Properties.Settings.Default.MassTolerancePPM };
-
 
                                     if (DechargerVM.SpectralDataFilename != aFile.Name)
                                     {
@@ -1294,12 +1282,10 @@ namespace MSViewer
                                     System.Windows.MessageBox.Show("The minimum required Thermo Foundation version is 3.0. Please update the update the Thermo Foundation to continue.", "Install Thermo Foundation.", MessageBoxButton.OK, MessageBoxImage.Asterisk);
                                 }
 
-                                break;  // we can only load one Mass Spec file                            
+                                break;  // we can only load one Mass Spec file
                             }
                             else if (AgilentProvider.CanReadFormat(aFile)) ///&& (Properties.Settings.Default.AgilentAgreed || System.Windows.MessageBox.Show(Properties.Settings.Default.AgilentEULA, "Do you agree to the following Terms?", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)) // && System.Diagnostics.Debugger.IsAttached)
                             {
-
-
                                 flsinfo = aFile;
 
                                 if (!Properties.Settings.Default.AgilentAgreed)
@@ -1315,7 +1301,7 @@ namespace MSViewer
                                     //CanReadAgilentFile.Closing += CanReadAgilentFile_Closing;
                                     CanReadAgilentFile.Activate();
                                     CanReadAgilentFile.ShowDialog();
-                                    //break;  // we can only load one Mass Spec file                            
+                                    //break;  // we can only load one Mass Spec file
                                 }
 
                                 if (Properties.Settings.Default.AgilentAgreed)
@@ -1353,7 +1339,6 @@ namespace MSViewer
                     {
                         lblFASTAFileName = lblFASTAFileName.Substring(0, 43) + " ....";
                     }
-
 
                     if (supportedFiles != null && supportedFiles.Any() && supportedFiles.Any(f => RMSProvider.CanReadFormat(f) || ZMSProvider.CanReadFormat(f) || mzDataProvider.CanReadFormat(f) || mzMLProvider.CanReadFormat(f) || (AgilentProvider.CanReadFormat(f) && Properties.Settings.Default.AgilentAgreed)) && loadraworagilent)
                     {
@@ -1414,7 +1399,7 @@ namespace MSViewer
         /// <summary>
         /// Clear All the charts and spectrum
         /// </summary>
-        void ResetChartsAndGrids()
+        private void ResetChartsAndGrids()
         {
             Dispatcher.Invoke((Action)(() =>
                {
@@ -1447,7 +1432,6 @@ namespace MSViewer
                        series.DataSource = null;
                    }
 
-
                    foreach (var series in TIC_Chart.Series)
                    {
                        series.DataPoints.Clear();
@@ -1465,7 +1449,6 @@ namespace MSViewer
                        series.DataPoints.Clear();
                        series.DataSource = null;
                    }
-
 
                    ///Clearing the Spectrum
                    lblTheoreticalMass.Content = string.Empty;
@@ -1496,8 +1479,6 @@ namespace MSViewer
                    lblbandyionpercentagehidden.Content = string.Empty;
                    dtgridBandYIons.ItemsSource = null;
 
-
-
                    //BottomChart.IsEnabled = false;
 
                    btnFindSequenceinSpectrum.IsEnabled = false;
@@ -1505,7 +1486,6 @@ namespace MSViewer
 
                    Dispatcher.Invoke((Action)(() =>
                    {
-
                        foreach (var series in ErrorPlot.Series)
                        {
                            series.DataPoints.Clear();
@@ -1541,11 +1521,10 @@ namespace MSViewer
                }));
         }
 
-
         /// <summary>
         /// Clear all the bindings associated with when a SSRXML file is loaded.
         /// </summary>
-        void UnloadSequenceSearchResults()
+        private void UnloadSequenceSearchResults()
         {
             DechargerVM.ClearResults();
             UpdateWorkspaceTitle();
@@ -1558,7 +1537,7 @@ namespace MSViewer
         /// Loads a SequenceSearch Results (or Workspace) saved from an auto scan into the tool.
         /// </summary>
         /// <param name="filename"></param>
-        void LoadWorkspace(FileSystemInfo file)
+        private void LoadWorkspace(FileSystemInfo file)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(SearchSummary));
             var filename = App.FileName;
@@ -1587,21 +1566,19 @@ namespace MSViewer
             // Based on: http://stackoverflow.com/questions/1625042/the-process-cannot-access-the-file-because-it-is-being-used-by-another-process
             // Based on: http://stackoverflow.com/questions/30687987/unable-to-decompress-bz2-file-has-orginal-file-using-dotnetzip-library/32850209
 
+            //When opening as an attachment in outlook, the temp file created is Read-Only.  So we must open it as such or else, an exception is thrown.
 
-            //When opening as an attachment in outlook, the temp file created is Read-Only.  So we must open it as such or else, an exception is thrown.  
-
-            //Readonly files should be detected, files opened in readonly mode should be marked in the UI and Curation saving buttons, curation deletion, and the save button should be disabled.  
+            //Readonly files should be detected, files opened in readonly mode should be marked in the UI and Curation saving buttons, curation deletion, and the save button should be disabled.
 
             //var shareMode = FileShare.Read;
 
             //if ((file.Attributes & FileAttributes.ReadOnly) != FileAttributes.ReadOnly) shareMode = FileShare.ReadWrite;
 
             // Actually, after further thought, the files are never edited.  When a change is made, it is made in memory and when a save is attempted is when an error would be thrown with a read-only file.  The only change is to handle that
-            // exception by offering to save a copy in a new location.  So show the "save as" dialog.  
+            // exception by offering to save a copy in a new location.  So show the "save as" dialog.
 
             using (var fs = file.Name.ToUpper().EndsWith("SSR") ? new ZipInputStream(new FileStream(file.FullName, FileMode.Open, FileAccess.Read)) as Stream : new FileStream(file.FullName, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-
                 if (fs is ZipInputStream)  // .SSR files are presumed to be zipped
                 {
                     (fs as ZipInputStream).GetNextEntry();  // take the first file entry within the zip (additional files would be ignored by this code)
@@ -1615,25 +1592,25 @@ namespace MSViewer
                     {
                         case LoadCurrentFile.Load: //If the result is load, then load the current file
                             break;
+
                         case LoadCurrentFile.Unload: //If the result is unload, then check the file type and unload the file
                             ResetChartsAndGrids();
                             MainPointProvider = null;
                             DechargerVM.Clear();
 
-
                             break;
+
                         case LoadCurrentFile.Pass: // If the result is pass, then don't load or unload the file.
                             loadraworagilent = false;
                             return;
+
                         default:
                             break;
                     }
                 }
 
-                // Clear out any old results.  
+                // Clear out any old results.
                 DechargerVM.ClearResults();
-
-
 
                 App.SSRXMLMatchTolerancePPM = deserializedSearchSummary.CurrentSettings.MatchTolerancePPMs;
                 App.XMLFileName = deserializedSearchSummary.SpectralDataFilename;
@@ -1641,26 +1618,24 @@ namespace MSViewer
                 Properties.Settings.Default.MatchTolerancePPM = deserializedSearchSummary.CurrentSettings.MatchTolerancePPMs;
                 Properties.Settings.Default.MassTolerancePPM = deserializedSearchSummary.CurrentSettings.MassTolerancePPMs;
 
-
                 App.FASTAName = deserializedSearchSummary.SpectralDataFilename + ".fasta";
 
                 if (filename == null)
                 {
                     BottomChart.Titles[1].Text = "";
-
                 }
 
                 //txtblkSequenceSearchResult.ToolTip = "Username : " + deserializedSearchSummary.UserName + "   UserID: " + deserializedSearchSummary.UserID + "  DateTime:  " + deserializedSearchSummary.CurrentDateTime;
-
-
 
                 switch (deserializedSearchSummary.VersionNumber)
                 {
                     case 1:
                         break;
+
                     case 2:
                         //SetSettingsfromXML(sqsssrlst);
                         break;
+
                     default:
                         break;
                 }
@@ -1684,7 +1659,7 @@ namespace MSViewer
                 App.lstFasta = GetFastafromSequenceSearch(deserializedSearchSummary.SearchResults);
                 App.FASTAName = "SSR.fasta";
 
-                // NEW RESULTS ARE NOW LOADED!! 
+                // NEW RESULTS ARE NOW LOADED!!
                 DechargerVM.WorkspaceDirectory = System.IO.Path.GetDirectoryName(file.FullName);
                 DechargerVM.WorkspaceFilename = file.Name; // not sure if this is right... deserializedSearchSummary.SpectralDataFilename;
                 DechargerVM.CurrentFilesLoaded.Add(file.Name);
@@ -1695,7 +1670,7 @@ namespace MSViewer
                 //DechargerVM.CurrentFileType = deserializedSearchSummary.InstrumentType;  // default to Thermo
 
                 UpdateWorkspaceTitle(deserializedSearchSummary.SearchEndTime);
-                //dockTools.Title = ToolsDockTitleRoot + " - " + DechargerVM.WorkspaceFilename + (deserializedSearchSummary.SearchEndTime.Year > 2015 ? (" @ " + deserializedSearchSummary.SearchEndTime.ToString("g")) : string.Empty);   
+                //dockTools.Title = ToolsDockTitleRoot + " - " + DechargerVM.WorkspaceFilename + (deserializedSearchSummary.SearchEndTime.Year > 2015 ? (" @ " + deserializedSearchSummary.SearchEndTime.ToString("g")) : string.Empty);
 
                 // update fasta labels in UI
                 Dispatcher.Invoke(new Action(() =>
@@ -1722,7 +1697,7 @@ namespace MSViewer
         /// </summary>
         /// <param name="?"></param>
         /// <returns></returns>
-        List<FASTA> GetFastafromSequenceSearch(IEnumerable<SearchResult> sqssearchlst)
+        private List<FASTA> GetFastafromSequenceSearch(IEnumerable<SearchResult> sqssearchlst)
         {
             var fastaEntries = new List<FASTA>();
 
@@ -1776,7 +1751,6 @@ namespace MSViewer
                     Notagsforhighlight = true,
                     SequenceID = item.SequenceID
                 });
-
             }
             if (BoundSequences.Count != 0)
             {
@@ -1797,7 +1771,7 @@ namespace MSViewer
         /// Set all the settings from the XML file
         /// </summary>
         /// <param name="sqssrlst"></param>
-        void SetSettingsfromXML(SearchSummary sqssrlst)
+        private void SetSettingsfromXML(SearchSummary sqssrlst)
         {
             Properties.Settings.Default.AgilentAgreed = sqssrlst.CurrentSettings.AgilentAgreed;
             Properties.Settings.Default.AgilentEULA = sqssrlst.CurrentSettings.AgilentEULA;
@@ -1849,7 +1823,7 @@ namespace MSViewer
             Properties.Settings.Default.Save();
         }
 
-        void LoadAgilentFile()
+        private void LoadAgilentFile()
         {
             var aFile = flsinfo;/// sender as DirectoryInfo;
 
@@ -1862,14 +1836,17 @@ namespace MSViewer
                 {
                     case LoadCurrentFile.Load:
                         break;
+
                     case LoadCurrentFile.Unload:
-                        App.XMLFileName = string.Empty;  // Comment out?  
+                        App.XMLFileName = string.Empty;  // Comment out?
                         UnloadSequenceSearchResults();
                         ///UnloadSSRXMLFile();
                         break;
+
                     case LoadCurrentFile.Pass:
                         loadraworagilent = false;
                         return;
+
                     default:
                         break;
                 }
@@ -1919,22 +1896,23 @@ namespace MSViewer
         /// <summary>
         /// Load, unload or pass the currentfile
         /// </summary>
-        enum LoadCurrentFile
+        private enum LoadCurrentFile
         {
             /// <summary>
             /// Load the current file because the Search results and raw data go together
             /// </summary>
             Load,
+
             /// <summary>
             /// Unload the conflicting files (or all files) and load the file
             /// </summary>
             Unload,
+
             /// <summary>
             /// Do nothing with the current file -- Load Nothing and exit
             /// </summary>
             Pass
         }
-
 
         /// <summary>
         /// If the files are different Show a MessageBox if the user wants to unload the current file.
@@ -1944,7 +1922,7 @@ namespace MSViewer
         /// <param name="CurrentFileName"></param>
         /// <param name="NewFileName"></param>
         /// <returns></returns>
-        LoadCurrentFile DecideWhetherToUnload(string CurrentFileName, string NewFileName)
+        private LoadCurrentFile DecideWhetherToUnload(string CurrentFileName, string NewFileName)
         {
             if (CurrentFileName == NewFileName)
             {
@@ -1970,12 +1948,11 @@ namespace MSViewer
             }
         }
 
-
         /// <summary>
         /// Delete all the files in a given folder
         /// </summary>
         /// <param name="folderpath"></param>
-        void DeleteFilesfromFolder(string folderpath)
+        private void DeleteFilesfromFolder(string folderpath)
         {
             System.IO.DirectoryInfo di = new DirectoryInfo(folderpath);
 
@@ -1989,16 +1966,16 @@ namespace MSViewer
             }
         }
 
-        void bgworkerforcreatingindexeddatabase_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void bgworkerforcreatingindexeddatabase_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Result != null && e.Result is Exception)
             {
-                // throw the exception from the worker!  
+                // throw the exception from the worker!
                 throw e.Result as Exception;
             }
         }
 
-        void bgworkerforcreatingindexeddatabase_DoWork(object sender, DoWorkEventArgs e)
+        private void bgworkerforcreatingindexeddatabase_DoWork(object sender, DoWorkEventArgs e)
         {
             if (e.Argument != null && e.Argument is StringBuilder)
             {
@@ -2030,7 +2007,7 @@ namespace MSViewer
             //}));
         }
 
-        void AddChromatogramCursor(Chart aChart)
+        private void AddChromatogramCursor(Chart aChart)
         {
             aChart.PlotArea = new PlotArea() { Tag = aChart };
             aChart.PlotArea.MouseMove += PlotArea_MouseMove;
@@ -2060,17 +2037,17 @@ namespace MSViewer
             Chromatograms.Add(aChart);
         }
 
-        void aChart_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void aChart_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             throw new NotImplementedException();
         }
 
-        void PlotArea_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void PlotArea_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             throw new NotImplementedException();
         }
 
-        void AddSpectrumCursor(Chart aChart)
+        private void AddSpectrumCursor(Chart aChart)
         {
             aChart.PlotArea = new PlotArea() { Tag = aChart };
             aChart.PlotArea.MouseMove += PlotArea_MouseMove;
@@ -2084,7 +2061,7 @@ namespace MSViewer
             aChart.TrendLines.Insert(1, t2);
         }
 
-        void Spec_MouseLeftButtonDown(object sender, PlotAreaMouseButtonEventArgs e)
+        private void Spec_MouseLeftButtonDown(object sender, PlotAreaMouseButtonEventArgs e)
         {
             // Snaps the offset value to the nearest monomass or other feature
 
@@ -2098,8 +2075,7 @@ namespace MSViewer
             var start = ((double)e.XValue) - totalTolerance;
             var end = ((double)e.XValue) + totalTolerance;
 
-
-            // Find nearest MonoMass? 
+            // Find nearest MonoMass?
             if (CurrentMonoMasses != null && CurrentMonoMasses.Count > 0)
             {
                 // Find the closest monoMZ within the tolerance...
@@ -2128,7 +2104,7 @@ namespace MSViewer
             {
                 var ends = new List<double>(); // { 0, Molecules.Water };
 
-                // The ends are 0 and the ParentMass, but since we don't know which end is the C terminus, we allow locking to a mass shifted by the fragment ends.  
+                // The ends are 0 and the ParentMass, but since we don't know which end is the C terminus, we allow locking to a mass shifted by the fragment ends.
                 // Note: Different activations may require a difference mass!  We are assuming b/y ions
                 ends.Add(0);
                 ends.Add(Molecules.Water);
@@ -2149,7 +2125,7 @@ namespace MSViewer
                 }
             }
 
-            // Find nearest/intense point? 
+            // Find nearest/intense point?
             if (CurrentSpectrum != null && CurrentSpectrum.Count > 0)
             {
                 var candidate = CurrentSpectrum.GetItemWithMaxYValueForXRange(start, end);
@@ -2169,7 +2145,7 @@ namespace MSViewer
             return;
         }
 
-        void Spec_MouseRightButtonDown(object sender, PlotAreaMouseButtonEventArgs e)
+        private void Spec_MouseRightButtonDown(object sender, PlotAreaMouseButtonEventArgs e)
         {
             //SpecRightClickSpot = (double)e.XValue;
 
@@ -2178,14 +2154,12 @@ namespace MSViewer
 
             if (xvalue == 0) xvalue = (double)e.XValue;
 
-
             var candidates = CurrentMonoMasses.Where(w => Math.Abs((double)w.XValue - xvalue) < Math.Min(zoomWidth / 12, 10)).OrderBy(i => Math.Abs((double)i.XValue - xvalue));
             var candidateIons = CurrentIons.Where(w => Math.Abs((double)w.MonoMass - xvalue) < Math.Min(zoomWidth / 12, 10)).OrderBy(i => Math.Abs((double)i.MonoMass - xvalue)); ;
 
-
             if (xvalue != 0 && candidates.Any())
             {
-                // Update Menu Show/Hide based on the presence of a peak.  
+                // Update Menu Show/Hide based on the presence of a peak.
                 //var targetIon2 = CurrentIons.MinBy(i => Math.Abs(i.MonoMass - (double)e.XValue));
                 //if (MonoMasslabel.DataPoints.Where(h => (double)h.XValue == targetIon2.MonoMass).Any())
                 this.mnuShowMonoLabel.IsEnabled = true;
@@ -2214,7 +2188,6 @@ namespace MSViewer
                 this.mnuShowMonoLabel.IsEnabled = false;
                 this.mnuShowMonoLabel.Tag = null;
             }
-
 
             MenuItem9.IsEnabled = (CurrentMonoMasses != null && CurrentMonoMasses.Any());
 
@@ -2248,8 +2221,6 @@ namespace MSViewer
                 this.MenuItem8.Header = this.MenuItem8.Header.ToString().TrimEnd(';', ' ');
 
                 this.MenuItem8.IsEnabled = true;
-
-
             }
             catch
             {
@@ -2262,8 +2233,7 @@ namespace MSViewer
 
         internal List<Cluster> FindChargeVariants(Cluster cluster)
         {
-
-            // Enhanced Mono Mass Detection 
+            // Enhanced Mono Mass Detection
             // 1. Group ions by shared peaks
             // 2. Take MonoMass of ions in group with the highest score
             // 3. Add to CurrentMonoMasses List
@@ -2285,8 +2255,6 @@ namespace MSViewer
 
                 //CurrentMonoMasses.Add(new DataPoint() { XValue = anIon.MonoMass, YValue = anIon.Intensity, ZValue = anIon.Z });
                 //alreadyGrouped.AddRange(currentGroup);
-
-
             }
 
             return variants;
@@ -2296,7 +2264,6 @@ namespace MSViewer
 
         internal Cluster FindClosestCluster(double start, double end)
         {
-
             var x = CurrentSpectrum.Where(p => p.Mass < end && p.Mass > start);
             //var y = x.Select(a => a)
             var y = x.Select(r => r.Parent);
@@ -2332,9 +2299,9 @@ namespace MSViewer
             return FindBestXicTargets(FindClosestCluster(start, end), singleRange);
         }
 
-        string Querystring = string.Empty;
+        private string Querystring = string.Empty;
 
-        void SearchDataGrid(string Querystr)
+        private void SearchDataGrid(string Querystr)
         {
             if ((NetworkInterface.GetIsNetworkAvailable() && db.State == ConnectionState.Open) || DechargerVM.UseFasta)
             {
@@ -2427,7 +2394,7 @@ namespace MSViewer
             Debug.Print(DateTime.Now.ToString("hh.mm.ss.ffffff") + " SearchDataGrid Complete: " + Querystr);
         }
 
-        void bgsearchdatagrid_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void bgsearchdatagrid_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             Debug.Print(DateTime.Now.ToString("hh.mm.ss.ffffff") + " bgsearchdatagrid_RunWorkerCompleted");
 
@@ -2480,20 +2447,20 @@ namespace MSViewer
                 dtgrdSearchSequence.SelectedIndex = 0;
                 btnShowDBSequence_Click(null, null);
             }
-
         }
 
         //BindableRichTextBox rn = new BindableRichTextBox();
-        bool searchseq = false;
+        private bool searchseq = false;
+
         /// <summary>
-        /// Searches for a particular pattern in the database based 
+        /// Searches for a particular pattern in the database based
         /// on sequence and filter.
         /// Filter can be either Accession or Description.
         /// Need to add the Scientific name.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void bgsearchdatagrid_DoWork(object sender, DoWorkEventArgs e)
+        private void bgsearchdatagrid_DoWork(object sender, DoWorkEventArgs e)
         {
             string[] splitstring = { "[", "!", "@", "$", " ", ",", ".", ";", "{", "}", "/", "]", "or", "OR", "and", "AND" };
             ///Splitting the search term into different strings using the regex
@@ -2533,7 +2500,6 @@ namespace MSViewer
 
             //Dispatcher.Invoke(new Action(() =>
             //    {
-
             //If the sequence length is less that 3 then ask the user to enter a longer sequence
             if (sequenceforsearch.Length < 3 && sequenceforsearch.Length > 0 && filter == string.Empty)
             {
@@ -2597,7 +2563,6 @@ namespace MSViewer
             //If there is only a sequence then search using that particular term.
             if (Querystring != "" && Querystring != null && sequenceforsearch != "" && sequenceforsearch != null && searchtext.Count() == 1)
             {
-
                 Dispatcher.Invoke(new Action(() =>
                 {
                     ComboBox cmb = FindVisualChildByName<ComboBox>(dtgrdSearchSequence, "cmbSpecies");
@@ -2739,7 +2704,6 @@ namespace MSViewer
 
                 //Dispatcher.Invoke(new Action(() =>
                 //{
-
                 //    dtgrdSearchSequence.ItemsSource = tempSequence.OrderByDescending(a => Math.Abs(a.TagHits)).ToList(); ;/// Searchforfilter(filter, sqsalltags, CurrentIons); //If only filter is present then use this method Where(a => a.TagHits > 0).
                 //}));
             }
@@ -2749,14 +2713,14 @@ namespace MSViewer
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="searchTags">Primary amino acid sequence search targets</param>
         /// <param name="allTags">All tags -- used to score prospective protein matches</param>
         /// <param name="spec">Spectral data -- used to score prospective protein matches</param>
         /// <param name="useBlast">Use blast to perform a similarity search</param>
         /// <returns></returns>
-        IEnumerable<SearchResult> SearchForProteins(IEnumerable<string> searchTags, IEnumerable<FindSequenceTags.SequenceTag> allTags, SuperSpectrum spec, bool useBlast = true, CancellationToken cToken = default(CancellationToken), bool throwUIExceptions = false)
+        private IEnumerable<SearchResult> SearchForProteins(IEnumerable<string> searchTags, IEnumerable<FindSequenceTags.SequenceTag> allTags, SuperSpectrum spec, bool useBlast = true, CancellationToken cToken = default(CancellationToken), bool throwUIExceptions = false)
         {
             if (DechargerVM.UseFasta)
             {
@@ -2770,9 +2734,8 @@ namespace MSViewer
             }
         }
 
-        IEnumerable<SearchResult> PerformLocalSearch(IEnumerable<string> searchTags, IEnumerable<FindSequenceTags.SequenceTag> allTags, SuperSpectrum spec, bool useBlast = true, CancellationToken cToken = default(CancellationToken), bool throwUIExceptions = false)
+        private IEnumerable<SearchResult> PerformLocalSearch(IEnumerable<string> searchTags, IEnumerable<FindSequenceTags.SequenceTag> allTags, SuperSpectrum spec, bool useBlast = true, CancellationToken cToken = default(CancellationToken), bool throwUIExceptions = false)
         {
-
             if (cToken.IsCancellationRequested) throw new OperationCanceledException();
 
             //TODO: Where is the species filtering?  Answer: The user specifies species by virtue of which FASTA files are loaded into the tool...
@@ -2781,14 +2744,14 @@ namespace MSViewer
             var allTagsList = allTags.ToList();
             //string selectedSpecies = "'" + string.Join(",", App.DistinctSpecies.Where(a => a.IsSelected).Select(a => a.SpeciesID)) + "'";
 
-            // All de novo tags should be leucine neutral because from MS analysis, we cannot differentiate L and I.  
+            // All de novo tags should be leucine neutral because from MS analysis, we cannot differentiate L and I.
             searchTags = searchTags.Select(t => t.MakeLeucineNeutral()).AddReverse();
 
             //                if (Properties.Settings.Default.UseBlast && aSearchTag.Length >= Properties.Settings.Default.SequenceTagLength && BlastSequences != null)
             if (useBlast)
             {
-                //TODO: move this into the Blast classes -- this is blast specific file formatting and should not be here.  
-                // maybe we use the query sequence as the query ID since it should be unique.  Is there a character limit to the ID??  
+                //TODO: move this into the Blast classes -- this is blast specific file formatting and should not be here.
+                // maybe we use the query sequence as the query ID since it should be unique.  Is there a character limit to the ID??
 
                 Dictionary<Guid, string> hashcodesforblastsequences = new Dictionary<Guid, string>();
                 StringBuilder stringbuilderlocal = new StringBuilder();
@@ -2810,38 +2773,37 @@ namespace MSViewer
                 var queryresult = BlastP.BlastQueryResults(stringbuilderlocal);
 
                 results = (from FASTA f in App.lstFasta
-                            join clsBlastpResults cbp in queryresult on f.SequenceID equals cbp.SubjectSequenceID
-                            select new SearchResult
-                            {
-                                ScanNumbers = string.Join(",", spec.ScanNumbers), // App.ParentDetails.ScanNumber != null ? App.ParentDetails.ScanNumber : "",
-                                ParentZ = spec.ParentIon.Z,
-                                Accession = f.Accession,
-                                Description = f.Description,
-                                Sequence = f.Sequence,
-                                Species = f.Species,
-                                PairMatch = hashcodesforblastsequences[Guid.Parse(cbp.QuerySequenceID)].Split(' ').ToList(), /// sequenceforsearch,
-                                //Allthesequencetags = allsequencetags,
-                                //Mass = 0,
-                                //DeltaMass = 0,
-                                sequencesfordbmatching = null,
-                                CurntIons = spec.Ions,
-                                AllsqsTags = allTagsList,
-                                ParentMass = spec.ParentIon.MonoMass,
-                                //DontShowall = Dontshowall,
-                                //BlastTag = f.Sequence.Substring(cbp.SequenceStart - 1, cbp.SequenceEnd - (cbp.SequenceStart - 1)),
-                                BlastTagStart = cbp.SequenceStart, // - 1
-                                BlastTagEnd = cbp.SequenceEnd,
-                                ExpectValue = cbp.Expectvalue,
-                                BlastedTagForTopProtein = hashcodesforblastsequences[Guid.Parse(cbp.QuerySequenceID)], // aSearchTag,
-                                BlastQueryStart = cbp.QueryStart,
-                                BlastQueryEnd = cbp.QueryEnd,
-                                RetentionTime = spec.RetentionTime.ToString()
-                            }).ToList();
-
+                           join clsBlastpResults cbp in queryresult on f.SequenceID equals cbp.SubjectSequenceID
+                           select new SearchResult
+                           {
+                               ScanNumbers = string.Join(",", spec.ScanNumbers), // App.ParentDetails.ScanNumber != null ? App.ParentDetails.ScanNumber : "",
+                               ParentZ = spec.ParentIon.Z,
+                               Accession = f.Accession,
+                               Description = f.Description,
+                               Sequence = f.Sequence,
+                               Species = f.Species,
+                               PairMatch = hashcodesforblastsequences[Guid.Parse(cbp.QuerySequenceID)].Split(' ').ToList(), /// sequenceforsearch,
+                               //Allthesequencetags = allsequencetags,
+                               //Mass = 0,
+                               //DeltaMass = 0,
+                               sequencesfordbmatching = null,
+                               CurntIons = spec.Ions,
+                               AllsqsTags = allTagsList,
+                               ParentMass = spec.ParentIon.MonoMass,
+                               //DontShowall = Dontshowall,
+                               //BlastTag = f.Sequence.Substring(cbp.SequenceStart - 1, cbp.SequenceEnd - (cbp.SequenceStart - 1)),
+                               BlastTagStart = cbp.SequenceStart, // - 1
+                               BlastTagEnd = cbp.SequenceEnd,
+                               ExpectValue = cbp.Expectvalue,
+                               BlastedTagForTopProtein = hashcodesforblastsequences[Guid.Parse(cbp.QuerySequenceID)], // aSearchTag,
+                               BlastQueryStart = cbp.QueryStart,
+                               BlastQueryEnd = cbp.QueryEnd,
+                               RetentionTime = spec.RetentionTime.ToString()
+                           }).ToList();
             }
             else
             {
-                // Local exact match search against local proteins  
+                // Local exact match search against local proteins
                 foreach (var aSearchTag in searchTags)
                 {
                     if (cToken.IsCancellationRequested) throw new OperationCanceledException();
@@ -2895,7 +2857,7 @@ namespace MSViewer
         /// <param name="allTags"></param>
         /// <param name="spec"></param>
         /// <returns></returns>
-        IEnumerable<SearchResult> SearchDatabaseServer(IEnumerable<string> searchTags, IEnumerable<FindSequenceTags.SequenceTag> allTags, SuperSpectrum spec, bool preferBlast = true, CancellationToken cToken = default(CancellationToken), bool throwUIExceptions = false)
+        private IEnumerable<SearchResult> SearchDatabaseServer(IEnumerable<string> searchTags, IEnumerable<FindSequenceTags.SequenceTag> allTags, SuperSpectrum spec, bool preferBlast = true, CancellationToken cToken = default(CancellationToken), bool throwUIExceptions = false)
         {
             var results = new List<SearchResult>();
             string selectedSpecies = "'" + string.Join(",", App.DistinctSpecies.Where(a => a.IsSelected).Select(a => a.SpeciesID)) + "'";
@@ -2916,8 +2878,8 @@ namespace MSViewer
 
                     if (Properties.Settings.Default.ExpressSearch &&
                         results.Any() &&
-                        results.Min(r => r.ExpectValue) < 0.00001 && 
-                        results.MinBy(r => r.ExpectValue).MatchCount > aSearchTag.Length) continue;  // if we match tags that are a GREAT MATCH, we assume this protein is identified with the existing 
+                        results.Min(r => r.ExpectValue) < 0.00001 &&
+                        results.MinBy(r => r.ExpectValue).MatchCount > aSearchTag.Length) continue;  // if we match tags that are a GREAT MATCH, we assume this protein is identified with the existing
 
                     cmd.CommandText = " SELECT COUNT(*) FROM [dbo].[FindProteinsByIsobaricSequenceforCountforSearchbySpeciesforSearchlimit]('" + aSearchTag + "', " + (Properties.Settings.Default.SearchAllSpecies ? "NULL" : selectedSpecies) + " ) ";
 
@@ -2931,7 +2893,7 @@ namespace MSViewer
                         int totalcount = scalarResult != DBNull.Value ? Convert.ToInt32(scalarResult) : 0;
                         if (totalcount >= 5000)
                         {
-                            // Too many results returned. 
+                            // Too many results returned.
 
                             if (throwUIExceptions)
                                 throw new WarningException("Please refine the search.  Too many results were returned!");
@@ -2942,7 +2904,7 @@ namespace MSViewer
 
                     // Blast when requested, except when tags are shorter than 4.  Exact match can do 4, but no less with a typical protein database
                     bool executingAsBlast = preferBlast && aSearchTag.Length > 4;
-                    
+
                     if (executingAsBlast)
                         // Server executed BLAST
                         cmd.CommandText = "EXEC BlastpBySpecies3 @SequenceTag , " + spec.ParentIon.MonoMass + ", " + (Properties.Settings.Default.SearchAllSpecies ? "NULL" : selectedSpecies);
@@ -2954,7 +2916,7 @@ namespace MSViewer
                     cmd.Parameters.Add(tagParam);
                     //try
                     //{
-                    using (var dr = cmd.ExecuteReader())  // the blast call can take 1.2 seconds or more per call!  Exact match is about 0.2 seconds per call.  
+                    using (var dr = cmd.ExecuteReader())  // the blast call can take 1.2 seconds or more per call!  Exact match is about 0.2 seconds per call.
                     {
                         int i = 0;
                         string accession;
@@ -2964,7 +2926,6 @@ namespace MSViewer
                         while (dr.Read())
                         {
                             if (cToken.IsCancellationRequested) throw new OperationCanceledException();
-
 
                             if (i++ > 10000)  // give up if we have too many results!
                             {
@@ -2977,7 +2938,7 @@ namespace MSViewer
                             }
 
                             accession = Convert.ToString(dr["Acc"]).Trim();
-                            if (results.Where(r => r.Accession == accession).Any()) continue;  // if this is a duplicate accession, skip it.  
+                            if (results.Where(r => r.Accession == accession).Any()) continue;  // if this is a duplicate accession, skip it.
 
                             results.Add(new SearchResult()
                             {
@@ -3001,7 +2962,7 @@ namespace MSViewer
                                 //IsBlastResult = executingAsBlast,
                                 BlastedTagForTopProtein = executingAsBlast ? aSearchTag : null,
                                 BlastTagStart = executingAsBlast ? dr["tagStart"] as int? ?? 0 : 0,
-                                BlastTagEnd = executingAsBlast ? dr["tagEnd"] as int? ?? 0: 0,  // executingAsBlast ? (dr["tagEnd"] != DBNull.Value ? Convert.ToInt32(dr["tagEnd"]) : 0) : 0,
+                                BlastTagEnd = executingAsBlast ? dr["tagEnd"] as int? ?? 0 : 0,  // executingAsBlast ? (dr["tagEnd"] != DBNull.Value ? Convert.ToInt32(dr["tagEnd"]) : 0) : 0,
                                 BlastQueryStart = executingAsBlast ? dr["queryStart"] as int? ?? 0 : 0,  //executingAsBlast ? (dr["queryStart"] != DBNull.Value ? Convert.ToInt32(dr["queryStart"]) : 0) : 0,
                                 BlastQueryEnd = executingAsBlast ? dr["queryEnd"] as int? ?? 0 : 0,  //executingAsBlast ? (dr["queryEnd"] != DBNull.Value ? Convert.ToInt32(dr["queryEnd"]) : 0) : 0,
                                 RetentionTime = spec.RetentionTime.ToString()
@@ -3012,22 +2973,21 @@ namespace MSViewer
             }
 
             return results;
-            //return results.DistinctBy(r => r.Accession); 
+            //return results.DistinctBy(r => r.Accession);
         }
 
-
-        IEnumerable<SearchResult> SearchforSequence(string sequence, IEnumerable<FindSequenceTags.SequenceTag> currentTags, SuperSpectrum spec) //IEnumerable<Cluster> ions, int ParentZ, string ScanNumbers, ref bool totalcount, double parentMass = 0, bool Dontshowall = false, List<string> BlastSequences = null)
+        private IEnumerable<SearchResult> SearchforSequence(string sequence, IEnumerable<FindSequenceTags.SequenceTag> currentTags, SuperSpectrum spec) //IEnumerable<Cluster> ions, int ParentZ, string ScanNumbers, ref bool totalcount, double parentMass = 0, bool Dontshowall = false, List<string> BlastSequences = null)
         {
             bool dummy = false;
 
-            return SearchforSequence(sequence, currentTags, spec.Ions, spec.ParentIon.Z, string.Join(",",spec.ScanNumbers), ref dummy, spec.ParentIon.MonoMass, true); 
+            return SearchforSequence(sequence, currentTags, spec.Ions, spec.ParentIon.Z, string.Join(",", spec.ScanNumbers), ref dummy, spec.ParentIon.MonoMass, true);
         }
 
         /// <summary>
         /// Finding sequences or highlighting them based on different sources
         /// </summary>
         /// <param name="sequence"></param>
-        IEnumerable<SearchResult> SearchforSequence(string sequence, IEnumerable<FindSequenceTags.SequenceTag> currentTags, IEnumerable<Cluster> ions, int ParentZ, string ScanNumbers, ref bool totalcount, double parentMass = 0, bool Dontshowall = false, IEnumerable<string> BlastSequences = null)
+        private IEnumerable<SearchResult> SearchforSequence(string sequence, IEnumerable<FindSequenceTags.SequenceTag> currentTags, IEnumerable<Cluster> ions, int ParentZ, string ScanNumbers, ref bool totalcount, double parentMass = 0, bool Dontshowall = false, IEnumerable<string> BlastSequences = null)
         {
             ///The default value being false we search using the database
             if (!DechargerVM.UseFasta)
@@ -3047,7 +3007,7 @@ namespace MSViewer
             }
         }
 
-        SearchResult SearchforSequenceforList(string sequence, IEnumerable<FindSequenceTags.SequenceTag> currentTags, IEnumerable<Cluster> ions, int ParentZ, string ScanNumbers, ref bool totalcount, double parentMass = 0, bool Dontshowall = false, List<string> BlastSequences = null, string sequencesearchtextfromauto = null)
+        private SearchResult SearchforSequenceforList(string sequence, IEnumerable<FindSequenceTags.SequenceTag> currentTags, IEnumerable<Cluster> ions, int ParentZ, string ScanNumbers, ref bool totalcount, double parentMass = 0, bool Dontshowall = false, List<string> BlastSequences = null, string sequencesearchtextfromauto = null)
         {
             ///The default value being false we search using the database
             if (!DechargerVM.UseFasta)
@@ -3075,7 +3035,7 @@ namespace MSViewer
         /// <param name="currentTags"></param>
         /// <param name="ions"></param>
         /// <returns></returns>
-        IEnumerable<SearchResult> SearchforSequenceandfilter(string sequence, string filter, IEnumerable<FindSequenceTags.SequenceTag> currentTags, IEnumerable<Cluster> ions, double ParentMass)
+        private IEnumerable<SearchResult> SearchforSequenceandfilter(string sequence, string filter, IEnumerable<FindSequenceTags.SequenceTag> currentTags, IEnumerable<Cluster> ions, double ParentMass)
         {
             ///If the source is database
             if (!DechargerVM.UseFasta)
@@ -3096,7 +3056,7 @@ namespace MSViewer
         /// <param name="currentTags"></param>
         /// <param name="ions"></param>
         /// <returns></returns>
-        IEnumerable<SearchResult> Searchforfilter(string filter, IEnumerable<FindSequenceTags.SequenceTag> currentTags, IEnumerable<Cluster> ions, double ParentMass)
+        private IEnumerable<SearchResult> Searchforfilter(string filter, IEnumerable<FindSequenceTags.SequenceTag> currentTags, IEnumerable<Cluster> ions, double ParentMass)
         {
             ///If the source is database
             if (!DechargerVM.UseFasta)
@@ -3121,7 +3081,7 @@ namespace MSViewer
             }
         }
 
-        int NumberofDatabasehitsforSequenceSearch(string sequence)
+        private int NumberofDatabasehitsforSequenceSearch(string sequence)
         {
             int count = 0;
             using (SqlCommand cmd = db.CreateCommand())
@@ -3156,12 +3116,9 @@ namespace MSViewer
         /// </summary>
         /// <param name="sequence"></param>
         //IEnumerable<SequenceSearch> SearchforSequenceUsingDatabase(string sequence, IEnumerable<FindSequenceTags.SequenceTag> currentTags, IEnumerable<Cluster> ions, double parentMass, ref int totalseqcount, List<FASTA> fastaEntries = null, bool Dontshowall = false, List<string> BlastSequences = null)
-        List<SearchResult> SearchforSequenceUsingDatabase(string sequence, IEnumerable<FindSequenceTags.SequenceTag> currentTags, IEnumerable<Cluster> ions, double parentMass, int ParentZ, string ScanNumbers, ref bool totalseqcount, List<FASTA> fastaEntries = null, bool Dontshowall = false, IEnumerable<string> BlastSequences = null)///, string sequencesearchitem = null)
+        private List<SearchResult> SearchforSequenceUsingDatabase(string sequence, IEnumerable<FindSequenceTags.SequenceTag> currentTags, IEnumerable<Cluster> ions, double parentMass, int ParentZ, string ScanNumbers, ref bool totalseqcount, List<FASTA> fastaEntries = null, bool Dontshowall = false, IEnumerable<string> BlastSequences = null)///, string sequencesearchitem = null)
         {
-            //TODO: Refactor someday.  There is a lot of duplicated code in here.  
-
-
-
+            //TODO: Refactor someday.  There is a lot of duplicated code in here.
 
             string filename = App.FileName;
             var tempdbsequences = new List<SearchResult>();
@@ -3201,7 +3158,6 @@ namespace MSViewer
             //                       Score = d.Score,
             //                       Z = d.Z
             //                   });
-
 
             if (currentTags != null && currentTags.Any())
             {
@@ -3415,7 +3371,7 @@ namespace MSViewer
                                 {
                                     ScanNumbers = ScanNumbers,/// App.ParentDetails.ScanNumber,
                                     ParentZ = ParentZ, /// App.ParentDetails.ParentZ != null ? (int)App.ParentDetails.ParentZ : 0,
-                                    Accession = tempaccession,/// dr["Acc"] != DBNull.Value ? Convert.ToString(dr["Acc"]) : "", /// 
+                                    Accession = tempaccession,/// dr["Acc"] != DBNull.Value ? Convert.ToString(dr["Acc"]) : "", ///
                                     Description = dr["Des"] != DBNull.Value ? Convert.ToString(dr["Des"]) : "",
                                     Sequence = dr["Seq"] != DBNull.Value ? Convert.ToString(dr["Seq"]) : "",
                                     Species = dr["SciName"] != DBNull.Value ? Convert.ToString(dr["SciName"]) : "",
@@ -3468,7 +3424,6 @@ namespace MSViewer
                         //tempdbsequences = tempdbsequences.Where(a => a.VerifyBlastTag).ToList();
                     }
                 }
-
             }
             else
             {
@@ -3550,7 +3505,6 @@ namespace MSViewer
 
                     if (sqs.Any())
                     {
-
                         sqs = sqs.OrderByDescending(a => a.YellowandGreenTagHits).ToList();
 
                         return sqs.DistinctBy(a => a.Accession).Where(a => a.PPM != double.NaN).ToList();
@@ -3589,7 +3543,6 @@ namespace MSViewer
                                 BlastedTagForTopProtein = sequence,
                                 RetentionTime = MainPointProvider != null ? CalculateRetentionTime(ScanNumbers) : ""
                             });
-
 
                             totalseqcount = true;
                         }
@@ -3663,7 +3616,7 @@ namespace MSViewer
             return tempdbsequences;
         }
 
-        bool NetworkIssues = false;
+        private bool NetworkIssues = false;
 
         /// <summary>
         /// Get RetentionTime for either single or multiple scans.
@@ -3671,9 +3624,9 @@ namespace MSViewer
         /// </summary>
         /// <param name="ScanNumbers"></param>
         /// <returns></returns>
-        string CalculateRetentionTime(string ScanNumbers)
+        private string CalculateRetentionTime(string ScanNumbers)
         {
-            return CalculateRetentionTime(ScanNumbers.Split(new [] { "," }, StringSplitOptions.RemoveEmptyEntries).Select(s => int.Parse(s)));
+            return CalculateRetentionTime(ScanNumbers.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries).Select(s => int.Parse(s)));
         }
 
         /// <summary>
@@ -3682,14 +3635,12 @@ namespace MSViewer
         /// </summary>
         /// <param name="ScanNumbers"></param>
         /// <returns></returns>
-        string CalculateRetentionTime(IEnumerable<int> ScanNumbers)
+        private string CalculateRetentionTime(IEnumerable<int> ScanNumbers)
         {
             return string.Join(",", ScanNumbers.Select(sn => MainPointProvider.RetentionTime(sn)));
         }
 
-
-
-        List<SearchResult> DatabaseResults(SqlCommand cmd, List<string> sequenceforsearch, string sequence, List<string> allsequencetags, List<SignalProcessing.Cluster> crntins, List<FindSequenceTags.SequenceTag> sqsfordbsrch, double parentMass, bool Dontshowall, bool totalseqcount, int i)
+        private List<SearchResult> DatabaseResults(SqlCommand cmd, List<string> sequenceforsearch, string sequence, List<string> allsequencetags, List<SignalProcessing.Cluster> crntins, List<FindSequenceTags.SequenceTag> sqsfordbsrch, double parentMass, bool Dontshowall, bool totalseqcount, int i)
         {
             List<SearchResult> tempdbsequences = new List<SearchResult>();
             int j = 0;
@@ -3717,7 +3668,7 @@ namespace MSViewer
                                 PairMatch = sequenceforsearch, /// sequenceforsearch,
                                 //Allthesequencetags = allsequencetags,
                                 //Mass = dr["Mass"] != DBNull.Value ? Math.Round(Convert.ToDouble(dr["Mass"]), 4) : 0,
-                               // DeltaMass = dr["DeltaMass"] != DBNull.Value ? Math.Round(Convert.ToDouble(dr["DeltaMass"]), 4) : 0,
+                                // DeltaMass = dr["DeltaMass"] != DBNull.Value ? Math.Round(Convert.ToDouble(dr["DeltaMass"]), 4) : 0,
                                 sequencesfordbmatching = null, //aminoacidsforsequence,
                                 CurntIons = crntins,
                                 AllsqsTags = new List<MSViewer.FindSequenceTags.SequenceTag>(sqsfordbsrch),
@@ -3767,7 +3718,7 @@ namespace MSViewer
         /// </summary>
         /// <param name="sequence"></param>
         /// <param name="filter"></param>
-        IEnumerable<SearchResult> SearchforSequenceandfilterusingDBorFasta(string sequence, string filter, IEnumerable<FindSequenceTags.SequenceTag> currentTags, IEnumerable<Cluster> ions, double parentMass, List<FASTA> fastaEntries = null)
+        private IEnumerable<SearchResult> SearchforSequenceandfilterusingDBorFasta(string sequence, string filter, IEnumerable<FindSequenceTags.SequenceTag> currentTags, IEnumerable<Cluster> ions, double parentMass, List<FASTA> fastaEntries = null)
         {
             bool returnfunction = false;
             string[] filters = Regex.Split(filter.Trim(), @"[!@#$ ,.;}{/]");
@@ -3777,7 +3728,6 @@ namespace MSViewer
 
             Pairmatch = sequence.Replace("I", "L");
             string[] accessions = new string[10000];
-
 
             int i = 0;
             string[] sequenceseparator = { "%" };
@@ -3860,7 +3810,6 @@ namespace MSViewer
                         cmd.CommandType = CommandType.Text;
                         //cn.Open();
 
-
                         using (SqlDataReader dr = cmd.ExecuteReader())
                         {
                             while (dr.Read())
@@ -3902,7 +3851,6 @@ namespace MSViewer
                                     boolcontinue = false;
                                     continue;
                                 }
-
 
                                 ///var anchorTag = sqsfordbsrch.Where(t => t.Sequence == sequenceforsearch[0] || t.ReverseSequence == sequenceforsearch[0]).OrderByDescending(s => s.Score).First();
                                 //double deltamassusingparentandzeroion = DeltaMassUsingParentandZeroIon(dr["Seq"] != DBNull.Value ? Convert.ToString(dr["Seq"]) : "", anchorTag, parentMass); // -18.010565;
@@ -4038,6 +3986,7 @@ namespace MSViewer
 
             return tempdbsequences;///.Where(a => a.TagHits > 0 || a.Notagsforhighlight == true).OrderByDescending(a => a.TagHits).ToList();
         }
+
         /// <summary>
         /// Find the protein and highlight the sequences
         /// </summary>
@@ -4046,7 +3995,7 @@ namespace MSViewer
         /// <param name="ions"></param>
         /// <param name="fastaEntries"></param>
         /// <returns></returns>
-        IEnumerable<SearchResult> SearchforfilterusingDBorFasta(string filter, IEnumerable<FindSequenceTags.SequenceTag> currentTags, IEnumerable<Cluster> ions, double parentMass, ref bool count, List<FASTA> fastaEntries = null)
+        private IEnumerable<SearchResult> SearchforfilterusingDBorFasta(string filter, IEnumerable<FindSequenceTags.SequenceTag> currentTags, IEnumerable<Cluster> ions, double parentMass, ref bool count, List<FASTA> fastaEntries = null)
         {
             var tempdbsequences = new List<SearchResult>();
             bool returnfunction = false;
@@ -4072,7 +4021,6 @@ namespace MSViewer
             crntins = ions.OrderBy(a => a.MonoMass).ToList();
             List<FindSequenceTags.SequenceTag> sqsfordbsrch = new List<FindSequenceTags.SequenceTag>();
 
-
             if (currentTags != null && currentTags.Any())
             {
                 sqsfordbsrch = currentTags.Where(a => a.DatabaseHits != "0").ToList();
@@ -4088,7 +4036,6 @@ namespace MSViewer
             char[] reversechar = Pairmatch.ToCharArray();
             List<string> emptystring = new List<string>();
             emptystring.Add("");
-
 
             try
             {
@@ -4170,7 +4117,7 @@ namespace MSViewer
                 }
                 else
                 {
-                    //List<string> allspecies = App.DistinctSpecies.Where(a => a.IsSelected == true).Select(a => a.species.ToLower()).ToList(); || allspecies.Contains(f.Species.ToLower())(Properties.Settings.Default.SearchAllSpecies ) && 
+                    //List<string> allspecies = App.DistinctSpecies.Where(a => a.IsSelected == true).Select(a => a.species.ToLower()).ToList(); || allspecies.Contains(f.Species.ToLower())(Properties.Settings.Default.SearchAllSpecies ) &&
 
                     // Comparing using OrdinalIgnoreCase because of assumed Performance advantage: https://rhale78.wordpress.com/2011/05/16/string-equality-and-performance-in-c/
                     // http://stackoverflow.com/questions/492799/difference-between-invariantculture-and-ordinal-string-comparison
@@ -4300,7 +4247,6 @@ namespace MSViewer
 
             if (singleRange)
             {
-
                 var anchorPeak = cluster.Peaks.Where(p => p.IsCorePeak).OrderBy(y => y.Delta).First();
 
                 var min = anchorPeak.MZ + (((topIndexes.First() - anchorPeak.IsoIndex) - 0.5) * (SignalProcessor.ProtonMass / cluster.Z));
@@ -4324,16 +4270,15 @@ namespace MSViewer
             return xicList;
         }
 
-        double currentspectrumxaxisminvalue = 0.0;
+        private double currentspectrumxaxisminvalue = 0.0;
 
         internal Chart CurrentChromatogram
         {
             get { return (tabControl1.SelectedItem as TabItem).Tag as Chart; }
         }
 
-        void Chrom_MouseLeftButtonDown(object sender, PlotAreaMouseButtonEventArgs e)
+        private void Chrom_MouseLeftButtonDown(object sender, PlotAreaMouseButtonEventArgs e)
         {
-
             Debug.WriteLine("mouse down");
             if (MainPointProvider == null) return;
 
@@ -4345,9 +4290,8 @@ namespace MSViewer
             SelectingRange = true;
         }
 
-        void Chrom_MouseRightButtonDown(object sender, PlotAreaMouseButtonEventArgs e)
+        private void Chrom_MouseRightButtonDown(object sender, PlotAreaMouseButtonEventArgs e)
         {
-
             Debug.WriteLine("right mouse down");
             if (MainPointProvider == null) return;
 
@@ -4359,9 +4303,8 @@ namespace MSViewer
             SelectingQuantRange = true;
         }
 
-        void Chrom_MouseLeftButtonUp(object sender, PlotAreaMouseButtonEventArgs e)
+        private void Chrom_MouseLeftButtonUp(object sender, PlotAreaMouseButtonEventArgs e)
         {
-
             Debug.WriteLine("mouse up");
 
             var selection = ((sender as PlotArea).Tag as Chart).TrendLines[2];
@@ -4402,7 +4345,7 @@ namespace MSViewer
             SelectingRange = false;
         }
 
-        void zoomthespectrum(object sender, double axismaximum, double axisminimum)
+        private void zoomthespectrum(object sender, double axismaximum, double axisminimum)
         {
             Dispatcher.Invoke(new Action(() =>
                     {
@@ -4411,9 +4354,8 @@ namespace MSViewer
                     }));
         }
 
-        void Chrom_MouseRightButtonUp(object sender, PlotAreaMouseButtonEventArgs e)
+        private void Chrom_MouseRightButtonUp(object sender, PlotAreaMouseButtonEventArgs e)
         {
-
             Debug.WriteLine("mouse up");
 
             var chromChart = (sender as PlotArea).Tag as Chart;
@@ -4430,7 +4372,6 @@ namespace MSViewer
                 var pixelPerWidth = chromChart.AxesX[0].ActualWidth / viewWidth;
 
                 pixelsSelected = selectionWidth * pixelPerWidth;
-
             }
 
             if (selection.StartValue != null && selection.EndValue != null && SelectingQuantRange && chromChart.Series[0].DataSource != null && chromChart.Series[0].DataSource is MassSpectrometry.Chromatogram)
@@ -4455,7 +4396,7 @@ namespace MSViewer
 
                             //if (r is RMSProvider)
                             //{
-                                points = r.ExtractIon(targetRange);
+                            points = r.ExtractIon(targetRange);
                             //}
                             //else
                             //{
@@ -4472,16 +4413,15 @@ namespace MSViewer
 
                         Items.Add(new QuantitationItem() { Area = area.ToString("0.0"), RtStart = ((double)selection.StartValue).ToString("0.00"), RtEnd = ((double)selection.EndValue).ToString("0.00"), Mass = targetIon.MonoMass.ToString("0.000"), Z = targetIon.Z.ToString("0"), XicMzStart = chromChart.Titles[0].Text.Split(' ')[2].Trim(), XicMzEnd = chromChart.Titles[0].Text.Split(' ')[4].Trim() });
                     }
-
                 }
             }
 
             SelectingQuantRange = false;
         }
 
-        double sequencetagmass = 0.0;
+        private double sequencetagmass = 0.0;
 
-        List<SpectrumInfo> GetSpecList(Range values)
+        private List<SpectrumInfo> GetSpecList(Range values)
         {
             var endScanIndex = MainPointProvider.ScanIndex(values.End);
             var currentScanIndex = MainPointProvider.ScanIndex(values.Start);
@@ -4506,7 +4446,7 @@ namespace MSViewer
         /// When there is no File loaded, then load from Sequence Searches
         /// </summary>
         /// <param name="sqssearches"></param>
-        void DisplayNewSpectrumNoFile(SearchResult sqssearches)
+        private void DisplayNewSpectrumNoFile(SearchResult sqssearches)
         {
             BackgroundWorker bgworkerdisplaynewspectrumnofile = new BackgroundWorker();
             bgworkerdisplaynewspectrumnofile.RunWorkerCompleted += bgworkerdisplaynewspectrumnofile_RunWorkerCompleted;
@@ -4617,7 +4557,7 @@ namespace MSViewer
             bgworkerdisplaynewspectrumnofile.RunWorkerAsync();
         }
 
-        void bgworkerdisplaynewspectrumnofile_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void bgworkerdisplaynewspectrumnofile_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             double min = 0;
             double max = 0;
@@ -4668,7 +4608,7 @@ namespace MSViewer
                         CurrentMode = ChartMode.Mass;
                         CurrentSpectrum.ParentIon = null;
                         //sequencemerge = false;
-                        // Reset any Y-Axis scaling                        
+                        // Reset any Y-Axis scaling
                         this.BottomChart.AxesY[0].AxisMaximum = null;
                         zoomWidth = 0;
                         ParentMonoSeries.DataSource = null;
@@ -4703,7 +4643,6 @@ namespace MSViewer
 
                     if (scans.Count() == 1)  // Single Scan
                     {
-
                         if (addparentmassfromMergeSpectra)
                         {
                             var crntspc = mgrspectra.Where(a => a.ScanNumber == Convert.ToInt16(App.ScanNumber != null ? App.ScanNumber : "0")).Any() ? mgrspectra.Where(a => a.ScanNumber == Convert.ToInt16(App.ScanNumber != null ? App.ScanNumber : "0")).First() : new SpectrumInfo();
@@ -4768,7 +4707,6 @@ namespace MSViewer
                             BottomChart.Titles[1].Text = "Scan " + CurrentScanNumber.ToString() + ", " + DechargerVM.SpectralDataFilename; ///App.XMLFileName; /// +", " + MainPointProvider.Filename;
                         }));
                     }
-
                     else  // Multiple Scans
                     {
                         // set multiple scan title information
@@ -4815,7 +4753,6 @@ namespace MSViewer
 
                     CurrentMode = ChartMode.Mass;
 
-
                     //foreach (var anIon in MergedIons)
                     //    if (anIon.Intensity > 9347 && anIon.Intensity < 9348)
                     //        Debug.Print("Suspect Ion");
@@ -4825,7 +4762,6 @@ namespace MSViewer
                     {
                         txtScanNum.Text = (scans.Count() > 1) ? "Merged" : CurrentScanNumber.ToString();
                     }));
-
 
                     int width = (int)BottomChart.AxesX[0].ActualWidth;
                     if (CurrentSpectrum.Count >= 1)  // some spectra could have no points
@@ -4871,8 +4807,6 @@ namespace MSViewer
                                 //}
 
                                 BottomChart.Series[0].DataSource = CurrentSpectrum.Range(min, max, (int)BottomChart.AxesX[0].ActualWidth * (Properties.Settings.Default.HighBin ? 2 : 1));
-
-
 
                                 //if (MainPointProvider.ScanType(scans.First().ScanNumber) == "MS2" && CurrentSpectrum.ParentMass != null)
                                 if (CurrentSpectrum.ParentIon != null)
@@ -4946,7 +4880,6 @@ namespace MSViewer
 
                                 if (max <= CurrentSpectrum.ParentMass.Value)
                                     max = CurrentSpectrum.ParentMass.Value;
-
                             }
 
                             if (CurrentSpectrum.ParentIon != null)
@@ -5056,9 +4989,7 @@ namespace MSViewer
                         btnFindAA.Visibility = System.Windows.Visibility.Visible;
                         MonoMassesfordbSequence.DataSource = null;
                         txtSearchbox.Text = string.Empty;
-
                     }));
-
                 }
                 if (fromvalidateautoscan)
                 {
@@ -5071,7 +5002,7 @@ namespace MSViewer
                 //    btnFindAA.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                 //}
 
-                //TODO: is this necessary?  
+                //TODO: is this necessary?
                 Dispatcher.Invoke(new Action(() =>
                 {
                     this.BottomChart.AxesY[0].AxisMaximum = CurrentIons.MaxBy(a => a.Intensity).Intensity;
@@ -5101,7 +5032,6 @@ namespace MSViewer
         {
             try
             {
-
                 if (scans == null) return;  // nothing to plot!
                 ClearFilters();
                 CurrentIons.Clear(); //Clear all the Ions from the previous spectrum.
@@ -5112,12 +5042,12 @@ namespace MSViewer
 
                 if (level != SpecMsLevel.All) scans = scans.Where(s => s.MsLevel == level);
                 btnSetManualParentMass.Visibility = System.Windows.Visibility.Hidden;
-                if (!scans.Any()) return;  // nothing to plot! 
+                if (!scans.Any()) return;  // nothing to plot!
                 List<int?> ParentZ = new List<int?>();
                 List<string> ScanNumbers = new List<string>();
                 List<string> activations = new List<string>();
 
-                //TODO: Refactor this, especially the activation stuff!   
+                //TODO: Refactor this, especially the activation stuff!
 
                 Spectrum.ActivationOverride = Properties.Settings.Default.ActivationOverride;
                 DechargerVM.ActivationType = string.Empty;
@@ -5211,7 +5141,6 @@ namespace MSViewer
                                         ParentZ = new List<int?>();
                                         ParentZ.Add(crntscan.ParentZ);
                                         //activations.Add(aScan.Activation);
-
                                     }
                                 }
                             }
@@ -5268,7 +5197,6 @@ namespace MSViewer
                         App.CurrentScanActivationType += activations[activations.Count - 1];
                         currentparent.ParentZ = ParentZ.Max();
                         currentparent.ScanNumber = string.Join(",", ScanNumbers);
-
                     }
                 }
 
@@ -5341,9 +5269,7 @@ namespace MSViewer
                             return;
                         }
 
-
                         App.ScanNumber = string.Join(",", scans.Select(a => a.ScanNumber).ToArray());
-
 
                         if (Properties.Settings.Default.NativeAveragingEnabled == false) // || MainPointProvider.NativeScanSumSupported == false)
                         {
@@ -5359,7 +5285,6 @@ namespace MSViewer
 
                                 var minScore = (aScan.MsLevel == SpecMsLevel.MSMS) ? 100 : 300;
 
-
                                 Dispatcher.Invoke(new Action(() =>
                                 {
                                     if (aScan.MsLevel == SpecMsLevel.MSMS)
@@ -5370,8 +5295,6 @@ namespace MSViewer
                                 // Gather all the ions from all the scans
                                 if (aScan.ParentZ.HasValue)
                                 {
-
-
                                     TempMergedIons.AddRange(MainPointProvider.DetectIons(aScan.ScanNumber, 1, aScan.ParentZ.Value).Where(ion => ion.Score > minScore));  // only run charge detector up to Parent Charge
                                 }
                                 else
@@ -5405,7 +5328,6 @@ namespace MSViewer
                             Debug.Print("DoWork Cancelled.  " + s.GetHashCode());
                         }
                     }
-
                 };
                 displaySpecWorker.RunWorkerAsync();
             }
@@ -5431,10 +5353,10 @@ namespace MSViewer
             }
         }
 
+        private float setdbmonointensity = new float();
+        private bool fromvalidateautoscan = false;
+        private string scannumbers = string.Empty;
 
-        float setdbmonointensity = new float();
-        bool fromvalidateautoscan = false;
-        string scannumbers = string.Empty;
         private void bwSpec_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             Debug.Print("RunWorkerCompleted.  " + sender.GetHashCode());
@@ -5457,7 +5379,6 @@ namespace MSViewer
 
                 lock (lockObj)
                 {
-
                     var scans = e.Result as IEnumerable<SpectrumInfo>;
 
                     maxofpredictedvalues = 0.0;
@@ -5474,10 +5395,9 @@ namespace MSViewer
 
                     //if (addparentmassfromMergeSpectra)
                     //{
-
                     //}
 
-                    //else 
+                    //else
                     //{
                     //    Dispatcher.Invoke(new Action(() =>
                     //    {
@@ -5516,8 +5436,6 @@ namespace MSViewer
 
                     foreach (var aCluster in CurrentIons)
                         CurrentSpectrum.AddRange(aCluster.Peaks); //.Where(p => p.MZ > aCluster.MonoMZ));
-
-
 
                     // Populate the Thermo data
                     //if (Properties.Settings.Default.ShowThermo && MainPointProvider is RMSProvider)
@@ -5559,12 +5477,10 @@ namespace MSViewer
                                     actList.Add(MainPointProvider.GetActivationType(aScan.ScanNumber).Trim().ToUpper());
 
                                 CurrentSpectrum.Activation = string.Join(" ", actList);  // combine all activations
-
                             }
                             else
                             {
                                 CurrentSpectrum.Activation = Properties.Settings.Default.ActivationOverride;
-
                             }
 
                             //update legacy global vars
@@ -5572,8 +5488,6 @@ namespace MSViewer
                             App.CurrentScanActivationType = CurrentSpectrum.Activation;
                         }));
                     }
-
-
 
                     if (scans.Count() == 1)  // Single Scan
                     {
@@ -5700,11 +5614,9 @@ namespace MSViewer
                           }));
                     }
 
-
                     //if (MainPointProvider is RMSProvider && (MainPointProvider as RMSProvider).ScanInfo(startIndex).ToUpper().StartsWith("FTMS"))
                     //        {
                     CurrentMode = ChartMode.Mass;
-
 
                     //foreach (var anIon in MergedIons)
                     //    if (anIon.Intensity > 9347 && anIon.Intensity < 9348)
@@ -5728,7 +5640,6 @@ namespace MSViewer
                           AnnotationBarsBlue.DataPoints.Clear();
                           ReverseSeries.DataPoints.Clear();
                       }));
-
 
                     int width = (int)BottomChart.AxesX[0].ActualWidth;
 
@@ -5775,8 +5686,6 @@ namespace MSViewer
                           //}
 
                           BottomChart.Series[0].DataSource = CurrentSpectrum.Range(min, max, (int)BottomChart.AxesX[0].ActualWidth * (Properties.Settings.Default.HighBin ? 2 : 1));
-
-
 
                           //if (MainPointProvider.ScanType(scans.First().ScanNumber) == "MS2" && CurrentSpectrum.ParentMass != null)
                           if (CurrentSpectrum.ParentIon != null)
@@ -5843,7 +5752,6 @@ namespace MSViewer
 
                                 if (max <= CurrentSpectrum.ParentMass.Value)
                                     max = CurrentSpectrum.ParentMass.Value;
-
                             }
 
                             if (CurrentSpectrum.ParentIon != null)
@@ -5884,7 +5792,6 @@ namespace MSViewer
                     BPI_Chart.IsEnabled = true;
                     BPM_Chart.IsEnabled = true;
                     XIC_Chart.IsEnabled = true;
-
 
                     BottomChart.Visibility = Visibility.Visible;
                     BottomChart.IsEnabled = true;
@@ -5950,7 +5857,6 @@ namespace MSViewer
                            MonoMassesfordbSequence.DataSource = null;
                            txtSearchbox.Text = string.Empty;
                        }));
-
                 }
                 if (fromvalidateautoscan)
                 {
@@ -5964,14 +5870,13 @@ namespace MSViewer
             //System.Diagnostics.Debug.WriteLine("DisplayNewSpectrum: Done - " + (double)(DateTime.Now.Ticks - startTime) / (double)TimeSpan.TicksPerSecond);
         }
 
-
-        class ZeroMonomass
+        private class ZeroMonomass
         {
             public double Intensity { get; set; }
             public double MonoMass { get; set; }
         }
 
-        void SignalProcessor_OnProgressChange(float percent, string title)
+        private void SignalProcessor_OnProgressChange(float percent, string title)
         {
             Dispatcher.Invoke(new Action(() =>
             {
@@ -5982,16 +5887,17 @@ namespace MSViewer
                 //ticProgress.Maximum = 100;
                 //ticProgress.Value = percent * 100;
             }));
-
         }
 
         // boiler-plate
         public event PropertyChangedEventHandler PropertyChanged;
+
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
+
         protected bool SetField<T>(ref T field, T value, string propertyName)
         {
             if (EqualityComparer<T>.Default.Equals(field, value)) return false;
@@ -5999,7 +5905,6 @@ namespace MSViewer
             OnPropertyChanged(propertyName);
             return true;
         }
-
 
         private void ReverseIons(List<ClusterPeak> currentpeaklist, double ParentMass)
         {
@@ -6018,7 +5923,7 @@ namespace MSViewer
             ReverseSeries.DataSource = reverseions;
         }
 
-        void PlotArea_MouseEnter(object sender, MouseEventArgs e)
+        private void PlotArea_MouseEnter(object sender, MouseEventArgs e)
         {
             // setting visibility didn't work, so used opacity: http://www.visifire.com/forums/index.php?showtopic=1612
             // ((sender as PlotArea).Tag as Chart).TrendLines[0].Opacity = 1;
@@ -6026,7 +5931,7 @@ namespace MSViewer
             PlotWithFocus = (sender as PlotArea);
         }
 
-        void PlotArea_MouseLeave(object sender, MouseEventArgs e)
+        private void PlotArea_MouseLeave(object sender, MouseEventArgs e)
         {
             // setting visibility didn't work, so used opacity: http://www.visifire.com/forums/index.php?showtopic=1612
             //((sender as PlotArea).Tag as Chart).TrendLines[0].Opacity = 0;
@@ -6034,7 +5939,7 @@ namespace MSViewer
             if (PlotWithFocus == (sender as PlotArea)) PlotWithFocus = null;
         }
 
-        void ChromPlotArea_MouseLeave(object sender, MouseEventArgs e)
+        private void ChromPlotArea_MouseLeave(object sender, MouseEventArgs e)
         {
             // turn off the selection box when leaving the plot area
             //ShiftIsDown = false;
@@ -6042,7 +5947,7 @@ namespace MSViewer
             SelectingRange = false;
         }
 
-        void PlotArea_MouseMove(object sender, PlotAreaMouseEventArgs e)
+        private void PlotArea_MouseMove(object sender, PlotAreaMouseEventArgs e)
         {
             ((sender as PlotArea).Tag as Chart).TrendLines[0].Value = e.XValue;
 
@@ -6079,7 +5984,7 @@ namespace MSViewer
 
                 //var TotalTolerance = PixelTolerance * pointsPerWidth;
 
-                // Find nearest/intense point? 
+                // Find nearest/intense point?
                 if (CurrentMonoMasses != null && CurrentMonoMasses.Count > 0)
                 {
                     var start = ((double)e.XValue) - totalTolerance * 3;
@@ -6099,7 +6004,7 @@ namespace MSViewer
 
                 //totalTolerance = (((Properties.Settings.Default.MassTolerancePPM / 1e6d) * (double)e.XValue));
 
-                // TODO: Secondarily, snap to nearest peak!  
+                // TODO: Secondarily, snap to nearest peak!
 
                 // Search for Masses that match within our tolerance
                 var matches = from m in (chkDipeptides.IsChecked.Value ? ComboMassLookup : MassLookup)
@@ -6129,7 +6034,6 @@ namespace MSViewer
                         End = Math.Max(SnappedXPosition, OffsetStart),
                         Name = bestMatch.Name
                     };
-
                 }
                 else
                 {
@@ -6147,7 +6051,7 @@ namespace MSViewer
             }
         }
 
-        void ChromPlotArea_MouseMove(object sender, PlotAreaMouseEventArgs e)
+        private void ChromPlotArea_MouseMove(object sender, PlotAreaMouseEventArgs e)
         {
             if (SelectingRange)
             {
@@ -6168,7 +6072,7 @@ namespace MSViewer
             }
         }
 
-        void Chrom_Cursor_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void Chrom_Cursor_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (MainPointProvider == null) return;
 
@@ -6179,7 +6083,6 @@ namespace MSViewer
 
         private void btnBrowse_Click(object sender, RoutedEventArgs e)
         {
-
             string contents = string.Empty;
 
             OpenFileDialog odlg = new OpenFileDialog();
@@ -6212,15 +6115,14 @@ namespace MSViewer
             try
             {
                 //System.Diagnostics.Debug.WriteLine("Time to bind: " + DateTime.Now.Subtract(start).TotalMilliseconds + " ms");
-                //       
+                //
 
                 //System.Diagnostics.Debug.WriteLine("Time to bind: " + DateTime.Now.Subtract(start).TotalMilliseconds + " ms");
                 //BottomChart.Rendered += new EventHandler(chart_Rendered);
                 Dispatcher.Invoke(new Action(() =>
                 {
-
                     chkHideScansWithNoMass.IsEnabled = false;
-                    chkHideScansWithNoMass.IsChecked = false;  // initially, the Mass values are all blank, so in order to see any rows, this should not be checked.  
+                    chkHideScansWithNoMass.IsChecked = false;  // initially, the Mass values are all blank, so in order to see any rows, this should not be checked.
 
                     this.busyIndicator.IsBusy = true;
                     this.busyIndicator.BusyContent = "Loading Data...";
@@ -6232,10 +6134,8 @@ namespace MSViewer
                     Thread.Sleep(200);
                     //this.Dispatcher.Invoke(DispatcherPriority.Normal, (MyDelegate)
                     //   delegate () {
-
                     Dispatcher.Invoke((Action)(() =>
                         {
-
                             var xTic = x.TIC;
 
                             //Stuff that takes some time
@@ -6253,7 +6153,6 @@ namespace MSViewer
                             txtStart.Text = "1";
                             txtEnd.Text = "*";
 
-
                             TIC_Chart.Titles.Clear();
                             BPI_Chart.Titles.Clear();
                             BPM_Chart.Titles.Clear();
@@ -6269,17 +6168,14 @@ namespace MSViewer
                                                                            //TODO: this is a Kludgey fix.  The plot should just correctly handle 0 and 1 point situations without throwing exceptions!
                             TIC_Chart.AxesX[0].AxisMaximum = x.TIC.MaxKey != x.TIC.MinKey ? x.TIC.MaxKey : x.TIC.MaxKey + 1;/// xTic.MaxKey != xTic.MinKey ? xTic.MaxKey : xTic.MaxKey + 1;///x.TIC.MaxKey != x.TIC.MinKey ? x.TIC.MaxKey : x.TIC.MaxKey + 1;
 
-
                             CurrentMonoMasses.Clear();
                             MonoMassesfordbSequence.DataSource = null;
                             ReverseCurrentMonomasses.Clear();
-
 
                             DechargerVM.RetentionTime = x.RetentionTime(x.NextScan(0).Value);
                             DisplayNewSpectrum(x.RetentionTime(x.NextScan(0).Value));  // displays first scan, whatever the number
 
                             //DisplayNewSpectrum(x.RetentionTime(1));
-
                         }));
                 };
 
@@ -6292,7 +6188,7 @@ namespace MSViewer
             }
         }
 
-        void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             Dispatcher.Invoke(new Action(() =>
             {
@@ -6310,7 +6206,7 @@ namespace MSViewer
             bgw.RunWorkerAsync();
         }
 
-        void bgw_DoWork(object sender, DoWorkEventArgs e)
+        private void bgw_DoWork(object sender, DoWorkEventArgs e)
         {
             Dispatcher.Invoke(new Action(() =>
             {
@@ -6339,7 +6235,6 @@ namespace MSViewer
                 //foreach (var aSpec in mgrspectra) aSpec.RelativeIntensity =  aSpec.Intensity / maxIntensity;
 
                 Debug.Print("Done");
-
             }));
         }
 
@@ -6355,14 +6250,12 @@ namespace MSViewer
 
             var NextScanID = MainPointProvider.NextScan(CurrentScanNumber.Value);
 
-
             if (NextScanID.HasValue)
             {
                 App.ScanNumber = Convert.ToString(CurrentScanNumber);
 
                 //CurrentScanNumber = NextScanID.Value;
                 var rt = MainPointProvider.RetentionTime(NextScanID.Value);
-
 
                 DisplayNewSpectrum(rt);
                 //btnFindAA.Visibility = System.Windows.Visibility.Visible;
@@ -6431,7 +6324,7 @@ namespace MSViewer
         //    BottomChart.Series[0].LabelEnabled = chkLabels.IsChecked.Value;
         //}
 
-        void ShowBIonsFaint(List<DataPoint> bions)
+        private void ShowBIonsFaint(List<DataPoint> bions)
         {
             for (int i = 0; i < bions.Count; i++)
             {
@@ -6439,7 +6332,7 @@ namespace MSViewer
             }
         }
 
-        void ShowYIonsFaint(List<DataPoint> yions)
+        private void ShowYIonsFaint(List<DataPoint> yions)
         {
             for (int i = 0; i < yions.Count; i++)
             {
@@ -6447,7 +6340,7 @@ namespace MSViewer
             }
         }
 
-        void ShowBIonsBright(List<DataPoint> bions)
+        private void ShowBIonsBright(List<DataPoint> bions)
         {
             for (int i = 0; i < bions.Count; i++)
             {
@@ -6455,14 +6348,13 @@ namespace MSViewer
             }
         }
 
-        void ShowYIonsBright(List<DataPoint> yions)
+        private void ShowYIonsBright(List<DataPoint> yions)
         {
             for (int i = 0; i < yions.Count; i++)
             {
                 GreenMarkersSeriesBright.DataPoints.Add(yions[i]);
             }
         }
-
 
         private void btnApply_Click(object sender, RoutedEventArgs e)
         {
@@ -6530,7 +6422,7 @@ namespace MSViewer
             if (e.Key == Key.Right) btnNext_Click(null, null);
 
             // Since the plot area events are not working, we'll just raise the events directly here
-            //if (PlotWithFocus != null) PlotArea_KeyUp(PlotWithFocus, e); 
+            //if (PlotWithFocus != null) PlotArea_KeyUp(PlotWithFocus, e);
 
             //if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
             //{
@@ -6544,7 +6436,7 @@ namespace MSViewer
         private void LayoutRoot_KeyDown(object sender, KeyEventArgs e)
         {
             // Since the plot area events are not working, we'll just raise the events directly here
-            //if (PlotWithFocus != null) PlotArea_KeyDown(PlotWithFocus, e); 
+            //if (PlotWithFocus != null) PlotArea_KeyDown(PlotWithFocus, e);
 
             //if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
             //{
@@ -6555,9 +6447,7 @@ namespace MSViewer
             e.Handled = true;
         }
 
-
-
-        void X1_OnZoom(object sender, double zoomMin, double zoomMax)
+        private void X1_OnZoom(object sender, double zoomMin, double zoomMax)
         {
             try
             {
@@ -6578,7 +6468,6 @@ namespace MSViewer
                 Dispatcher.CurrentDispatcher.BeginInvoke(throwException);
             }
         }
-
 
         private void X1_OnZoom(object sender, AxisZoomEventArgs e)
         {
@@ -6610,7 +6499,7 @@ namespace MSViewer
             // Calculate Axis range
             var range = Math.Abs(zoomMax - zoomMin);
 
-            if (range < 0.007) return;  // the chart control seems to lock up with ranges smaller than this!  
+            if (range < 0.007) return;  // the chart control seems to lock up with ranges smaller than this!
 
             //XValueFormatString="#0.0000"
 
@@ -6628,7 +6517,6 @@ namespace MSViewer
                 axis.ValueFormatString = "0";
             else
                 axis.ValueFormatString = "00";
-
 
             IEnumerable<ClusterPeak> zoomView = null;
 
@@ -6656,7 +6544,6 @@ namespace MSViewer
             this.BottomChart.Series[0].DataSource = CurrentSpectrum.Range(axisMin, axisMax, (int)BottomChart.AxesX[0].ActualWidth * (Properties.Settings.Default.HighBin ? 2 : 1), intensityThreshold);
             ReverseSeries.DataSource = ReverseCurrentSpectrum.Range(axisMin, axisMax, (int)BottomChart.AxesX[0].ActualWidth * (Properties.Settings.Default.HighBin ? 2 : 1), intensityThreshold);
 
-
             //System.Diagnostics.Debug.WriteLine("Point comparison = " + (this.BottomChart.Series[0].DataSource as IEnumerable<KeyValuePair<double, float>>).Count().ToString() + " v. " + CurrentSpectrum.Range(axisMin, axisMax, (int)BottomChart.AxesX[0].ActualWidth * ((bool)IsolatedStorageSettings.ApplicationSettings["HighBin"] ? 2 : 1)).Count().ToString());
 
             BottomChart.Series[3].LabelEnabled = Properties.Settings.Default.BinnedLabels;
@@ -6670,8 +6557,6 @@ namespace MSViewer
             {
                 this.BottomChart.Series[3].DataSource = null;
             }
-
-
 
             axis.Zoom(zoomMin, zoomMax, axisMin, axisMax);
 
@@ -6698,17 +6583,14 @@ namespace MSViewer
 
         //private void TIC_Chart_Rendered(object sender, EventArgs e)
         //{
-
         //}
 
         //private void PlotArea_LostMouseCapture(object sender, MouseEventArgs e)
         //{
-
         //}
 
         //private void imgSave_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         //{
-
         //    SaveWorkspace_Click();
         //}
 
@@ -6723,7 +6605,6 @@ namespace MSViewer
         //    cw.ShowDialog();
         //}
 
-
         private void cw_Closed(object sender, EventArgs e)
         {
             var ch1 = (ConfigPage)sender;
@@ -6736,7 +6617,7 @@ namespace MSViewer
             }
         }
 
-        double totalbandyionpercent = 0;
+        private double totalbandyionpercent = 0;
 
         private void ApplySettings()
         {
@@ -6750,8 +6631,8 @@ namespace MSViewer
             //}
             //else
             //{
-                ThermoSlider.Visibility = System.Windows.Visibility.Collapsed;
-                lblAlternateCD.Visibility = System.Windows.Visibility.Collapsed;
+            ThermoSlider.Visibility = System.Windows.Visibility.Collapsed;
+            lblAlternateCD.Visibility = System.Windows.Visibility.Collapsed;
             //}
 
             Spectrum.ActivationOverride = Properties.Settings.Default.ActivationOverride;
@@ -6774,7 +6655,6 @@ namespace MSViewer
                             crntmnmonomasses.Add(Convert.ToDouble(CurrentMonoMasses[i].XValue), CurrentMonoMasses[i].YValue);
                         }
                     }
-
 
                     var allbandyions = CalculateBYCZIons.CalculateBYCZIon(txtValidateSequenceWithSpectrum.Text, CurrentMonos.Select(a => a.XValue).ToList(), ParentMass, CurrentSpectrum.Activation, App.AllValidationModifications, Properties.Settings.Default.MatchTolerancePPM, AminoAcidHelpers.AminoAcids, false, crntmnmonomasses);
 
@@ -6808,17 +6688,15 @@ namespace MSViewer
             App.SaveorNot = false;
         }
 
-        double maxppmerrorofbandyions = 0;
+        private double maxppmerrorofbandyions = 0;
 
-        bool shouldshowmaxppmerrorofbandyions = false;
+        private bool shouldshowmaxppmerrorofbandyions = false;
 
-        void CalculateIons(string Sequence, List<double> Monomasses, double ParentMass, List<ModificationList> AllValidationModifications = null, double MatchTolerance = 0.00, SortedList<char, double> aa = null, bool isauto = false, Dictionary<double, double> CurrentMonomasses = null)
+        private void CalculateIons(string Sequence, List<double> Monomasses, double ParentMass, List<ModificationList> AllValidationModifications = null, double MatchTolerance = 0.00, SortedList<char, double> aa = null, bool isauto = false, Dictionary<double, double> CurrentMonomasses = null)
         {
-
         }
 
-
-        void ApplyMatchList()
+        private void ApplyMatchList()
         {
             try
             {
@@ -6867,7 +6745,7 @@ namespace MSViewer
 
                     if (splitmasses[0] == "L")
                     {
-                        // Add IsoLeucine 
+                        // Add IsoLeucine
                         AminoAcidMass2.Add("I", Convert.ToDouble(splitmasses[1]));
                         AminoAcids.Add('I', Convert.ToDouble(splitmasses[1]));
 
@@ -6884,9 +6762,7 @@ namespace MSViewer
                 var a = temp.GroupBy(x => x.Key).Select(x => new { Key = x.Key, Value = x.First().Value });
                 ComboMassLookup = a.Where(x => x.Key > 0).ToDictionary(k => k.Key, v => v.Value);
 
-
                 MassLookup.Remove(0);
-
 
                 var temp1 = from m1 in MassLookup
                             from m2 in MassLookup
@@ -6904,13 +6780,11 @@ namespace MSViewer
             catch (Exception ex)
             {
                 System.Windows.MessageBox.Show(ex.Message);
-
             }
         }
 
         private void MenuItem1_Click(object sender, RoutedEventArgs e)
         {
-
             try
             {
                 var xvalue = (double)BottomChart.TrendLines[0].Value;
@@ -6922,7 +6796,6 @@ namespace MSViewer
 
                 //foreach (var abin in bins)
                 //    output += abin.Key.ToString() + ", " + abin.Value.ToString() + "\n";
-
 
                 //Dispatcher.BeginInvoke(() =>
                 //{
@@ -6951,7 +6824,7 @@ namespace MSViewer
 
                 //                using (MemoryStream memoryStream = new MemoryStream())
                 //                {
-                //                    // Serialize the object 
+                //                    // Serialize the object
                 //                    var serializer = new DataContractJsonSerializer(typeof(Point[]));
                 ////                    serializer.WriteObject(memoryStream, new point[2] { new SignalProcessing.Point() { X=1d, Y = 2f }, new SignalProcessing.Point() { X=4d, Y=6f } });
                 //                    serializer.WriteObject(memoryStream, points);
@@ -6978,15 +6851,11 @@ namespace MSViewer
                         //serviceCall3 = new Uri(hostSource, "../SignalProcessor.svc/FindMonoMassAndGetSignal");
                         //wc.UploadStringCompleted += new UploadStringCompletedEventHandler(SignalReceived);
 
-
-
-
                         SignalProcessor.FindMonoMass1(points, out r, out p, out x);
 
                         Console.WriteLine("Elapsed: " + DateTime.Now.Subtract(start).TotalMilliseconds + " ms");
 
                         BottomChart.Series[5].DataPoints.Clear();
-
 
                         foreach (var aPoint in x)
                             BottomChart.Series[5].DataPoints.Add(new DataPoint { XValue = aPoint.X, YValue = (double)aPoint.Y });
@@ -6994,6 +6863,7 @@ namespace MSViewer
                         SetScaling();
 
                         break;
+
                     case "mnuShowPredicted":
                         //serviceCall3 = new Uri(hostSource, "../SignalProcessor.svc/FindMonoMassAndGetFit");
                         //wc.UploadStringCompleted += new UploadStringCompletedEventHandler(SignalReceived);
@@ -7019,8 +6889,6 @@ namespace MSViewer
                         Debug.Print("ShowCalled: " + xvalue);
                         var targetIon = CurrentIons.MinBy(i => Math.Abs(i.MonoMass - monoEstimate));
 
-
-
                         Debug.Print("Target Ion: " + targetIon.MonoMZ);
 
                         BottomChart.Series[5].DataPoints.Clear();
@@ -7032,8 +6900,8 @@ namespace MSViewer
 
                         //BottomChart.Series[5].DataSource = SignalProcessor.CalledProfile(targetIon);
 
-
                         break;
+
                     case "mnuShowMonoLabel":
                         Debug.Print("ShowMonoLabel: " + xvalue);
 
@@ -7063,7 +6931,6 @@ namespace MSViewer
 
                         //break;
 
-
                         ////double targetIon2 = 0;
 
                         //var candidates = CurrentMonoMasses.Where(w => Math.Abs((double)w.XValue - xvalue) < zoomWidth / 20).OrderBy(i => Math.Abs((double)i.XValue - xvalue));
@@ -7071,7 +6938,6 @@ namespace MSViewer
 
                         //if (candidates.Any())
                         //{
-
                         //    var targetIonMass = (double)candidates.First().XValue;
 
                         //    //var targetIon2 = CurrentIons.MinBy(i => Math.Abs(i.MonoMass - xvalue));
@@ -7116,12 +6982,11 @@ namespace MSViewer
 
                         //if (point != null) point.LabelText = "#XValue";
 
-
                         break;
+
                     default:
                         //serviceCall3 = new Uri(hostSource, "../SignalProcessor.svc/FindMonoMass");
                         //wc.UploadStringCompleted += new UploadStringCompletedEventHandler(wc_UploadStringCompleted);
-
 
                         SignalProcessor.FindMonoMass1(points, out r, out p, out x);
                         Console.WriteLine("Elapsed: " + DateTime.Now.Subtract(start).TotalMilliseconds + " ms");
@@ -7133,7 +6998,6 @@ namespace MSViewer
                         break;
                 }
 
-
                 //var serviceCall3 = new Uri(hostSource, "../SignalProcessor.svc/FindMonoMassAndGetFit");
 
                 //urlString = "http://" + site + "/service1.svc/SendData";
@@ -7143,7 +7007,6 @@ namespace MSViewer
                 //System.Diagnostics.Debug.WriteLine("Executing Post");
                 //wc.UploadStringAsync(serviceCall3, "POST", json);
 
-
                 //// Submit the information to log
                 //string url = "http://localhost:90/services/MyService.svc/LogError";
                 //WebClient loggingService = new WebClient();
@@ -7152,12 +7015,7 @@ namespace MSViewer
                 //loggingService.Encoding = Encoding.UTF8;
                 //loggingService.UploadStringAsync(new Uri(logExceptionUrl), "POST", json);
 
-
-
-
-
                 //System.Diagnostics.Debug.WriteLine(output);
-
             }
             catch (Exception ex)
             {
@@ -7204,7 +7062,6 @@ namespace MSViewer
         //    }
         //}
 
-
         //void GotResult(object sender, DownloadStringCompletedEventArgs e)
         //{
         //    System.Windows.MessageBox.Show("Result is: " + e.Result);
@@ -7214,8 +7071,6 @@ namespace MSViewer
         {
             // Yikes, this should get broken up into a few intelligible lines...
             string points = string.Join("\n", CurrentSpectrum.Range((double)BottomChart.AxesX[0].ViewMinimum, (double)BottomChart.AxesX[0].ViewMaximum).Select(r => r.Mass.ToString() + "\t" + r.Intensity.ToString()));
-
-
 
             Clipboard.SetText(points);
         }
@@ -7240,7 +7095,6 @@ namespace MSViewer
 
         //private void button1_Click_3(object sender, RoutedEventArgs e)
         //{
-
         //    //CurrentMonoMasses.Add(5, 4);
 
         //    //Clipboard.ContainsText();
@@ -7254,7 +7108,6 @@ namespace MSViewer
             Clipboard.SetText(string.Join("\r\n", CurrentMonoMasses.Select(m => m.XValue.ToString() + "\t" + m.YValue.ToString() + "\t" + m.ZValue.ToString())));
             //});
         }
-
 
         private void txtMolecules_KeyDown(object sender, KeyEventArgs e)
         {
@@ -7281,18 +7134,21 @@ namespace MSViewer
                         btnNext_Click(null, null);
                     }
                     break;
+
                 case Key.Left:
                     if (txtScanNum.IsFocused || btnPrevious.IsFocused || btnNext.IsFocused)
                     {
                         btnPrevious_Click(null, null);
                     }
                     break;
+
                 case Key.Space:
                     if (busySpectrum.IsMouseOver)
                     {
                         AddRangeLabel();
                     }
                     break;
+
                 case Key.Return:
 
                     if (txtScanNum.IsEnabled && txtScanNum.IsFocused)
@@ -7338,7 +7194,6 @@ namespace MSViewer
 
             e.Handled = true;
         }
-
 
         private void AddReverseRangeNewSequence()
         {
@@ -7453,7 +7308,6 @@ namespace MSViewer
 
         private void AddRangeNewSequence(AnnotationBar aBar, bool isReverse = false)
         {
-
             if (isReverse)
             {
                 AnnotationBars1.DataPoints.Add(new DataPoint() { XValue = aBar.Start - 0.000001d, YValue = double.NaN, Name = aBar.Index });
@@ -7581,12 +7435,10 @@ namespace MSViewer
             return thick;
         }
 
-
         private void RemoveRangeLabel(AnnotationBar barToRemove, double barScore)
         {
             try
             {
-
                 if (barScore <= 0.025)
                 {
                     AnnotationBars1.DataPoints.Remove(
@@ -7666,7 +7518,6 @@ namespace MSViewer
             }
         }
 
-
         private void slider1_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (BottomChart == null) return;
@@ -7693,7 +7544,6 @@ namespace MSViewer
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-
         }
 
         private void MenuItem2_Click(object sender, RoutedEventArgs e)
@@ -7724,8 +7574,6 @@ namespace MSViewer
 
         private void btnChargeDetect_Click(object sender, RoutedEventArgs e)
         {
-
-
             //var specWithCharge = new ChargeDetector();
 
             //var charges = specWithCharge.ParallelDetectChargeStates(4, 40);
@@ -7750,13 +7598,12 @@ namespace MSViewer
                     monosfound = true;
                 }
 
-
                 sqsalldenovotgs.Clear();
                 sqsalldenovotgs = FindAllSequenceTags(CurrentIons, sequencetagmass);
 
                 SaveCurrentScanInfo.currentTags = sqsalldenovotgs;
                 SaveCurrentScanInfo.ions = CurrentIons;
-                //SaveCurrentScanInfo.ParentMass = 
+                //SaveCurrentScanInfo.ParentMass =
 
                 //if (CurrentScanNumber != null && CurrentScanNumber.Value != 0)
                 //{
@@ -7782,8 +7629,6 @@ namespace MSViewer
                     }
                 }
 
-
-
                 if (DechargerVM.UseFasta)
                 {
                     // A worker thread is created in order perform the database search to find if the sequence tag is a valid tag or not.
@@ -7795,7 +7640,6 @@ namespace MSViewer
                     btnFindAA.Visibility = System.Windows.Visibility.Collapsed;
 
                     Debug.WriteLine("btnFindAA_Click1 - Tag count: " + sqsalldenovotgs.Count);
-
 
                     bgsequencesearchinfasta.RunWorkerAsync(sqsalldenovotgs);
                 }
@@ -7845,9 +7689,11 @@ namespace MSViewer
             }
         }
 
-        string sequen = string.Empty;
+        private string sequen = string.Empty;
+
         //string newsequenwithgaps = string.Empty;
-        List<double> IonsforSqDBMatch = new List<double>();
+        private List<double> IonsforSqDBMatch = new List<double>();
+
         private void Findnewsequences()
         {
             var maxAminoAcidMass = MassLookup.MaxBy(a => a.Key).Key;
@@ -7996,7 +7842,6 @@ namespace MSViewer
                                 orderby difference
                                 select new { Name = ma.Value, Delta = difference, Start = Math.Min(cm.XValue, im.XValue), End = Math.Max(cm.XValue, im.XValue), StartScore = im.Score, EndScore = cm.Score, StartCharge = cm.XValue <= im.XValue ? cm.Charge : im.Charge, EndCharge = cm.XValue > im.XValue ? cm.Charge : im.Charge };
 
-
                         secondarymatch = (from ma in ComboMassLookup
                                           let difference = sei != true ? 999 : Math.Abs(ma.Key - Math.Abs(secondaryindexi.First().XValue - secondaryindexj.First().XValue))
                                           where difference <= dif
@@ -8115,9 +7960,7 @@ namespace MSViewer
                 i++;
             }
             //FindReverseSequence();
-
         }
-
 
         private void FindNewSequences2()
         {
@@ -8128,8 +7971,6 @@ namespace MSViewer
             double total = 0;
             double priortotal = 0;
             double lastPosition = double.MaxValue;
-
-
 
             // Combine the Single and 2 AminoAcid Mass Lists
             //var combinedMassLookup = MassLookup.Concat(ComboMassLookup).GroupBy(d => d.Key)
@@ -8177,7 +8018,6 @@ namespace MSViewer
                     bestMatches.AddRange(matches);
                 }
 
-
                 if (bestMatches.Any())
                 {
                     var singleAaMatches = bestMatches.Where(p => p.Name.Length == 1);
@@ -8187,7 +8027,6 @@ namespace MSViewer
                     {
                         // Boost score if the proposed Amino Acid extends the sequence further
                         if (bestMatches.Where(p => p.Name.Length > 1 && p.Name.Contains(aMatch.Name)).Any()) aMatch.ScoreBooster++;
-
 
                         // Boost score if the proposed Amino Acid has a water loss
                         foreach (var aFlag in FlagMassLookup)
@@ -8246,7 +8085,6 @@ namespace MSViewer
                         MassDiff = Math.Abs(bestMatch.End.MonoMass - bestMatch.Start.MonoMass),
                         Seq = bestMatch.Name.Contains("+") ? Convert.ToString(Math.Abs(bestMatch.End.MonoMass - bestMatch.Start.MonoMass)) : bestMatch.Name
                     });
-
 
                     AddRangeNewSequence(new AnnotationBar() { Name = bestMatch.Name, Start = bestMatch.Start.MonoMass, End = bestMatch.End.MonoMass });
 
@@ -8348,7 +8186,6 @@ namespace MSViewer
                     bestMatches.AddRange(matches);
                 }
 
-
                 if (bestMatches.Any())
                 {
                     var singleAaMatches = bestMatches.Where(p => p.Name.Length == 1);
@@ -8358,7 +8195,6 @@ namespace MSViewer
                     {
                         // Boost score if the proposed Amino Acid extends the sequence further
                         if (bestMatches.Where(p => p.Name.Length > 1 && p.Name.Contains(aMatch.Name)).Any()) aMatch.ScoreBooster++;
-
 
                         // Boost score if the proposed Amino Acid has a water loss
                         foreach (var aFlag in FlagMassLookup)
@@ -8418,7 +8254,6 @@ namespace MSViewer
                         Seq = bestMatch.Name.Contains("+") ? Convert.ToString(Math.Abs(bestMatch.End.MonoMass - bestMatch.Start.MonoMass)) : bestMatch.Name
                     });
 
-
                     AddRangeNewSequence(new AnnotationBar() { Name = bestMatch.Name, Start = bestMatch.Start.MonoMass, End = bestMatch.End.MonoMass });
 
                     lastPosition = bestMatch.End.MonoMass;
@@ -8463,12 +8298,11 @@ namespace MSViewer
             return returnTags;
         }
 
-
-        bool reversesequence = false;
+        private bool reversesequence = false;
 
         /// <summary>
         /// Based on the sequence obtained from the Parent mass
-        /// verifying if there is a sequence possible in the 
+        /// verifying if there is a sequence possible in the
         /// reverse direction.
         /// If the same elements are found in the reverse direction
         /// then it really confident in those regions.
@@ -8527,7 +8361,7 @@ namespace MSViewer
         }
 
         /// <summary>
-        /// Once sequencing in the reverse direction 
+        /// Once sequencing in the reverse direction
         /// is done, the gaps in the sequence will be
         /// filled in using the data from the monos
         /// in the forward direction
@@ -8545,8 +8379,6 @@ namespace MSViewer
                     foreach (var c in monogap)
                     {
                         double dif = PPMCalc.MaxPPM(Math.Min(c.XValue, (a.EndPosition)), Math.Max(c.XValue, (a.EndPosition)), Properties.Settings.Default.MatchTolerancePPM); //, c.XValue <= a.EndPosition ? c.Charge : a.EndCharge, c.XValue > a.EndPosition ? c.Charge : a.EndCharge);
-
-
 
                         //double dif = Math.Max(Math.Min(c.XValue, (a.EndPosition)), Math.Max(c.XValue, (a.EndPosition)));
                         var match = from ma in MassLookup
@@ -8594,7 +8426,6 @@ namespace MSViewer
                                 }
                             }
                         }
-
                         else
                         {
                             var secondarymatch = from ma in ComboMassLookup
@@ -8646,7 +8477,7 @@ namespace MSViewer
             }
         }
 
-        List<FindSequenceTags.SequenceTag> publicseq = new List<FindSequenceTags.SequenceTag>();
+        private List<FindSequenceTags.SequenceTag> publicseq = new List<FindSequenceTags.SequenceTag>();
         // List<FindSequenceTags.SequenceTag> revseq = new List<FindSequenceTags.SequenceTag>();
 
         private List<FindSequenceTags.SequenceTag> FindAllSequenceTags(IEnumerable<Cluster> ions, double parentMass = double.NaN) //, bool allsequencetags
@@ -8672,7 +8503,7 @@ namespace MSViewer
                 monos = monos.OrderBy(a => a.MonoMass);
                 double matchtolerance = DechargerVM.SpectralDataFilename != null ? Properties.Settings.Default.MatchTolerancePPM : App.SSRXMLMatchTolerancePPM;
 
-                // Find nearest/intense point? 
+                // Find nearest/intense point?
                 if (ions != null && ions.Any())
                 {
                     foreach (var startMono in monos)
@@ -8690,7 +8521,6 @@ namespace MSViewer
                             var start = (endMono.MonoMass) - tolerance;
                             var end = (endMono.MonoMass) + tolerance;
 
-
                             //var candidate = ions.Where(p => p.MonoMass > start && p.MonoMass < end).FirstOrDefault();
 
                             var candidate = ions.Where(p => p.MonoMass > start && p.MonoMass < end).FirstOrDefault();
@@ -8703,12 +8533,11 @@ namespace MSViewer
                                 SnappedXPosition = candidate.MonoMass;
                             }
 
-
                             double dif = PPMCalc.MaxPPM(Math.Min(SnappedXPosition, startMono.MonoMass), Math.Max(SnappedXPosition, startMono.MonoMass), matchtolerance); ///Properties.Settings.Default.MatchTolerancePPM); //, startMono.ZValue, endMono.ZValue);
 
                             //double dif = (((Properties.Settings.Default.MassTolerancePPM / 1e6d) * (Math.Min(SnappedXPosition, ((double)startMono.XValue)) * startMono.ZValue)) + ((Properties.Settings.Default.MassTolerancePPM / 1e6d) * (Math.Max(SnappedXPosition, ((double)startMono.XValue)) * endMono.ZValue))) / 2;
 
-                            // TODO: Secondarily, snap to nearest peak!  
+                            // TODO: Secondarily, snap to nearest peak!
 
                             // Search for Masses that match within our tolerance
                             var matches = (from m in MassLookupToUse
@@ -8761,7 +8590,6 @@ namespace MSViewer
 
                     //if (!allsequencetags)
                     //{
-
                     seq = publicseq = FindSequenceTags.FindAllSequenceTags(values);
 
                     ///FindSequenceTags.FindAllSequenceTags(values);
@@ -8790,15 +8618,12 @@ namespace MSViewer
         //{
         //    var seq = publicseq = FindSequenceTags.FindAllSequenceTags(values);
 
-
-
         //    return seq;
         //}
 
-
-            private List<FindSequenceTags.SequenceTag> FindAllSequenceTagsWithoutModifications(IEnumerable<Cluster> ions, List<double> modifications, ref ModificationsList modificationslist, double parentMass = double.NaN, bool direction = false, CancellationToken cToken = default(CancellationToken))
+        private List<FindSequenceTags.SequenceTag> FindAllSequenceTagsWithoutModifications(IEnumerable<Cluster> ions, List<double> modifications, ref ModificationsList modificationslist, double parentMass = double.NaN, bool direction = false, CancellationToken cToken = default(CancellationToken))
         {
-            //TODO: Use activation do calculate abc xyz of ions to use for fragmentation.  
+            //TODO: Use activation do calculate abc xyz of ions to use for fragmentation.
 
             var seq = new List<FindSequenceTags.SequenceTag>();
             int numberofmodifications = 0;
@@ -8852,10 +8677,9 @@ namespace MSViewer
                 var monos = double.IsNaN(parentMass) ? ions.ToList() : ions.Where(a => a.MonoMass <= parentMass).ToList();
                 monos = monos.OrderBy(a => a.MonoMass).ToList();
 
-
                 var newmonos = monos.ToList();
                 int numberofmonos = monos.Count;
-                // Find nearest/intense point? 
+                // Find nearest/intense point?
                 if (ions != null && ions.Any())
                 {
                     i = 0;
@@ -8894,10 +8718,9 @@ namespace MSViewer
                                 SnappedXPosition = candidate.MonoMass;
                             }
 
-
                             double dif = PPMCalc.MaxPPM(Math.Min(SnappedXPosition, startMono.MonoMass), Math.Max(SnappedXPosition, startMono.MonoMass), matchtolerance); ///Properties.Settings.Default.MatchTolerancePPM); //, startMono.ZValue, endMono.ZValue);
 
-                            // TODO: Secondarily, snap to nearest peak!  
+                            // TODO: Secondarily, snap to nearest peak!
 
                             //if (modifications.Where(a => Math.Abs(a - Math.Abs(offset)) <= dif).Any())
                             //{
@@ -8990,10 +8813,9 @@ namespace MSViewer
                     //            SnappedXPosition = candidate.MonoMass;
                     //        }
 
-
                     //        double dif = PPMCalc.MaxPPM(Math.Min(SnappedXPosition, startMono.MonoMass), Math.Max(SnappedXPosition, startMono.MonoMass), matchtolerance); ///Properties.Settings.Default.MatchTolerancePPM); //, startMono.ZValue, endMono.ZValue);
 
-                    //        // TODO: Secondarily, snap to nearest peak!  
+                    //        // TODO: Secondarily, snap to nearest peak!
 
                     //        if (modifications.Where(a => Math.Abs(a - Math.Abs(offset)) <= dif).Any())
                     //        {
@@ -9055,10 +8877,9 @@ namespace MSViewer
                     //            SnappedXPosition = candidate.MonoMass;
                     //        }
 
-
                     //        double dif = PPMCalc.MaxPPM(Math.Min(SnappedXPosition, startMono.MonoMass), Math.Max(SnappedXPosition, startMono.MonoMass), matchtolerance); ///Properties.Settings.Default.MatchTolerancePPM); //, startMono.ZValue, endMono.ZValue);
 
-                    //        // TODO: Secondarily, snap to nearest peak!  
+                    //        // TODO: Secondarily, snap to nearest peak!
 
                     //        if (modifications.Where(a => Math.Abs(a - Math.Abs(offset)) <= dif).Any())
                     //        {
@@ -9109,7 +8930,6 @@ namespace MSViewer
 
                     //if (!allsequencetags)
                     //{
-
                     seq = publicseq = FindSequenceTags.FindAllSequenceTags(values);
 
                     ///FindSequenceTags.FindAllSequenceTags(values);
@@ -9187,7 +9007,6 @@ namespace MSViewer
         //    File.WriteAllText(pathString + "\\" + fileName, Convert.ToString(stb));
         //}
 
-
         //void GenerateTestFileforSequencetag(List<InitialAA> values)
         //{
         //    var baseDir = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -9204,7 +9023,7 @@ namespace MSViewer
         //    File.WriteAllText(pathString + "\\" + fileName, Convert.ToString(stb));
         //}
 
-        void bgsequencesearchinfasta_DoWork(object sender, DoWorkEventArgs e)
+        private void bgsequencesearchinfasta_DoWork(object sender, DoWorkEventArgs e)
         {
             if (e.Argument == null || (e.Argument is List<FindSequenceTags.SequenceTag>) == false)
             {
@@ -9320,7 +9139,6 @@ namespace MSViewer
                         }
                     }
 
-
                     foreach (var t in tags)
                     {
                         if (!((workerResult.Where(a => a.Sequence == t.Sequence).Any()) || (workerResult.Where(a => a.Sequence == ReverseString.Reverse(t.Sequence)).Any())))
@@ -9353,7 +9171,7 @@ namespace MSViewer
             }
         }
 
-        void bgsequencesearchindb_DoWork(object sender, DoWorkEventArgs e)
+        private void bgsequencesearchindb_DoWork(object sender, DoWorkEventArgs e)
         {
             if (e.Argument == null || (e.Argument is List<FindSequenceTags.SequenceTag>) == false)
             {
@@ -9375,139 +9193,118 @@ namespace MSViewer
             var workerResult = new List<FindSequenceTags.SequenceTag>();
             //try
             //{
-                //using (var cn = new SqlConnection(Properties.Settings.Default.ConnectionString))
-                //{
-                    //cn.Open();
-                    if (db.State == ConnectionState.Closed) db.Open();
+            //using (var cn = new SqlConnection(Properties.Settings.Default.ConnectionString))
+            //{
+            //cn.Open();
+            if (db.State == ConnectionState.Closed) db.Open();
 
-                    foreach (FindSequenceTags.SequenceTag sq in tags)
+            foreach (FindSequenceTags.SequenceTag sq in tags)
+            {
+                if (sq.Sequence.Length >= Properties.Settings.Default.SequenceTagLength) /// || Properties.Settings.Default.CountBlastHits)
+                {
+                    string allspecies = "'" + string.Join(",", App.DistinctSpecies.Where(a => a.IsSelected == true).Select(a => a.SpeciesID)) + "'";
+                    string sqlcommand = string.Empty;
+                    if (!Properties.Settings.Default.UseBlast || (sq.Sequence.Length <= 4 && Properties.Settings.Default.CountBlastHits))
                     {
-                        if (sq.Sequence.Length >= Properties.Settings.Default.SequenceTagLength) /// || Properties.Settings.Default.CountBlastHits)
+                        sqlcommand = "SELECT COUNT(*) FROM [dbo].[FindProteinsByIsobaricSequenceforCountbySpecies]( '" + sq.Sequence + "', " + (Properties.Settings.Default.SearchAllSpecies ? "NULL" : allspecies) + " )";
+                    }
+                    else if (Properties.Settings.Default.CountBlastHits)
+                    {
+                        sqlcommand = "EXEC [dbo].[BlastpBySpecies20] '" + sq.Sequence + "', " + "0 ," + (Properties.Settings.Default.SearchAllSpecies ? "NULL" : allspecies) + ", '-evalue 5000 -ungapped -comp_based_stats 0 -task blastp-short' ";  //-max_target_seqs 101  -ungapped blastp-short
+                    }
+
+                    using (SqlCommand cmd = new SqlCommand(sqlcommand, db))
+                    {
+                        cmd.CommandTimeout = 100000;
+                        cmd.CommandType = CommandType.Text;
+
+                        if (!Properties.Settings.Default.UseBlast || (sq.Sequence.Length <= 4 && Properties.Settings.Default.CountBlastHits))
                         {
-                            string allspecies = "'" + string.Join(",", App.DistinctSpecies.Where(a => a.IsSelected == true).Select(a => a.SpeciesID)) + "'";
-                            string sqlcommand = string.Empty;
-                            if (!Properties.Settings.Default.UseBlast || (sq.Sequence.Length <= 4 && Properties.Settings.Default.CountBlastHits))
+                            var scalarResult = cmd.ExecuteScalar();
+                            workerResult.Add(new FindSequenceTags.SequenceTag
                             {
-                                sqlcommand = "SELECT COUNT(*) FROM [dbo].[FindProteinsByIsobaricSequenceforCountbySpecies]( '" + sq.Sequence + "', " + (Properties.Settings.Default.SearchAllSpecies ? "NULL" : allspecies) + " )";
-                            }
-                            else if (Properties.Settings.Default.CountBlastHits)
+                                RawSequence = sq.Sequence,
+                                End = sq.End,
+                                Index = sq.Index,
+                                Ions = sq.Ions,
+                                MaxScore = sq.MaxScore,
+                                NumberofAA = sq.NumberofAA,
+                                Start = sq.Start,
+                                totalScore = sq.totalScore,
+                                IndividualAAs = sq.IndividualAAs,
+                                Score = sq.Score,
+                                Visibility = "No",
+                                DatabaseHitsValue = (int)scalarResult
+                            });
+                        }
+                        else if (Properties.Settings.Default.CountBlastHits)
+                        {
+                            //int cnt = 0;
+                            //int count = SearchforSequence(sq.Sequence, SaveCurrentScanInfo.currentTags, SaveCurrentScanInfo.ions, ref cnt, SaveCurrentScanInfo.ParentMass).Count();
+
+                            cmd.ExecuteNonQuery();
+
+                            sqlcommand = "SELECT @@ROWCOUNT as NumberofRows";
+
+                            SqlCommand cmd1 = new SqlCommand(sqlcommand, db);
+
+                            int scalarvalue = Convert.ToInt32(cmd1.ExecuteScalar());
+
+                            //using (SqlDataReader dr = cmd1.ExecuteReader())
+                            //{
+                            //    while(dr.Read())
+                            //    {
+                            //sqlcommand = "EXEC [dbo].[BlastpBySpecies4] '" + ReverseString.ReverseStr(sq.Sequence) + "', " + "0 ," + (Properties.Settings.Default.SearchAllSpecies ? "NULL" : allspecies) + ", '-evalue 5000 -ungapped  -comp_based_stats 0 -task blastp-short' ";  //-max_target_seqs 101
+                            //SqlCommand cmd2 = new SqlCommand(sqlcommand, cn);
+                            //cmd2.ExecuteNonQuery();
+
+                            //sqlcommand = "SELECT @@ROWCOUNT as NumberofRows";
+
+                            //cmd1 = new SqlCommand(sqlcommand, cn);
+
+                            //scalarvalue += Convert.ToInt32(cmd1.ExecuteScalar());
+
+                            workerResult.Add(new FindSequenceTags.SequenceTag
                             {
-                                sqlcommand = "EXEC [dbo].[BlastpBySpecies20] '" + sq.Sequence + "', " + "0 ," + (Properties.Settings.Default.SearchAllSpecies ? "NULL" : allspecies) + ", '-evalue 5000 -ungapped -comp_based_stats 0 -task blastp-short' ";  //-max_target_seqs 101  -ungapped blastp-short
-                            }
-
-                            using (SqlCommand cmd = new SqlCommand(sqlcommand, db))
-                            {
-                                cmd.CommandTimeout = 100000;
-                                cmd.CommandType = CommandType.Text;
-
-                                if (!Properties.Settings.Default.UseBlast || (sq.Sequence.Length <= 4 && Properties.Settings.Default.CountBlastHits))
-                                {
-                                    var scalarResult = cmd.ExecuteScalar();
-                                    workerResult.Add(new FindSequenceTags.SequenceTag
-                                    {
-                                        RawSequence = sq.Sequence,
-                                        End = sq.End,
-                                        Index = sq.Index,
-                                        Ions = sq.Ions,
-                                        MaxScore = sq.MaxScore,
-                                        NumberofAA = sq.NumberofAA,
-                                        Start = sq.Start,
-                                        totalScore = sq.totalScore,
-                                        IndividualAAs = sq.IndividualAAs,
-                                        Score = sq.Score,
-                                        Visibility = "No",
-                                        DatabaseHitsValue = (int)scalarResult
-                                    });
-                                }
-                                else if (Properties.Settings.Default.CountBlastHits)
-                                {
-                                    //int cnt = 0;
-                                    //int count = SearchforSequence(sq.Sequence, SaveCurrentScanInfo.currentTags, SaveCurrentScanInfo.ions, ref cnt, SaveCurrentScanInfo.ParentMass).Count();
-
-                                    cmd.ExecuteNonQuery();
-
-                                    sqlcommand = "SELECT @@ROWCOUNT as NumberofRows";
-
-                                    SqlCommand cmd1 = new SqlCommand(sqlcommand, db);
-
-                                    int scalarvalue = Convert.ToInt32(cmd1.ExecuteScalar());
-
-                                    //using (SqlDataReader dr = cmd1.ExecuteReader())
-                                    //{
-                                    //    while(dr.Read())
-                                    //    {
-
-                                    //sqlcommand = "EXEC [dbo].[BlastpBySpecies4] '" + ReverseString.ReverseStr(sq.Sequence) + "', " + "0 ," + (Properties.Settings.Default.SearchAllSpecies ? "NULL" : allspecies) + ", '-evalue 5000 -ungapped  -comp_based_stats 0 -task blastp-short' ";  //-max_target_seqs 101
-                                    //SqlCommand cmd2 = new SqlCommand(sqlcommand, cn);
-                                    //cmd2.ExecuteNonQuery();
-
-                                    //sqlcommand = "SELECT @@ROWCOUNT as NumberofRows";
-
-                                    //cmd1 = new SqlCommand(sqlcommand, cn);
-
-                                    //scalarvalue += Convert.ToInt32(cmd1.ExecuteScalar());
-
-                                    workerResult.Add(new FindSequenceTags.SequenceTag
-                                    {
-                                        RawSequence = sq.Sequence,
-                                        End = sq.End,
-                                        Index = sq.Index,
-                                        Ions = sq.Ions,
-                                        MaxScore = sq.MaxScore,
-                                        NumberofAA = sq.NumberofAA,
-                                        Start = sq.Start,
-                                        totalScore = sq.totalScore,
-                                        IndividualAAs = sq.IndividualAAs,
-                                        Score = sq.Score,
-                                        Visibility = "No",
-                                        DatabaseHitsValue = scalarvalue,/// count, ///dr["NumberofRows"] != DBNull.Value ? Convert.ToInt16(dr["NumberofRows"]) : 0
-                                    });
-                                    //    }
-                                    //}
-                                    //if (scalarResult == 1)
-                                    //    scalarResult = 101;
-                                    //using (SqlDataReader dr = cmd.ExecuteReader())
-                                    //{
-                                    //    while (dr.Read())
-                                    //    {
-                                    //var scalarResult = Convert.ToInt32(dr["numberofrows"]);
-                                    //workerResult.Add(new FindSequenceTags.SequenceTag
-                                    //{
-                                    //    RawSequence = sq.Sequence,
-                                    //    End = sq.End,
-                                    //    Index = sq.Index,
-                                    //    Ions = sq.Ions,
-                                    //    MaxScore = sq.MaxScore,
-                                    //    NumberofAA = sq.NumberofAA,
-                                    //    Start = sq.Start,
-                                    //    totalScore = sq.totalScore,
-                                    //    IndividualAAs = sq.IndividualAAs,
-                                    //    Score = sq.Score,
-                                    //    Visibility = "No",
-                                    //    DatabaseHitsValue = scalarResult
-                                    //});
-                                    //    }
-                                    //}
-                                }
-                                else
-                                {
-                                    workerResult.Add(new FindSequenceTags.SequenceTag
-                                    {
-                                        RawSequence = sq.Sequence,
-                                        End = sq.End,
-                                        Index = sq.Index,
-                                        Ions = sq.Ions,
-                                        MaxScore = sq.MaxScore,
-                                        NumberofAA = sq.NumberofAA,
-                                        Start = sq.Start,
-                                        totalScore = sq.totalScore,
-                                        IndividualAAs = sq.IndividualAAs,
-                                        Score = sq.Score,
-                                        Visibility = "No",
-                                        DatabaseHitsValue = 0
-                                    });
-                                }
-                            }
+                                RawSequence = sq.Sequence,
+                                End = sq.End,
+                                Index = sq.Index,
+                                Ions = sq.Ions,
+                                MaxScore = sq.MaxScore,
+                                NumberofAA = sq.NumberofAA,
+                                Start = sq.Start,
+                                totalScore = sq.totalScore,
+                                IndividualAAs = sq.IndividualAAs,
+                                Score = sq.Score,
+                                Visibility = "No",
+                                DatabaseHitsValue = scalarvalue,/// count, ///dr["NumberofRows"] != DBNull.Value ? Convert.ToInt16(dr["NumberofRows"]) : 0
+                            });
+                            //    }
+                            //}
+                            //if (scalarResult == 1)
+                            //    scalarResult = 101;
+                            //using (SqlDataReader dr = cmd.ExecuteReader())
+                            //{
+                            //    while (dr.Read())
+                            //    {
+                            //var scalarResult = Convert.ToInt32(dr["numberofrows"]);
+                            //workerResult.Add(new FindSequenceTags.SequenceTag
+                            //{
+                            //    RawSequence = sq.Sequence,
+                            //    End = sq.End,
+                            //    Index = sq.Index,
+                            //    Ions = sq.Ions,
+                            //    MaxScore = sq.MaxScore,
+                            //    NumberofAA = sq.NumberofAA,
+                            //    Start = sq.Start,
+                            //    totalScore = sq.totalScore,
+                            //    IndividualAAs = sq.IndividualAAs,
+                            //    Score = sq.Score,
+                            //    Visibility = "No",
+                            //    DatabaseHitsValue = scalarResult
+                            //});
+                            //    }
+                            //}
                         }
                         else
                         {
@@ -9528,18 +9325,37 @@ namespace MSViewer
                             });
                         }
                     }
+                }
+                else
+                {
+                    workerResult.Add(new FindSequenceTags.SequenceTag
+                    {
+                        RawSequence = sq.Sequence,
+                        End = sq.End,
+                        Index = sq.Index,
+                        Ions = sq.Ions,
+                        MaxScore = sq.MaxScore,
+                        NumberofAA = sq.NumberofAA,
+                        Start = sq.Start,
+                        totalScore = sq.totalScore,
+                        IndividualAAs = sq.IndividualAAs,
+                        Score = sq.Score,
+                        Visibility = "No",
+                        DatabaseHitsValue = 0
+                    });
+                }
+            }
 
-                //    cn.Close();
-                //}
+            //    cn.Close();
+            //}
             //}
             //catch (Exception ex)
             //{
-
             //}
             return workerResult;
         }
 
-        void bgsequencesearchindb_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void bgsequencesearchindb_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Result == null)
             {
@@ -9562,12 +9378,10 @@ namespace MSViewer
                 ///                    : (e.Result as List<FindSequenceTags.SequenceTag>).OrderByDescending(a => a.Sequence.Length).ToList().First().Sequence;
                 btnfindsqs_Click(newbutton, null);
             }
-
         }
 
-        void BindAndShowTags(List<FindSequenceTags.SequenceTag> tags)
+        private void BindAndShowTags(List<FindSequenceTags.SequenceTag> tags)
         {
-
             Dispatcher.Invoke(new Action(() =>
             {
                 dtgridsequences.DataContext = null;
@@ -9599,8 +9413,6 @@ namespace MSViewer
             }));
             Findtags();
         }
-
-
 
         private Paragraph paragraph;
 
@@ -9673,8 +9485,7 @@ namespace MSViewer
         //    }
         //}
 
-
-        bool parentmassmerge = false;
+        private bool parentmassmerge = false;
 
         /// <summary>
         /// Merges all the Selected spectra from the datagrid
@@ -9717,13 +9528,12 @@ namespace MSViewer
 
         private List<MonoPeak> FindMonos(Spectrum spectrum, IEnumerable<Cluster> ions)
         {
-
             var returnMonos = new List<MonoPeak>();
             var revMonos = new List<MonoPeak>();
 
             try
             {
-                // Enhanced Mono Mass Detection 
+                // Enhanced Mono Mass Detection
                 // 1. Group ions by shared peaks
                 // 2. Take MonoMass of ions in group with the highest score
                 // 3. Add to CurrentMonoMasses List
@@ -9750,7 +9560,6 @@ namespace MSViewer
                 }
 
                 var alreadyGrouped = new List<Cluster>();
-
 
                 foreach (var anIon in ions.OrderByDescending(i => i.Score))
                 {
@@ -9813,7 +9622,6 @@ namespace MSViewer
                         });
                     }
                     j++;
-
                 }
 
                 returnMonos = returnMonos.OrderBy(a => a.XValue).ToList();
@@ -9822,7 +9630,6 @@ namespace MSViewer
                 //ReverseConsolidatedMonomasses();
                 //monosfound = false;
                 SetScaling();
-
             }
             catch (Exception ex)
             {
@@ -9834,15 +9641,14 @@ namespace MSViewer
             return returnMonos;
         }
 
-
         /// <summary>
-        /// FindMonos will find all the Monos for the 
+        /// FindMonos will find all the Monos for the
         /// </summary>
         private void FindMonos()
         {
             try
             {
-                // Enhanced Mono Mass Detection 
+                // Enhanced Mono Mass Detection
                 // 1. Group ions by shared peaks
                 // 2. Take MonoMass of ions in group with the highest score
                 // 3. Add to CurrentMonoMasses List
@@ -9869,7 +9675,6 @@ namespace MSViewer
                 }
 
                 var alreadyGrouped = new List<Cluster>();
-
 
                 foreach (var anIon in CurrentIons.OrderByDescending(i => i.Score))
                 {
@@ -9932,7 +9737,6 @@ namespace MSViewer
                         });
                     }
                     j++;
-
                 }
                 CurrentMonos = CurrentMonos.OrderBy(a => a.XValue).ToList();
 
@@ -9948,6 +9752,7 @@ namespace MSViewer
                 Dispatcher.CurrentDispatcher.BeginInvoke(throwException);
             }
         }
+
         /// <summary>
         /// It has all the list of masses for the consolidated monos,
         /// which is used for calculating the sequence tags
@@ -9984,7 +9789,6 @@ namespace MSViewer
         //        });
         //    }
         //}
-
 
         private double WeightedScore(List<DataPoint> values)
         {
@@ -10079,7 +9883,6 @@ namespace MSViewer
 
         private void textBox1_TextChanged(object sender, TextChangedEventArgs e)
         {
-
         }
 
         private void button5_Click(object sender, RoutedEventArgs e)
@@ -10091,15 +9894,11 @@ namespace MSViewer
 
             CurrentSpectrum.SortByMZ();
 
-
             //double min = CurrentSpectrum.MinBy(p => p.MZ).MZ;
             //double max = CurrentSpectrum.MaxBy(p => p.MZ).MZ;
 
             //min = min - (max - min) * 0.035;  // This gives us a buffer on the ends of the X axis
             //max = max + (max - min) * 0.035;  // This gives us a buffer on the ends of the X axis
-
-
-
 
             double min = CurrentIons.SelectMany(i => i.Peaks).Min(p => p.Mass);
             double max = CurrentIons.SelectMany(i => i.Peaks).Max(p => p.Mass);
@@ -10109,14 +9908,12 @@ namespace MSViewer
 
             //BottomChart.Series[0].DataSource = CurrentSpectrum.Range(min, max, (int)BottomChart.AxesX[0].ActualWidth * (Properties.Settings.Default.HighBin ? 2 : 1));
             BottomChart.Series[7].DataSource = CurrentSpectrum.Range(min, max, (int)BottomChart.AxesX[0].ActualWidth * (Properties.Settings.Default.HighBin ? 2 : 1));
-
         }
 
         private void XIC_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-
                 if (this.MainPointProvider is RMSProvider)
                 {
                     var r = this.MainPointProvider as RMSProvider;
@@ -10178,7 +9975,6 @@ namespace MSViewer
                     XIC_Chart.Titles.Add(xicTitle);
 
                     if (Properties.Settings.Default.JumpToXIC) tabXIC.IsSelected = true;
-
                 }
                 else if (this.MainPointProvider is AgilentProvider)
                 {
@@ -10217,11 +10013,9 @@ namespace MSViewer
             {
                 Debug.WriteLine(ex.Message);
             }
-
         }
 
-
-        void CopyCmdExecuted(object target, ExecutedRoutedEventArgs e)
+        private void CopyCmdExecuted(object target, ExecutedRoutedEventArgs e)
         {
             // Based on http://blogs.gerodev.com/post/Copy-Selected-Items-in-WPF-Listbox-to-Clipboard.aspx
 
@@ -10255,7 +10049,6 @@ namespace MSViewer
                     throw new Exception("Unable to copy from object of type " + target.GetType());
                 }
 
-
                 foreach (var lbi in lb.Items)
                 {
                     if (lbi != null)
@@ -10276,7 +10069,7 @@ namespace MSViewer
             }
         }
 
-        static string SerializeToString(IEnumerable<string> propertyNames, object o)
+        private static string SerializeToString(IEnumerable<string> propertyNames, object o)
         {
             // Based on http://stackoverflow.com/questions/1179816/best-practices-for-serializing-objects-to-a-custom-string-format-for-use-in-an-o
 
@@ -10298,8 +10091,7 @@ namespace MSViewer
             return string.Join("\t", result);
         }
 
-
-        void CopyCmdCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private void CopyCmdCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             // Based on http://blogs.gerodev.com/post/Copy-Selected-Items-in-WPF-Listbox-to-Clipboard.aspx
 
@@ -10311,14 +10103,14 @@ namespace MSViewer
                 e.CanExecute = false;
         }
 
-        void ClearCmdExecuted(object target, ExecutedRoutedEventArgs e)
+        private void ClearCmdExecuted(object target, ExecutedRoutedEventArgs e)
         {
             // Based on http://blogs.gerodev.com/post/Copy-Selected-Items-in-WPF-Listbox-to-Clipboard.aspx
 
             Items.Clear();
         }
 
-        void ClearCmdCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private void ClearCmdCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             // Based on http://blogs.gerodev.com/post/Copy-Selected-Items-in-WPF-Listbox-to-Clipboard.aspx
 
@@ -10329,8 +10121,8 @@ namespace MSViewer
             else
                 e.CanExecute = false;
         }
-        //bool selectionzoom;
 
+        //bool selectionzoom;
 
         /// <summary>
         /// Shows the selected tag in the spectrum
@@ -10442,7 +10234,6 @@ namespace MSViewer
             //SetScaling();
         }
 
-
         private void Window_Closed_1(object sender, EventArgs e)
         {
             try
@@ -10454,7 +10245,6 @@ namespace MSViewer
             }
             catch (Exception ex)
             {
-
             }
         }
 
@@ -10601,7 +10391,7 @@ namespace MSViewer
                     if (item == null) return false;
                     if (item is SpectrumInfo == false) return false;
 
-                    // This is the filter to make the correct scans show up                    
+                    // This is the filter to make the correct scans show up
                     return (item as SpectrumInfo).IsVisible;
                 };
                 this.grdMerge1.ItemsSource = mergeView;
@@ -10609,9 +10399,7 @@ namespace MSViewer
             }
             catch (Exception ex)
             {
-
             }
-
         }
 
         private void UpdateRelativeIntensities()
@@ -10621,7 +10409,6 @@ namespace MSViewer
             var maxIntensity = mgrspectra.Where(s => s.IsVisible).Max(s => s.Intensity);
             foreach (var aSpec in mgrspectra.Where(s => s.IsVisible)) aSpec.RelativeIntensity = aSpec.Intensity / maxIntensity;
         }
-
 
         //private void UpdateRelativeIntensities()
         //{
@@ -10635,7 +10422,6 @@ namespace MSViewer
         //    foreach (var aSpec in theView) aSpec.RelativeIntensity = aSpec.Intensity / maxIntensity;
         //}
 
-
         //private void chkHideScansWithNoMass_Checked(object sender, RoutedEventArgs e)
         //{
         //    if (mergeView == null) return;
@@ -10647,14 +10433,14 @@ namespace MSViewer
         //        return (item as SpectrumInfo).ParentMass.HasValue;
         //    };
 
-        //    mergeView.Filter = null;  // clear? 
+        //    mergeView.Filter = null;  // clear?
         //}
 
         //private void chkHideScansWithNoMass_Unchecked(object sender, RoutedEventArgs e)
         //{
         //    if (mergeView == null) return;
 
-        //    mergeView.Filter = null;  // clear? 
+        //    mergeView.Filter = null;  // clear?
         //}
 
         private void mnuDelete_Click_1(object sender, RoutedEventArgs e)
@@ -10662,7 +10448,7 @@ namespace MSViewer
             UpdateMonosOnDelete();
         }
 
-        void UpdateMonosOnDelete()
+        private void UpdateMonosOnDelete()
         {
             if (dtgridMonoMasses.SelectedItem == null || !(dtgridMonoMasses.SelectedItem is DataPoint)) return;
 
@@ -10726,10 +10512,12 @@ namespace MSViewer
                     setscale = scaleby.Thermo;
                     SetScaling();
                     break;
+
                 default:
                     break;
             }
         }
+
         /// <summary>
         /// Sets the scaling of the chart based on
         /// the users choice of having it set by
@@ -10738,7 +10526,7 @@ namespace MSViewer
         /// 2)Predicted values
         /// 3)Primary values
         /// 4)Thermo values
-        /// Uses the global variable setscale 
+        /// Uses the global variable setscale
         /// for doing that.
         /// </summary>
         private void SetScaling()
@@ -10758,6 +10546,7 @@ namespace MSViewer
                         catch { }
                     }), new TimeSpan(0, 0, 3));
                     break;
+
                 case scaleby.Mono:
                     Dispatcher.Invoke((Action)(() =>
                     {
@@ -10791,6 +10580,7 @@ namespace MSViewer
                         catch { }
                     }), new TimeSpan(0, 0, 3));
                     break;
+
                 case scaleby.Predicted:
                     Dispatcher.Invoke((Action)(() =>
                     {
@@ -10828,6 +10618,7 @@ namespace MSViewer
                         catch { }
                     }), new TimeSpan(0, 0, 3));
                     break;
+
                 case scaleby.Thermo:
                     if (ThermoPoint == null || ThermoPoint.Count() <= 0) break;
 
@@ -10859,6 +10650,7 @@ namespace MSViewer
                         }
                     }), new TimeSpan(0, 0, 3));
                     break;
+
                 default:
 
                     break;
@@ -10937,16 +10729,17 @@ namespace MSViewer
                 this.BottomChart.AxesY[0].AxisMaximum = xmax;
             }
         }
-        BackgroundWorker bgDetectParents = new BackgroundWorker();
+
+        private BackgroundWorker bgDetectParents = new BackgroundWorker();
 
         //bool ParentIonsDetected = false;
 
-        List<SpectrumInfo> newspecinfo = new List<SpectrumInfo>();
+        private List<SpectrumInfo> newspecinfo = new List<SpectrumInfo>();
 
-        bool forceparentmassfrommgrspectra = false;
+        private bool forceparentmassfrommgrspectra = false;
 
         /// <summary>
-        /// Detects the all of the ParentMass of all the scans. 
+        /// Detects the all of the ParentMass of all the scans.
         /// If the scan is of type MSMS.
         /// </summary>
         /// <param name="sender"></param>
@@ -10955,7 +10748,6 @@ namespace MSViewer
         {
             DetectParentMasses(mgrspectra);
         }
-
 
         /// <summary>
         /// Detect Parent Masses and show busy dialogs to show progress and cancel
@@ -11015,7 +10807,6 @@ namespace MSViewer
                                 }
                                 //lstnewspecinfo.Add(MainPointProvider.SetParentInfo(aScanInfo));
                             }
-
                         }
                         else if (settingparentmassfromMergeSpectra)
                         {
@@ -11070,19 +10861,19 @@ namespace MSViewer
 
             chkHideScansWithNoMass.IsEnabled = false;
 
-            // Disable the Merging Ions updates that the Parent ion detection will fire.  
+            // Disable the Merging Ions updates that the Parent ion detection will fire.
             SignalProcessor.FireChangeEvents = false;
             bgDetectParents.RunWorkerAsync();
         }
 
-        void bgDetectParents_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void bgDetectParents_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Result != null && e.Result is Exception)
             {
                 System.Windows.MessageBox.Show((e.Result as Exception).Message + "\n\n" + (e.Result as Exception).StackTrace, "Error while detecting parent ions!", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
-            // Re-Enable the Merging Ions updates  
+            // Re-Enable the Merging Ions updates
             SignalProcessor.FireChangeEvents = true;
 
             this.busyTic.IsBusy = false;
@@ -11114,7 +10905,7 @@ namespace MSViewer
                     if (item == null) return false;
                     if (item is SpectrumInfo == false) return false;
 
-                    // This is the filter to make the correct scans show up                    
+                    // This is the filter to make the correct scans show up
                     return (item as SpectrumInfo).IsVisible;
                 };
                 this.grdMerge1.ItemsSource = mergeView;
@@ -11157,7 +10948,6 @@ namespace MSViewer
             UpdateMonosOnDelete();
         }
 
-
         private void btngrpbyParent_Click_1(object sender, RoutedEventArgs e)
         {
             Dispatcher.Invoke(new Action(() =>
@@ -11165,7 +10955,6 @@ namespace MSViewer
                 grdMerge1.Items.Refresh();
             }));
         }
-
 
         private void ThermoSlider_ValueChanged_1(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -11200,12 +10989,10 @@ namespace MSViewer
             WaterLossSeries.DataPoints.Clear();
             CTerminusLine.DataPoints.Clear();
 
-
             if (dtgridsequences.DataContext != null && dtgridsequences.DataContext is IEnumerable<FindSequenceTags.SequenceTag> && (dtgridsequences.DataContext as IEnumerable<FindSequenceTags.SequenceTag>).Count() > 0)
             {
                 if (sequ != null)
                 {
-
                     if ((dtgrdSearchSequence.ItemsSource is List<MSViewer.SearchResult>) && (dtgrdSearchSequence.ItemsSource as List<MSViewer.SearchResult>).Where(a => a.Checked).Any())  //(dtgrdSearchSequence.ItemsSource is List<MSViewer.SequenceSearch>) &&
                     {
                         sequ = (dtgrdSearchSequence.ItemsSource as List<MSViewer.SearchResult>).Where(a => a.Checked).First();
@@ -11217,8 +11004,6 @@ namespace MSViewer
                     sequencetags = (from sq in sequ.InternalMT.Where(a => a.confidence == AminAcidConfidence.Sure && a.Length > 1).ToList()
                                     join dt in alltagsindtgridsequences on sq.SequenceTag equals dt.Sequence.Replace("I", "L")
                                     select dt).ToList();
-
-
 
                     if (blastp)
                     {
@@ -11243,7 +11028,6 @@ namespace MSViewer
                             }
                         }
                     }
-
 
                     int iii = 0;
                     int countalltags = alltagsindtgridsequences.Count;
@@ -11286,14 +11070,12 @@ namespace MSViewer
 
                     dtgridsequences.DataContext = null;
                     dtgridsequences.DataContext = alltagsindtgridsequences;
-
                 }
                 foreach (var aTag in (dtgridsequences.DataContext as IEnumerable<FindSequenceTags.SequenceTag>)) aTag.Visibility = "No";
             }
             dtgridsequences.Items.Refresh();
             btnClearSpectrumAll.IsOpen = false;
         }
-
 
         private void DirectionSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -11379,12 +11161,11 @@ namespace MSViewer
 
         private void txtSearch_TextChanged(object sender, TextChangedEventArgs e)
         {
-
         }
 
-        List<SequenceMatching> matches = new List<SequenceMatching>();
+        private List<SequenceMatching> matches = new List<SequenceMatching>();
 
-        string matchseq = string.Empty;
+        private string matchseq = string.Empty;
 
         private void btnMatch_Click(object sender, RoutedEventArgs e)
         {
@@ -11395,7 +11176,6 @@ namespace MSViewer
             TextRange matchsequence = new TextRange(txtMatchSequence.Document.ContentStart, txtMatchSequence.Document.ContentEnd);
             matchseq = matchsequence.Text;
             string ModifiedSequenceForL = matchsequence.Text.Replace('I', 'L');
-
 
             char[] reverse = ModifiedSequenceForL.ToCharArray();
 
@@ -11457,7 +11237,6 @@ namespace MSViewer
                             start = a.start,
                             sequence = a.sequence,
                             match = a.match,
-
                         });
                         removematching.Add(b);
                     }
@@ -11489,7 +11268,6 @@ namespace MSViewer
                 countmatch++;
             }
 
-
             removematching = removematching.GroupBy(a => a.sequence).Select(b => b.First()).ToList();
 
             foreach (SequenceMatching sq in removematching)
@@ -11498,7 +11276,6 @@ namespace MSViewer
             }
 
             removematching.Clear();
-
 
             foreach (SequenceMatching mtch in newmatchlist.OrderByDescending(a => a.sequence.Length))
             {
@@ -11543,8 +11320,6 @@ namespace MSViewer
                 newmatchlist.Remove(newmatchlist.Where(a => a.sequence == sq.sequence).First());
             }
             removematching.Clear();
-
-
 
             matches.AddRange(newmatchlist);
 
@@ -11593,7 +11368,6 @@ namespace MSViewer
 
             removematching.Clear();
 
-
             string[] splitstring = matches.Select(a => a.sequence).ToArray();
 
             string[] abc = matchsequence.Text.Split(splitstring, StringSplitOptions.RemoveEmptyEntries);
@@ -11633,7 +11407,6 @@ namespace MSViewer
             }
         }
 
-
         private void ClearSequenceMatch()
         {
             paragraph = new Paragraph();
@@ -11669,7 +11442,8 @@ namespace MSViewer
             imgsequencedown.Source = new BitmapImage(urisource);
         }
 
-        bool fromsearchtags = false;
+        private bool fromsearchtags = false;
+
         private void btnfindsqs_Click(object sender, RoutedEventArgs e)
         {
             if (isnotconfirmedornot)
@@ -11714,7 +11488,7 @@ namespace MSViewer
             }
         }
 
-        void clearspectrumfortheaminoacids()
+        private void clearspectrumfortheaminoacids()
         {
             Dispatcher.Invoke(new Action(() =>
             {
@@ -11733,8 +11507,7 @@ namespace MSViewer
             }));
         }
 
-
-        void bgworkersetparentmassfromsqstags_DoWork(object sender, DoWorkEventArgs e)
+        private void bgworkersetparentmassfromsqstags_DoWork(object sender, DoWorkEventArgs e)
         {
             Dispatcher.Invoke(new Action(() =>
             {
@@ -11759,7 +11532,7 @@ namespace MSViewer
         /// Initial All the spectra
         /// </summary>
         /// <param name="scannumber"></param>
-        void InitialParentMassSetup(int scannumber = 0)
+        private void InitialParentMassSetup(int scannumber = 0)
         {
             foreach (SpectrumInfo mgs in MainPointProvider.GetInitialParentInfo())
             {
@@ -11796,10 +11569,7 @@ namespace MSViewer
             }
         }
 
-        
-
-
-        void setparentfromsqstgs_Closed(object sender, EventArgs e)
+        private void setparentfromsqstgs_Closed(object sender, EventArgs e)
         {
             Dispatcher.Invoke(new Action(() =>
             {
@@ -11894,7 +11664,7 @@ namespace MSViewer
 
         /// <summary>
         /// Clears all the previous search terms on the header of the search.
-        /// Note: Makre sure this is called only after the main form is loaded! 
+        /// Note: Makre sure this is called only after the main form is loaded!
         /// </summary>
         private void ClearSearchContents()
         {
@@ -11903,7 +11673,7 @@ namespace MSViewer
             var imgdownDesc = FindVisualChildByName<System.Windows.Controls.Image>(dtgrdSearchSequence, "imgSequencesSearch");
 
             if (imgdownDesc != null)
-            { 
+            {
                 urisource = new Uri("pack://application:,,,/" + assemblyname + ";component/Icons/White-funnel-th.png");
                 imgdownDesc.Tag = "imgDown";
                 imgdownDesc.Source = new BitmapImage(urisource);
@@ -11941,11 +11711,9 @@ namespace MSViewer
                 cmbSpecies.Items.Clear();
                 cmbSpecies.Items.Add("All Species");
             }
-
         }
 
-
-        void SearchStoryBoard()
+        private void SearchStoryBoard()
         {
             Dispatcher.Invoke(new Action(() =>
             {
@@ -11978,7 +11746,6 @@ namespace MSViewer
         }
 
         //bool IwLSubstitutionforSequence = true; ///Use this for database search which has I with L substituted.
-
 
         //private void chkilsub_Checked(object sender, RoutedEventArgs e)
         //{
@@ -12126,7 +11893,7 @@ namespace MSViewer
             }
         }
 
-        IEnumerable<SearchResult> FilterAllSequences(bool clearfilter = false)
+        private IEnumerable<SearchResult> FilterAllSequences(bool clearfilter = false)
         {
             System.Windows.Controls.ComboBox cmbSpecies = FindVisualChildByName<System.Windows.Controls.ComboBox>(dtgrdSearchSequence, "cmbSpecies");
 
@@ -12150,8 +11917,6 @@ namespace MSViewer
             }));
 
             if (Convert.ToString(cmbSpecies.SelectionBoxItem) == "" && !DechargerVM.UseFasta) return null;
-
-
 
             var searchboundsequences = (from s in BoundSequences
                                         let IsAccFilterOff = string.IsNullOrWhiteSpace(txtAccessionSearch.Text)
@@ -12222,8 +11987,7 @@ namespace MSViewer
             dtgrdSearchSequence.ItemsSource = FilterAllSequences(true);
         }
 
-
-        bool ApplyFilter(string source, string target, string function)
+        private bool ApplyFilter(string source, string target, string function)
         {
             switch (function)
             {
@@ -12419,7 +12183,6 @@ namespace MSViewer
 
         private void txtSearchbox_KeyUp(object sender, KeyEventArgs e)
         {
-
         }
 
         private void txtSearchbox_TextChanged(object sender, TextChangedEventArgs e)
@@ -12438,7 +12201,7 @@ namespace MSViewer
 
         private void btnShowDBSequence_Click(object sender, RoutedEventArgs e)
         {
-            // this is the "Display" button in the proteins tab.  
+            // this is the "Display" button in the proteins tab.
             // it should take the selected protein and diplay that sequence match against the currently presented spectrum.
 
             // we should be pulling the clicked target from the event args and context, not selected item
@@ -12464,12 +12227,12 @@ namespace MSViewer
             }
         }
 
-        void bgworkerdrawseq_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void bgworkerdrawseq_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             btnProteinVerifyCurrentSequence_Click(null, null);
         }
 
-        void bgworkerdrawseq_DoWork(object sender, DoWorkEventArgs e)
+        private void bgworkerdrawseq_DoWork(object sender, DoWorkEventArgs e)
         {
             if (e.Argument == null || (e.Argument is SearchResult == false)) return;
 
@@ -12479,12 +12242,8 @@ namespace MSViewer
             }));
         }
 
-
-
-
-        void Drawthesequence(SearchResult sr)
+        private void Drawthesequence(SearchResult sr)
         {
-
             //        var sr = (SearchResult)dtgrdSearchSequence.SelectedItem;
             if (sr == null) return;
 
@@ -12552,11 +12311,10 @@ namespace MSViewer
                 ClearAminoAcids_Click(null, null, sr, true, txtSearchbox.Text);
             }));
 
-
             try
             {
                 if (sr == null) return;
-                ///If there are any sequence tags found then we will find the corresponding highlighting 
+                ///If there are any sequence tags found then we will find the corresponding highlighting
                 if (sr.Allthesequencetags.First() != "")
                 {
                     string matchseq = sr.Sequence;
@@ -12666,7 +12424,6 @@ namespace MSViewer
                     int localcount = 0;
                     MatchStartEnds currentmtse = new MatchStartEnds();
 
-
                     int maxend = matchstartends.Max(a => a.End);
 
                     bool hasanotsuremaxend = false;
@@ -12675,7 +12432,6 @@ namespace MSViewer
                     {
                         hasanotsuremaxend = true;
                     }
-
 
                     foreach (MatchStartEnds mtse in matchstartends)
                     {
@@ -12816,7 +12572,6 @@ namespace MSViewer
                                                 continue;
                                             }
                                             i++;
-
 
                                             string lclstrng = Convert.ToString(s);
                                             if (Regex.IsMatch(Convert.ToString(localsequence[i]), @"[a-z]"))
@@ -12979,7 +12734,6 @@ namespace MSViewer
                                             Monomasses.AddRange(allthemonomasses.Where(a => Math.Abs(Convert.ToDouble(a.XValue) - currentstart) <= PPMCalc.CurrentPPM(currentstart) + 0.1).ToList());
                                             if (start && end)
                                             {
-
                                             }
                                             else if (start)
                                             {
@@ -13074,7 +12828,6 @@ namespace MSViewer
                                             Monomasses.AddRange(allthemonomasses.Where(a => Math.Abs(Convert.ToDouble(a.XValue) - currentstart) <= PPMCalc.CurrentPPM(currentstart) + 0.1).ToList());
                                             if (start && end)
                                             {
-
                                             }
                                             else if (start)
                                             {
@@ -13199,7 +12952,6 @@ namespace MSViewer
                                             Monomasses.AddRange(allthemonomasses.Where(a => Math.Abs(Convert.ToDouble(a.XValue) - currentstart) <= PPMCalc.CurrentPPM(currentstart) + 0.1).ToList());
                                             if (start && end)
                                             {
-
                                             }
                                             else if (start)
                                             {
@@ -13295,7 +13047,6 @@ namespace MSViewer
                                             Monomasses.AddRange(allthemonomasses.Where(a => Math.Abs(Convert.ToDouble(a.XValue) - currentstart) <= PPMCalc.CurrentPPM(currentstart) + 0.1).ToList());
                                             if (start && end)
                                             {
-
                                             }
                                             else if (start)
                                             {
@@ -13417,8 +13168,6 @@ namespace MSViewer
                             else
                                 countforhighlight = mtse.End;
 
-
-
                             if (mtse.End == maxend && hasanotsuremaxend) ///Checking if this is the correct mtse to add a water loss to.
                             {
                                 currentstart = currentend - sequencelength(mtse.SequenceTag.Substring(gapc, mtse.SequenceTag.Length - gapc)) - mtse.Gap;/// -Molecules.Water;
@@ -13449,7 +13198,7 @@ namespace MSViewer
                                     AddDBRangeLabel(bar, 0.0600);
                                 }
                                 else /// Close to ParentMass
-                                {    // If it is close to the ParentMass, since the drawing starts from the Parent Mass need to paint the water molecule then the 
+                                {    // If it is close to the ParentMass, since the drawing starts from the Parent Mass need to paint the water molecule then the
                                     bar = new AnnotationBar()
                                     {
                                         End = ParentMass,
@@ -13590,7 +13339,6 @@ namespace MSViewer
                         AddDBRangeLabel(bar, 0.0600);
                     }
 
-
                     if ((currentend - Molecules.Water) > 0.2)
                     {
                         bar = new AnnotationBar()
@@ -13604,8 +13352,6 @@ namespace MSViewer
                         };
                         AddDBRangeLabel(bar, 0.300);
                     }
-
-
 
                     Monomasses = Monomasses.GroupBy(a => a.XValue).Select(a => a.First()).ToList();
 
@@ -13631,7 +13377,6 @@ namespace MSViewer
                     MonoMassesfordbSequence.DataSource = Monomasses;
                 }
             }
-
             catch (Exception ex)
             {
                 Debug.WriteLine("Exception: " + ex.Message);
@@ -13662,7 +13407,6 @@ namespace MSViewer
                     dtgrdSearchSequence.SelectedIndex = 0;
                 }
             }
-
         }
 
         /// <summary>
@@ -13720,6 +13464,7 @@ namespace MSViewer
 
             return length;
         }
+
         private void btnMergeFullMSScans_Click(object sender, RoutedEventArgs e)
         {
             Dispatcher.Invoke((Action)(() =>
@@ -13732,7 +13477,7 @@ namespace MSViewer
             bgworkerforParentIonMerge.RunWorkerAsync();
         }
 
-        void bgworkerforParentIonMerge_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void bgworkerforParentIonMerge_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             Dispatcher.Invoke((Action)(() =>
             {
@@ -13756,12 +13501,11 @@ namespace MSViewer
             }));
         }
 
-        void bgworkerforParentIonMerge_DoWork(object sender, DoWorkEventArgs e)
+        private void bgworkerforParentIonMerge_DoWork(object sender, DoWorkEventArgs e)
         {
-
         }
 
-        DateTime genTime = DateTime.Now;
+        private DateTime genTime = DateTime.Now;
 
         private void UpdateGenTimeCallback(object sender, EventArgs e)
         {
@@ -13779,7 +13523,7 @@ namespace MSViewer
             }
         }
 
-        List<List<SpectrumInfo>> GetindividualSpectrum(ObservableCollection<SpectrumInfo> mgrspectra)
+        private List<List<SpectrumInfo>> GetindividualSpectrum(ObservableCollection<SpectrumInfo> mgrspectra)
         {
             List<List<SpectrumInfo>> relativespectralinfo = new List<List<SpectrumInfo>>();
 
@@ -13848,7 +13592,7 @@ namespace MSViewer
         /// Generate the file header based on the file name.
         /// </summary>
         /// <param name="FileName"></param>
-        void WriteSequenceSearchHeadertoFile(string FileName)
+        private void WriteSequenceSearchHeadertoFile(string FileName)
         {
             StringBuilder strbldr = new StringBuilder();
             strbldr.Append("ScanNumbers,");
@@ -13881,7 +13625,7 @@ namespace MSViewer
         /// </summary>
         /// <param name="FileName"></param>
         /// <returns></returns>
-        string filenamegenerator(string FileName)
+        private string filenamegenerator(string FileName)
         {
             if (File.Exists(FileName + ".csv"))
             {
@@ -13907,7 +13651,7 @@ namespace MSViewer
         /// </summary>
         /// <param name="FileName"></param>
         /// <param name="sqssearch"></param>
-        void WriteSequenceSearchtoFile(string FileName, SearchResult sqssearch)
+        private void WriteSequenceSearchtoFile(string FileName, SearchResult sqssearch)
         {
             try
             {
@@ -13933,12 +13677,13 @@ namespace MSViewer
             }
         }
 
-        void bindautoscanvalues(int autoscanindi, int autoascanmerged)
+        private void bindautoscanvalues(int autoscanindi, int autoascanmerged)
         {
             lblAutoScanNumberofScans.Content = "Number of individual scans queried =" + autoscanindi + "  Number of Merged scans queried =" + autoascanmerged;
         }
 
-        ObservableCollection<SearchResult> publicresults = new ObservableCollection<SearchResult>();
+        private ObservableCollection<SearchResult> publicresults = new ObservableCollection<SearchResult>();
+
         private void btnGenerateSearchSummary_Click(object sender, RoutedEventArgs e)
         {
             if (cTokenSource != null)
@@ -13985,8 +13730,6 @@ namespace MSViewer
             App.FASTAName = Convert.ToString(btnSequenceSearchSource.ToolTip);
 
             //var allvalueswithnohits = new Dictionary<Guid, BlastpTags>();
-
-
 
             btnGenerateSearchSummary.Content = "Cancel";
             genTime = DateTime.Now;
@@ -14035,10 +13778,8 @@ namespace MSViewer
             cTokenSource = new CancellationTokenSource();
             var cToken = cTokenSource.Token;
 
-
-
             ParallelOptions prlop = new ParallelOptions();
-            prlop.MaxDegreeOfParallelism = usingParallel ? Math.Max(Environment.ProcessorCount-2, 1) : 1;
+            prlop.MaxDegreeOfParallelism = usingParallel ? Math.Max(Environment.ProcessorCount - 2, 1) : 1;
             if (System.Diagnostics.Debugger.IsAttached) prlop.MaxDegreeOfParallelism = 1;
             prlop.CancellationToken = cToken;
 
@@ -14080,7 +13821,7 @@ namespace MSViewer
                     double progress = 0;
                     double newProgress = 0;
 
-                    for (int aScanNum = start; aScanNum <= end; aScanNum++) 
+                    for (int aScanNum = start; aScanNum <= end; aScanNum++)
                     {
                         if (cToken.IsCancellationRequested)
                             throw new OperationCanceledException();
@@ -14092,7 +13833,7 @@ namespace MSViewer
                         if ((int)progress < (int)newProgress)
                         {
                             progress = newProgress;
-                            // Updating the UI is expensive, so only do it when the percentage has changed.  
+                            // Updating the UI is expensive, so only do it when the percentage has changed.
                             Dispatcher.BeginInvoke((Action)(() =>
                             {
                                 bsyforAutoScan.Value = (int)progress;
@@ -14113,7 +13854,7 @@ namespace MSViewer
                     float groupingTimeDelta = 5;  //minutes
 
                     // Go through parent list and identify merge groups
-                    // Mark the group members, so that there are no repeats when parallel execution.  
+                    // Mark the group members, so that there are no repeats when parallel execution.
                     foreach (var sil in scanInfoList.Where(a => a.ParentIon != null))
                     {
                         if (sil.IsMergeMember) continue;
@@ -14159,14 +13900,11 @@ namespace MSViewer
                                                      .OrderByDescending(a => a.Sequence.Length)
                                                      .ToList();
 
-
-
                         // Find tags in reverse direction -- really needed?
                         //denovoTags.AddRange(FindAllSequenceTagsWithoutModifications(spectrum.Ions, modifications, ref mdf, spectrum.ParentIon.MonoMass, false)
                         //                                                            .OrderByDescending(a => a.Sequence.Length)
                         //                                                            .Where(a => a.Sequence.Length >= Properties.Settings.Default.SequenceTagLength)
                         //                                                            .ToList());
-
 
                         //denovoTags = denovoTags.GroupBy(a => a.RawSequence).Select(a => a.First()).ToList();
 
@@ -14184,7 +13922,7 @@ namespace MSViewer
                         {
                             var tempTags = new List<FindSequenceTags.SequenceTag>();
                             tempTags.Add(tagsToSearch.OrderByDescending(t => t.Sequence.Length).MinBy(t => t.Score));  // best score
-                            tempTags.Add(tagsToSearch.Except(tempTags).OrderBy(t => t.Score).MaxBy(t => t.Sequence.Length));  // longest 
+                            tempTags.Add(tagsToSearch.Except(tempTags).OrderBy(t => t.Score).MaxBy(t => t.Sequence.Length));  // longest
                             tagsToSearch = tempTags;
                         }
 
@@ -14196,13 +13934,12 @@ namespace MSViewer
                         //{
                         //    try
                         //    {
-
                         //        results.AddRange(SearchforSequence(aTag.Sequence, denovoTags.Where(tag => tag.Sequence.Length >= Properties.Settings.Default.SequenceTagLength), spectrum));
 
                         //        if (cToken.IsCancellationRequested)
                         //            return;  // this should never happen
 
-                        //        //TODO: get rid of this warningException.  Pass in a UI argument that tells the function to abort without exception when count is maxxed out.  
+                        //        //TODO: get rid of this warningException.  Pass in a UI argument that tells the function to abort without exception when count is maxxed out.
                         //    }
                         //    catch (WarningException)
                         //    {
@@ -14224,11 +13961,11 @@ namespace MSViewer
                             }));
                         }
 
-                        //TODO: Add result anyway for de novo tab!  
+                        //TODO: Add result anyway for de novo tab!
                         if (results.Any() == false) return;  // no matches?  exit here...
 
-                        // Pick the best alignment from the results by which one has the most string matches to tags ??  
-                        var topHit = results.MaxBy(x => x.TagHits * (x.IsBlastResult ? x.BlastTag.Length : x.QueryTag.Length));  // use expect score to rank for blast hits?  
+                        // Pick the best alignment from the results by which one has the most string matches to tags ??
+                        var topHit = results.MaxBy(x => x.TagHits * (x.IsBlastResult ? x.BlastTag.Length : x.QueryTag.Length));  // use expect score to rank for blast hits?
 
                         topHit.ApplySpectrumDetails(spectrum);
                         topHit.DontShowall = true;
@@ -14244,7 +13981,6 @@ namespace MSViewer
                             {
                                 //searchHit.IsConfirmed = UpdateCurrentConfirmSequence(searchHit);
                                 DechargerVM.SearchResults.Add(topHit);
-
                             }), System.Windows.Threading.DispatcherPriority.Normal, null);
                         }
                     });
@@ -14254,7 +13990,6 @@ namespace MSViewer
                         lblAutoScanNumberofScans.Content = "Auto Scan Complete";
                         bsyforAutoScan.Value = 100;
                     }));
-
                 }
                 catch (OperationCanceledException)
                 {
@@ -14291,7 +14026,6 @@ namespace MSViewer
                 {
                     Dispatcher.BeginInvoke((Action)(() =>
                     {
-
                         //bsyforAutoScan.IsIndeterminate = false;
                         btnGenerateSearchSummary.IsEnabled = true;
                         btnGenerateSearchSummary.Content = "Generate";
@@ -14309,7 +14043,6 @@ namespace MSViewer
 
                         //int intsqsssrlst = sqsssrlst.UserName.Length;
                         //int rntsqsssrlst = intsqsssrlst + 100;
-
 
                         cTokenSource = null;
                         ////System.Windows.MessageBox.Show("Generation of sequence tags has taken " + DateTime.Now.Subtract(dtbeforetags).TotalMilliseconds + " Milliseconds. All the sequence tags are done!");
@@ -14332,12 +14065,10 @@ namespace MSViewer
             , cToken);
         }
 
-
-
         /// <summary>
         /// Display the correct description. If a FASTA file display a text, if using a database display a hyperlink
         /// </summary>
-        void DisplayDescription()
+        private void DisplayDescription()
         {
             if (DechargerVM.UseFasta)
             {
@@ -14374,8 +14105,7 @@ namespace MSViewer
             return median;
         }
 
-
-        void bgworkerforautoscan_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void bgworkerforautoscan_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             Dispatcher.BeginInvoke((Action)(() =>
             {
@@ -14389,16 +14119,12 @@ namespace MSViewer
             }), System.Windows.Threading.DispatcherPriority.Normal, null);
         }
 
-
         public List<SearchResult> blastpresultsforfasta(int start, int end)
         {
             List<SearchResult> blastpresults = new List<SearchResult>();
 
-
-
             return blastpresults;
         }
-
 
         private IEnumerable<SearchResult> SortSequenceSearch(IEnumerable<SearchResult> searchresults, double ParentIon)
         {
@@ -14420,7 +14146,6 @@ namespace MSViewer
         {
             //if (searchresults.Where(a => a.DeltaMassVersusProtein >= 0 && a.YellowandGreenTagHits > 2.0).OrderByDescending(w => w.YellowandGreenTagHits).ThenByDescending(a => a.IsConfirmed).ThenByDescending(a => a.Sequence.IsValidSequence()).ThenBy(a => a.ExpectValue).ThenBy(x => Math.Abs(x.DeltaMassVersusProtein)).ThenBy(y => Math.Abs(y.Mass - ParentIon)).ThenBy(b => b.Description.ToLower().Contains("unknown") || b.Description.ToLower().Contains("uncharacterized")).Any())
             //{
-
             //searchresults = searchresults.Where(a => a.DeltaMassVersusProtein >= 0 && a.YellowandGreenTagHits > 2.0).ToList();
 
             //searchresults = searchresults.OrderByDescending(a => a.YellowandGreenTagHits).ToList();
@@ -14438,13 +14163,12 @@ namespace MSViewer
             //return searchresults.First();
 
             // Setting the default value to 1 by using DefaultIfEmpty() in the query.
-            // int firstMonth2 = months.DefaultIfEmpty(1).First(); 
+            // int firstMonth2 = months.DefaultIfEmpty(1).First();
 
             return searchresults.Where(a => a.DeltaMassVersusProtein >= 0 && a.YellowandGreenTagHits > 2.0).OrderByDescending(w => w.YellowandGreenTagHits).ThenByDescending(a => a.IsConfirmed).ThenByDescending(a => a.Sequence.IsValidSequence()).ThenBy(a => a.ExpectValue).ThenBy(x => Math.Abs(x.DeltaMassVersusProtein)).ThenBy(y => Math.Abs(y.Mass - ParentIon)).DefaultIfEmpty(new SearchResult()).First();
 
             //if (searchresults.Where(a => a.DeltaMassVersusProtein >= 0 && a.YellowandGreenTagHits > 2.0).OrderByDescending(w => w.YellowandGreenTagHits).ThenByDescending(a => a.IsConfirmed).ThenByDescending(a => a.Sequence.IsValidSequence()).ThenBy(a => a.ExpectValue).ThenBy(x => Math.Abs(x.DeltaMassVersusProtein)).ThenBy(y => Math.Abs(y.Mass - ParentIon)).Any())
             //{
-
             //    //searchresults.Where(a => a.DeltaMassVersusProtein >= 0 && a.YellowandGreenTagHits > 2.0).OrderByDescending(w => w.YellowandGreenTagHits).ThenByDescending(a => a.IsConfirmed).ThenByDescending(a => a.Sequence.IsValidSequence()).ThenBy(a => a.ExpectValue).ThenBy(x => Math.Abs(x.DeltaMassVersusProtein)).ThenBy(y => Math.Abs(y.Mass - ParentIon)).First();  ///.ToList()
             //    return searchresults.Where(a => a.DeltaMassVersusProtein >= 0 && a.YellowandGreenTagHits > 2.0).OrderByDescending(w => w.YellowandGreenTagHits).ThenByDescending(a => a.IsConfirmed).ThenByDescending(a => a.Sequence.IsValidSequence()).ThenBy(a => a.ExpectValue).ThenBy(x => Math.Abs(x.DeltaMassVersusProtein)).ThenBy(y => Math.Abs(y.Mass - ParentIon)).First();  ///.ToList()
             //}
@@ -14460,7 +14184,6 @@ namespace MSViewer
             //}
             //return searchresults.Where(a => a.DeltaMassVersusProtein >= 0).OrderByDescending(w => w.TagHits).ThenByDescending(a => a.Sequence.IsValidSequence()).ThenBy(a => a.ExpectValue).ThenBy(x => Math.Abs(x.DeltaMassVersusProtein)).ThenBy(y => Math.Abs(y.Mass - ParentIon)).ThenBy(b => b.Description.ToLower().Contains("unknown") || b.Description.ToLower().Contains("uncharacterized"));  ///.ToList()
         }
-
 
         private void OnTargetUpdated(object sender, DataTransferEventArgs e)
         {
@@ -14500,11 +14223,9 @@ namespace MSViewer
 
         private void mnuitemImprtclpbrd_Click(object sender, RoutedEventArgs e)
         {
-
         }
 
-        OpenFileDialog openFasta = new OpenFileDialog();
-
+        private OpenFileDialog openFasta = new OpenFileDialog();
 
         /// <summary>
         /// Importing the FASTA from a file selected
@@ -14539,7 +14260,7 @@ namespace MSViewer
             bgimportfromfile.RunWorkerAsync(filepath);
         }
 
-        void bgimportfromfile_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void bgimportfromfile_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             bsySearchDatabase.IsBusy = true;
 
@@ -14549,7 +14270,7 @@ namespace MSViewer
             this.ShowStopButton = System.Windows.Visibility.Visible;
         }
 
-        class BlastpTags
+        private class BlastpTags
         {
             public string ScanNumber { get; set; }
 
@@ -14570,16 +14291,14 @@ namespace MSViewer
             public List<SpectrumInfo> allspectrums { get; set; }
 
             public string Sequence { get; set; }
-
         }
-
 
         /// <summary>
         /// When the file is loaded the busy indicator is turned off
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void bgimportfromfile_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void bgimportfromfile_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             Debug.Print("file import complete.  Cancelled? " + e.Cancelled);
 
@@ -14600,7 +14319,7 @@ namespace MSViewer
                 if (e.Result is string)
                 {
                     // processed file name should be in the Result Property
-                    FASTAFileName += "\n" + (e.Result as String);  // this is used for the Tooltip on the database/file button                    
+                    FASTAFileName += "\n" + (e.Result as String);  // this is used for the Tooltip on the database/file button
                     //btnSequenceSearchSource.ToolTip = FASTAFileName.Trim(); //.Trim(' ', '\t', '\n');
                 }
 
@@ -14687,7 +14406,7 @@ namespace MSViewer
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void bgimportfromfile_DoWork(object sender, DoWorkEventArgs e)
+        private void bgimportfromfile_DoWork(object sender, DoWorkEventArgs e)
         {
             string filePath = null;
             var worker = sender as BackgroundWorker;
@@ -14705,12 +14424,10 @@ namespace MSViewer
 
             lock (fileLoadWorkers)  // this lock makes it so that only one file is processed at a time to allow the progress bar to show prpperly
             {
-
                 filePath = e.Argument as string;
                 worker.ReportProgress(0);
 
                 Debug.WriteLine("Processing File: " + filePath);
-
 
                 // Open the selected file to read.
                 //FileInfo fi = new FileInfo(e.Argument as string);///.File.OpenRead();
@@ -14725,7 +14442,6 @@ namespace MSViewer
                 IEnumerable<SearchResult> tempdbsequences = new List<SearchResult>();
 
                 int position = 0;
-
 
                 List<string> emptystring = new List<string>();
                 emptystring.Add(string.Empty);
@@ -14762,7 +14478,6 @@ namespace MSViewer
 
                         if (header[0] == '>' || sequence == string.Empty)  // using sequence == empty to bypass the > check for the first record
                         {
-
                             // Because some sequences have CrLf in them, we have to keep reading until we get to a read that starts with '>'
                             while (!fStream.EndOfStream && char.ConvertFromUtf32(fStream.Peek()) != ">") sequence += fStream.ReadLine();
 
@@ -14775,14 +14490,13 @@ namespace MSViewer
 
                             position += sequence.Length;
 
-                            string[] newlinestring = { "\n" }; ///Newline break to separate the sequence from the 
+                            string[] newlinestring = { "\n" }; ///Newline break to separate the sequence from the
 
                             string[] stringpipe = { "|", ">", "\t", "\n" }; ///To get values for accessions, description, mass
 
                             //string[] sequences = Convert.ToString(header).Split(newlinestring, StringSplitOptions.None);
 
                             //string sequence = sequences[1]; /// Sequence
-
 
                             string accessions = header;
                             double mass = 0;
@@ -14800,7 +14514,7 @@ namespace MSViewer
                                 {
                                     if (capture.Value.TrimStart().StartsWith("OS="))
                                     {
-                                        // found the species!  
+                                        // found the species!
                                         species = capture.Value.TrimStart().Substring(3);
                                     }
 
@@ -14812,7 +14526,6 @@ namespace MSViewer
 
                             if (string.IsNullOrWhiteSpace(species))
                             {
-
                                 // Here we call Regex.Match.
                                 Match match = Regex.Match(header, @"\((?<species>\w+)\)\.?$", RegexOptions.RightToLeft | RegexOptions.Compiled);
 
@@ -14844,12 +14557,11 @@ namespace MSViewer
                                     }
                                 }
 
-                                // try to parse species from the end of the string...   
+                                // try to parse species from the end of the string...
                                 //species = stsequence.Last().Trim();
                             }
 
                             //string[] stsequence = accessions.Split(stringpipe, StringSplitOptions.RemoveEmptyEntries);
-
 
                             MatchCollection accessionMatches = Regex.Matches(accessions.Substring(0, annotationEnd), @"[>\|][a-z]{2}\|[^\|\s]{0,19}", RegexOptions.Compiled);
 
@@ -14870,9 +14582,8 @@ namespace MSViewer
                             {
                                 foreach (Capture capture in match.Captures)
                                 {
-
                                     //{
-                                    // found an accession!  
+                                    // found an accession!
                                     if (capture.Length > 4) accessions += capture.Value.Trim('>', '|') + " ";
                                     //}
                                     annotationStart = Math.Max(capture.Index + capture.Length + 1, annotationStart);
@@ -14925,7 +14636,6 @@ namespace MSViewer
                                 SequenceID = guid
                             });
 
-
                             BoundSequences.Add(new SearchResult
                             {
                                 Accession = accessions,
@@ -14964,12 +14674,11 @@ namespace MSViewer
                     }
 
                     e.Result = System.IO.Path.GetFileName(filePath);  // this is used for the Tooltip on the database/file button
-
                 }
             }
         }
 
-        bool isnotconfirmedornot = false;  // TODO: This variable name is confusing to me...
+        private bool isnotconfirmedornot = false;  // TODO: This variable name is confusing to me...
 
         private void dtgridSearchResults_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
@@ -14986,7 +14695,6 @@ namespace MSViewer
             parentmassmerge = true;
 
             if ((sr.Description == string.Empty) || (sr.Accession == string.Empty)) return;
-
 
             using (new WaitCursor())
             {
@@ -15033,8 +14741,6 @@ namespace MSViewer
                     DisplayNewSpectrum(rt);
                 }
             }
-
-
         }
 
         private void mnuAutoMerge_Click(object sender, RoutedEventArgs e)
@@ -15047,12 +14753,10 @@ namespace MSViewer
             }
 
             DisplayNewSpectrum(allspectra);
-
         }
 
         //private void dtgridDeNovoSearchResults_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         //{
-
         //    var cells = dtgridSearchResultsDeNovo.SelectedItems;
         //    parentmassmerge = true;
 
@@ -15088,7 +14792,6 @@ namespace MSViewer
                 //btnSequenceSearchSource.ToolTip = FASTAFileName.Trim();
                 lblDataSource.Text = lblFASTAFileName;
                 btnSequenceSearchSource.ToolTip = FASTAFileName.Trim();
-
             }
             else
             {
@@ -15120,8 +14823,6 @@ namespace MSViewer
             }
         }
 
-
-
         private void CopySequence_Click(object sender, RoutedEventArgs e)
         {
             // Based on http://stackoverflow.com/questions/16822956/getting-wpf-data-grid-context-menu-click-row
@@ -15150,7 +14851,6 @@ namespace MSViewer
         {
             // Based on http://stackoverflow.com/questions/16822956/getting-wpf-data-grid-context-menu-click-row
 
-
             //Get the clicked MenuItem
             var menuItem = (MenuItem)sender;
 
@@ -15177,10 +14877,9 @@ namespace MSViewer
             imgSearchWarning.Opacity = 0.65;
         }
 
-        bool doneautoscan = false;
+        private bool doneautoscan = false;
 
-
-        void EmailErrorMessage()
+        private void EmailErrorMessage()
         {
             System.Windows.MessageBox.Show("Can't email.", "No network access.", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
@@ -15200,10 +14899,9 @@ namespace MSViewer
             //}
         }
 
-
         //List<SequenceSearch> GetAutoScanResults()
         //{
-        //    if 
+        //    if
         //}
 
         /// <summary>
@@ -15239,8 +14937,6 @@ namespace MSViewer
                 GenerateHTML.copyaprotein((SearchResult)dtgridSearchResults.SelectedItem);
             }
         }
-
-
 
         /// <summary>
         /// Copy the accession to clipboard
@@ -15278,7 +14974,7 @@ namespace MSViewer
             }
         }
 
-        bool openlinkonce = false;
+        private bool openlinkonce = false;
 
         /// <summary>
         /// Open an accession when the user clicks the description of the datagrid.
@@ -15382,15 +15078,12 @@ namespace MSViewer
 
         //private void dtgridsequences_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         //{
-
         //}
 
         private void ClearAminoAcids_Click(object sender, RoutedEventArgs e)
         {
             ClearAminoAcids_Click();
         }
-
-
 
         private void mnuitemSetParentMass_Click(object sender, RoutedEventArgs e)
         {
@@ -15468,7 +15161,7 @@ namespace MSViewer
             }
         }
 
-        void BindtoValidatedSequences(List<PossibleModSequences.PossibleMods> lstpdms)
+        private void BindtoValidatedSequences(List<PossibleModSequences.PossibleMods> lstpdms)
         {
             dtgrdValidateSequences.ItemsSource = null;
             List<PossibleModSequences.PossibleMods> pdms = new List<PossibleModSequences.PossibleMods>();
@@ -15500,8 +15193,6 @@ namespace MSViewer
         public void CalculateTheoreticalMass(string Sequencetext, double parentmass = 0)
         {
             lblTheoreticalMass.Content = Math.Round(CalculateBYCZIons.sequencelengthwithmodifications(Sequencetext) + Molecules.Water, 5);
-
-
 
             CalculateDeltaMass();
 
@@ -15576,7 +15267,6 @@ namespace MSViewer
             double yions_percent = Math.Round(((double)allbandyions.Where(a => a.yioncolor).Count() / allbandyions.Count) * 100, 2);
             //double yions_percent = Math.Round(((double)allbandyions.Where(a => a.yioncolor).Count() / allbandyions.Count) * 100, 2);
 
-
             Dispatcher.Invoke((Action)(() =>
             {
                 if (Math.Abs((Math.Round(CalculateBYCZIons.sequencelengthwithmodifications(SequenceText) + Molecules.Water, 5) - Math.Round(mass, 4))) <= Molecules.Validationtolerance)
@@ -15625,9 +15315,9 @@ namespace MSViewer
         }
 
         /// <summary>
-        /// Display or hide the columns in the datagrid based 
+        /// Display or hide the columns in the datagrid based
         /// </summary>
-        void DisplayandHideBYCZIonTable(DataGrid dtgrid, string activationtype)
+        private void DisplayandHideBYCZIonTable(DataGrid dtgrid, string activationtype)
         {
             Dispatcher.Invoke((Action)(() =>
             {
@@ -15662,7 +15352,7 @@ namespace MSViewer
         /// </summary>
         /// <param name="dtgrid"></param>
         /// <param name="columnstohide"></param>
-        void HideDataGridColumns(DataGrid dtgrid, string[] columnstohide)
+        private void HideDataGridColumns(DataGrid dtgrid, string[] columnstohide)
         {
             Dispatcher.Invoke((Action)(() =>
             {
@@ -15677,8 +15367,7 @@ namespace MSViewer
             }));
         }
 
-
-        void HideBYCZErrors()
+        private void HideBYCZErrors()
         {
             Dispatcher.Invoke((Action)(() =>
             {
@@ -15692,7 +15381,7 @@ namespace MSViewer
         /// <summary>
         /// Hide BYIonerrors
         /// </summary>
-        void DisplayBYErrors()
+        private void DisplayBYErrors()
         {
             Dispatcher.Invoke((Action)(() =>
             {
@@ -15707,7 +15396,7 @@ namespace MSViewer
             }));
         }
 
-        void DisplayBYCZErrors()
+        private void DisplayBYCZErrors()
         {
             Dispatcher.Invoke((Action)(() =>
             {
@@ -15727,7 +15416,7 @@ namespace MSViewer
         /// <summary>
         /// Hide CZIonerrors
         /// </summary>
-        void DisplayCZErrors()
+        private void DisplayCZErrors()
         {
             Dispatcher.Invoke((Action)(() =>
             {
@@ -15745,7 +15434,7 @@ namespace MSViewer
         /// <summary>
         /// Hides BandYions columns
         /// </summary>
-        void HideBYIonColumns(DataGrid dtgrid)
+        private void HideBYIonColumns(DataGrid dtgrid)
         {
             Dispatcher.Invoke((Action)(() =>
             {
@@ -15757,7 +15446,7 @@ namespace MSViewer
         /// <summary>
         /// Hides CandZions columns
         /// </summary>
-        void HideCZIonColumns(DataGrid dtgrid)
+        private void HideCZIonColumns(DataGrid dtgrid)
         {
             Dispatcher.Invoke((Action)(() =>
             {
@@ -15770,7 +15459,7 @@ namespace MSViewer
         /// Display all the columns in the grid
         /// </summary>
         /// <param name="dtgrd"></param>
-        void DisplayAllColumns(DataGrid dtgrd)
+        private void DisplayAllColumns(DataGrid dtgrd)
         {
             Dispatcher.Invoke((Action)(() =>
             {
@@ -15785,7 +15474,7 @@ namespace MSViewer
         /// Calculate the Highest PPM and adjust the scale based on that.
         /// </summary>
         /// <param name="allbandyions"></param>
-        void MaxBandYIonErrorPPM(List<CalculateBYCZIons.BYCZIons> allbandyions)
+        private void MaxBandYIonErrorPPM(List<CalculateBYCZIons.BYCZIons> allbandyions)
         {
             try
             {
@@ -15811,12 +15500,10 @@ namespace MSViewer
             }
             catch (Exception)
             {
-
             }
         }
 
-
-        void CalculateandDisplayBandYIons(string sequence = null, List<double> Monomasses = null, double parentmass = 0.0, bool displaybandyions = false, bool displaybions = false, bool displayyions = false)
+        private void CalculateandDisplayBandYIons(string sequence = null, List<double> Monomasses = null, double parentmass = 0.0, bool displaybandyions = false, bool displaybions = false, bool displayyions = false)
         {
             if (sequence != null)
             {
@@ -15936,7 +15623,6 @@ namespace MSViewer
 
                     ShowBIonsBright(bioncolorsbright);
 
-
                     for (int i = 0; i < yioncolorbright.Count; i++)
                     {
                         yioncolorsbright.Add(new DataPoint()
@@ -16042,7 +15728,6 @@ namespace MSViewer
                         lblTheoreticalMass.Foreground = new SolidColorBrush(Colors.Red);
                     }
 
-
                     //PopulateRedandGreenMarkers(null, true, true);
                     //btnApply_Click(null, null);
                     //btnApply2_Click(null, null);
@@ -16080,14 +15765,12 @@ namespace MSViewer
                 {
                     if (rgx.IsMatch(item))
                     {
-
                     }
                     else
                     {
                         return false;
                     }
                 }
-
             }
 
             //if (!rgx.IsMatch(sequence))
@@ -16134,7 +15817,7 @@ namespace MSViewer
         /// Populate the RedMarkers Tab and GreenMarkers Tab
         /// </summary>
         /// <param name="BYIons"></param>
-        void PopulateRedandGreenMarkers(List<CalculateBYCZIons.BYCZIons> BYIons = null, bool redMarkers = false, bool greenMarkers = false, bool clearspectrum = false)
+        private void PopulateRedandGreenMarkers(List<CalculateBYCZIons.BYCZIons> BYIons = null, bool redMarkers = false, bool greenMarkers = false, bool clearspectrum = false)
         {
             //var byions = BYIons == null ? (dtgridBandYIons.ItemsSource is List<CalculateBandYIons.BYIons> ? dtgridBandYIons.ItemsSource as List<CalculateBandYIons.BYIons> : new List<CalculateBandYIons.BYIons>) : BYIons;
             if (clearspectrum)
@@ -16185,7 +15868,6 @@ namespace MSViewer
 
                             ShowBIonsBright(bioncolorsbright);
 
-
                             for (int i = 0; i < yioncolorbright.Count; i++)
                             {
                                 yioncolorsbright.Add(new DataPoint()
@@ -16232,7 +15914,6 @@ namespace MSViewer
                         txtMarkers.Text = Convert.ToString(RedMarkers);
                         txtMarkers2.Text = Convert.ToString(GreenMarkers);
                     }
-
                     else
                     {
                         if (redMarkers)
@@ -16275,7 +15956,6 @@ namespace MSViewer
                     txtMarkers.Text = Convert.ToString(RedMarkers);
                     txtMarkers2.Text = Convert.ToString(GreenMarkers);
                 }
-
                 else
                 {
                     if (redMarkers)
@@ -16297,8 +15977,6 @@ namespace MSViewer
                         txtMarkers2.Text = Convert.ToString(GreenMarkers);
                     }
                 }
-
-
             }
         }
 
@@ -16313,10 +15991,10 @@ namespace MSViewer
         }
 
         /// <summary>
-        /// Show Bions using the current monomasses. 
+        /// Show Bions using the current monomasses.
         /// Show the matched Bions brighter compared to unmatched ones.
         /// </summary>
-        void ShowBions()
+        private void ShowBions()
         {
             if (CurrentMonoMasses.Count == 0)
             {
@@ -16365,7 +16043,7 @@ namespace MSViewer
         /// Show Yions using the current monomasses.
         /// Show the matched Yions brighter than the unmatched ones.
         /// </summary>
-        void ShowYIons()
+        private void ShowYIons()
         {
             //TODO: This is not OK.  This needs to take a few parameters including a Spectrum or SuperSpectrum object for points, parent, and activation...
 
@@ -16379,7 +16057,7 @@ namespace MSViewer
 
                 Spectrum.ActivationOverride = Properties.Settings.Default.ActivationOverride;
                 //DechargerVM.
-                
+
                 var allbandyions = CalculateBYCZIons.CalculateBYCZIon(txtValidateSequenceWithSpectrum.Text + "[-" + Molecules.Water + "]", monomasses, ParentMass, CurrentSpectrum.Activation, App.AllValidationModifications, Properties.Settings.Default.MatchTolerancePPM, AminoAcidHelpers.AminoAcids);
 
                 double bandhionscount = allbandyions.Where(a => a.yioncolor || a.bioncolor).Count();
@@ -16496,19 +16174,17 @@ namespace MSViewer
             }
         }
 
-
-        void ClearModificationsList()
+        private void ClearModificationsList()
         {
             txtvalidateModification.Text = "";
             txtvalidateMass.Text = "";
             txtvalidateAbbreviation.Text = "";
         }
 
-
         /// <summary>
         /// Update the modifications list once a modification is deleted.
         /// </summary>
-        void UpdateModificationsList()
+        private void UpdateModificationsList()
         {
             if (App.AllValidationModifications != null)
             {
@@ -16529,8 +16205,7 @@ namespace MSViewer
             }
         }
 
-
-        void PopulateValidateModificationList()
+        private void PopulateValidateModificationList()
         {
             string allmodifications = Properties.Settings.Default.ValidationModificationsList;
 
@@ -16566,9 +16241,8 @@ namespace MSViewer
             dtgridModificationsList1.ItemsSource = App.AllValidationModifications;
         }
 
-
-        bool ismoddragging = false;
-        int ValidationModificationsrowIndex = -1;
+        private bool ismoddragging = false;
+        private int ValidationModificationsrowIndex = -1;
 
         private void dtgridModificationsList_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -16614,7 +16288,6 @@ namespace MSViewer
             {
                 return false;
             }
-
         }
 
         /// <summary>
@@ -16630,7 +16303,6 @@ namespace MSViewer
             return dtgridModificationsList.ItemContainerGenerator.ContainerFromIndex(index)
                                                             as DataGridRow;
         }
-
 
         private DataGridRow GetRowItem1(int index)
         {
@@ -16663,7 +16335,6 @@ namespace MSViewer
             return curIndex;
         }
 
-
         private int GetCurrentRowIndex1(GetPosition pos)
         {
             int curIndex = -1;
@@ -16678,8 +16349,6 @@ namespace MSViewer
             }
             return curIndex;
         }
-
-
 
         private void txtValidateSequenceWithSpectrum_PreviewDragOver(object sender, DragEventArgs e)
         {
@@ -16703,7 +16372,7 @@ namespace MSViewer
                 {
                     mass = (dtgridModificationsList.SelectedItem as ModificationList).Mass.StartsWith("-") ?
                             ("-" + (dtgridModificationsList.SelectedItem as ModificationList).Abbreviation) :
-                            ((dtgridModificationsList.SelectedItem as ModificationList).Abbreviation); //"+" + 
+                            ((dtgridModificationsList.SelectedItem as ModificationList).Abbreviation); //"+" +
                 }
                 int caretindex = txtValidateSequenceWithSpectrum.CaretIndex;
 
@@ -16718,7 +16387,7 @@ namespace MSViewer
             }
         }
 
-        bool ismoddropped = false;
+        private bool ismoddropped = false;
 
         /// <summary>
         /// Remove any mods which have ] or [ as delimiters
@@ -16727,7 +16396,7 @@ namespace MSViewer
         /// <param name="currentposition"></param>
         /// <param name="Mass"></param>
         /// <returns></returns>
-        string removemod(string sequence, int currentposition, string Mass, bool lastchar = false)
+        private string removemod(string sequence, int currentposition, string Mass, bool lastchar = false)
         {
             string currenttext = sequence;
             string mass = Mass;
@@ -16756,7 +16425,7 @@ namespace MSViewer
                     {
                         break;
                     }
-                    else if (item == '[' && (end != currentposition) && (end != currentposition + 1))  /// if the start of another mod is found break. 
+                    else if (item == '[' && (end != currentposition) && (end != currentposition + 1))  /// if the start of another mod is found break.
                     {
                         end = currentposition;
                         start = currentposition;
@@ -16819,9 +16488,8 @@ namespace MSViewer
             return newtext;
         }
 
-
         /// <summary>
-        /// When a modification is dropped on to the grid of bandyions 
+        /// When a modification is dropped on to the grid of bandyions
         /// it should add the modification to the respective column
         /// </summary>
         /// <param name="sender"></param>
@@ -16941,7 +16609,6 @@ namespace MSViewer
                     }
                 }
                 txtValidateSequenceWithSpectrum.Text = updatedseqs;
-
             }
         }
 
@@ -17033,11 +16700,9 @@ namespace MSViewer
             //{
             //    if (App.AllValidationModifications.Any(a => (a.Abbreviation == item) || ("+" + a.Abbreviation == item) || ("-" + a.Abbreviation == item)))
             //    {
-
             //    }
             //    else if (Regex.IsMatch(item, @"[0-9\[\]\+\-\.]"))
             //    {
-
             //    }
             //    else
             //    {
@@ -17050,7 +16715,7 @@ namespace MSViewer
             txtValidateSequenceWithSpectrum.Text = RemoveAllMods(txtValidateSequenceWithSpectrum.Text); // tempseq;
         }
 
-        string RemoveAllMods(string sequencewithmods)
+        private string RemoveAllMods(string sequencewithmods)
         {
             string sequence = sequencewithmods.Replace("(", "").Replace(")", "");
 
@@ -17065,11 +16730,9 @@ namespace MSViewer
             {
                 if (App.AllValidationModifications.Any(a => (a.Abbreviation == item) || ("+" + a.Abbreviation == item) || ("-" + a.Abbreviation == item)))
                 {
-
                 }
                 else if (Regex.IsMatch(item, @"[0-9\[\]\+\-\.]"))
                 {
-
                 }
                 else
                 {
@@ -17079,7 +16742,6 @@ namespace MSViewer
 
             return tempseq;
         }
-
 
         private void txtvalidateMass_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
@@ -17105,7 +16767,7 @@ namespace MSViewer
             newaminoacid.ShowDialog();
         }
 
-        void newaminoacid_Closing(object sender, CancelEventArgs e)
+        private void newaminoacid_Closing(object sender, CancelEventArgs e)
         {
             if (ReturnValue.returnvalue == null || ReturnValue.returnvalue == returnvalue)
                 return;
@@ -17125,7 +16787,7 @@ namespace MSViewer
             }
         }
 
-        void UpdateValidationAminoAcidsList(string[] mdlst)
+        private void UpdateValidationAminoAcidsList(string[] mdlst)
         {
             Properties.Settings.Default.ValidationModificationsListAminoAcids = "";
             foreach (var item in App.AllValidationModifications)
@@ -17143,9 +16805,9 @@ namespace MSViewer
             }
         }
 
-        bool addedmnuitem = false;
+        private bool addedmnuitem = false;
 
-        ModificationList mdcurrent = new ModificationList();
+        private ModificationList mdcurrent = new ModificationList();
 
         private void MenuItem_PreviewMouseMove(object sender, MouseEventArgs e)
         {
@@ -17184,15 +16846,13 @@ namespace MSViewer
             }
         }
 
-        void mnuitm_Click(object sender, RoutedEventArgs e)
+        private void mnuitm_Click(object sender, RoutedEventArgs e)
         {
             string AminoAcid = Convert.ToString(((System.Windows.Controls.HeaderedItemsControl)(sender)).Header);
             string sequence = txtValidateSequenceWithSpectrum.Text;
             string mass = string.Empty;
             string abbrv = string.Empty;
             string ab = string.Empty;
-
-
 
             if (dtgridModificationsList.SelectedItem != null && dtgridModificationsList.SelectedItem is ModificationList)
             {
@@ -17207,7 +16867,6 @@ namespace MSViewer
                 txtValidateSequenceWithSpectrum.Text = sequence;
                 return;
             }
-
             else if (AminoAcid.ToLower().Contains("c-term"))
             {
                 sequence = removemod(sequence, sequence.Length, abbrv);
@@ -17250,10 +16909,10 @@ namespace MSViewer
             addedmnuitem = false;
         }
 
-        bool fromautoscantab = false;
+        private bool fromautoscantab = false;
 
-        BackgroundWorker bgvalidateseq = new BackgroundWorker();
-        bool donewithworker = false;
+        private BackgroundWorker bgvalidateseq = new BackgroundWorker();
+        private bool donewithworker = false;
 
         private void btnValidateSequenceWithSpectrum_Click(object sender, TextChangedEventArgs e)
         {
@@ -17261,7 +16920,7 @@ namespace MSViewer
             {
                 Dispatcher.Invoke((Action)(() =>
                 {
-                    //DechargerVM.ActivationType = CurrentSpectrum.Activation; 
+                    //DechargerVM.ActivationType = CurrentSpectrum.Activation;
 
                     if (txtValidateSequenceWithSpectrum.Text == "")
                     {
@@ -17341,7 +17000,6 @@ namespace MSViewer
             mods.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
             mods.ResizeMode = System.Windows.ResizeMode.NoResize;
             mods.ShowDialog();
-
         }
 
         /// <summary>
@@ -17350,7 +17008,7 @@ namespace MSViewer
         /// <param name="interimname"></param>
         /// <param name="description"></param>
         /// <param name="monomass"></param>
-        void selectedmod(Modifications selectedmods)
+        private void selectedmod(Modifications selectedmods)
         {
             string validmodificationslist = Properties.Settings.Default.ValidationModificationsList;
 
@@ -17392,7 +17050,7 @@ namespace MSViewer
             }
         }
 
-        void EditMod_Closed(object sender, EventArgs e)
+        private void EditMod_Closed(object sender, EventArgs e)
         {
             if (dtgridModificationsList.SelectedItem != null && dtgridModificationsList.SelectedItem is ModificationList)
             {
@@ -17448,7 +17106,7 @@ namespace MSViewer
             }
         }
 
-        int modmatchaacaretIndex = 0;
+        private int modmatchaacaretIndex = 0;
 
         private void txtMolecules_Drop(object sender, DragEventArgs e)
         {
@@ -17473,14 +17131,12 @@ namespace MSViewer
 
         //void bgmodmatchlst_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         //{
-
         //}
 
-        void bgmodmatchlst_DoWork(object sender, DoWorkEventArgs e)
+        private void bgmodmatchlst_DoWork(object sender, DoWorkEventArgs e)
         {
             Dispatcher.Invoke((Action)(() =>
                 {
-
                     if (((cmbMatchList.SelectedItem) as System.Windows.Controls.ComboBoxItem).Content.ToString() == "DEFAULT")
                     {
                         string value = ReturnValue.returnvalue;
@@ -17499,7 +17155,7 @@ namespace MSViewer
                 }));
         }
 
-        void newmatchlistvalue1_Closing(object sender, CancelEventArgs e)
+        private void newmatchlistvalue1_Closing(object sender, CancelEventArgs e)
         {
             if (ReturnValue.returnvalue == null || ReturnValue.returnvalue == returnvalue)
                 return;
@@ -17521,14 +17177,14 @@ namespace MSViewer
             LoadAllCurrentMatchList();
             SelectMatchList();
             //modtomatchlist = true;
-            if (txtMolecules.Text != "") ///modtomatchlist && 
+            if (txtMolecules.Text != "") ///modtomatchlist &&
             {
                 AddModtoAminoAcid(modmatchaacaretIndex);
                 btnSaveMatchList.IsEnabled = true;
             }
         }
 
-        void AddModtoAminoAcid(int caretindex)
+        private void AddModtoAminoAcid(int caretindex)
         {
             string mass = string.Empty;
 
@@ -17536,7 +17192,7 @@ namespace MSViewer
             {
                 mass = (dtgridModificationsList1.SelectedItem as ModificationList).Mass.StartsWith("-") ?
                         ("-" + (dtgridModificationsList1.SelectedItem as ModificationList).Abbreviation) :
-                        ((dtgridModificationsList1.SelectedItem as ModificationList).Abbreviation); //"+" + 
+                        ((dtgridModificationsList1.SelectedItem as ModificationList).Abbreviation); //"+" +
             }
 
             string currenttext = txtMolecules.Text;
@@ -17568,8 +17224,8 @@ namespace MSViewer
             btnSaveMatchList_Click(null, null);
         }
 
-        bool fromautoscanvalidate = false;
-        bool fromautovalidate = false; ///Checks if the Validate button is clicked in the auto scan
+        private bool fromautoscanvalidate = false;
+        private bool fromautovalidate = false; ///Checks if the Validate button is clicked in the auto scan
 
         private void btnColorValidate_Click(object sender, RoutedEventArgs e)
         {
@@ -17604,9 +17260,9 @@ namespace MSViewer
         }
 
         /// <summary>
-        /// Set Activation Type of the current scan 
+        /// Set Activation Type of the current scan
         /// </summary>
-        void SetActivationTypes(SearchResult currentResult)
+        private void SetActivationTypes(SearchResult currentResult)
         {
             DechargerVM.ActivationType = string.Empty;
             App.ActivationType = string.Empty;
@@ -17617,9 +17273,8 @@ namespace MSViewer
             }
         }
 
-        void bgworkercolorvalidate_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void bgworkercolorvalidate_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-
             Dispatcher.Invoke((Action)(() =>
             {
                 if (dtgridSearchResults.SelectedItem is SearchResult && (SearchResult)dtgridSearchResults.SelectedItem != null)
@@ -17662,7 +17317,7 @@ namespace MSViewer
             }));
         }
 
-        void bgworkercolorvalidate_DoWork(object sender, DoWorkEventArgs e)
+        private void bgworkercolorvalidate_DoWork(object sender, DoWorkEventArgs e)
         {
             // exit if the argument is invalid or missing
             if (e == null || e.Argument == null || (e.Argument is SearchResult) == false) return;
@@ -17716,10 +17371,7 @@ namespace MSViewer
                 //{
                 tbValidate.Focus();
                 //}));
-
             }));
-
-
         }
 
         /// <summary>
@@ -17728,7 +17380,7 @@ namespace MSViewer
         /// <param name="ScanNumbers"></param>
         /// <param name="ParentZ"></param>
         /// <returns></returns>
-        Dictionary<double, double> FindCrntMonos(SearchResult sqssearch)
+        private Dictionary<double, double> FindCrntMonos(SearchResult sqssearch)
         {
             string[] ScanNumbers = sqssearch.ScanNumbers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             int ParentZ = sqssearch.ParentZ;
@@ -17780,11 +17432,8 @@ namespace MSViewer
             return new Dictionary<double, double>();
         }
 
-
-
         //private void btnConfirmSequence_Click(object sender, RoutedEventArgs e)
         //{
-
         //    string filename = DeChargerModel.SpectralDataFilename != null ? DeChargerModel.SpectralDataFilename : DeChargerModel.WorkspaceFilename;
 
         //    if (filename == null)
@@ -17798,7 +17447,6 @@ namespace MSViewer
         //    {
         //        Dispatcher.Invoke((Action)(() =>
         //        {
-
         //            if (dtgridSearchResults.SelectedItem is SearchResult && (SearchResult)dtgridSearchResults.SelectedItem != null)
         //            {
         //                var curation = new Curation();
@@ -17811,7 +17459,6 @@ namespace MSViewer
         //                sqssconfirmed.Add(protein.ScanNumbers);
 
         //                lblExperimentalMass.Text = Convert.ToString(Math.Round(ParentMass, 4));
-
 
         //                //protein.IsConfirmed = true;
 
@@ -17829,8 +17476,6 @@ namespace MSViewer
         //                protein.ValidatedSequence = SequenceText;
 
         //                currentparent.ScanNumber = protein.ScanNumbers;
-
-
 
         //                //if (protein.ScanNumbers == currentparent.ScanNumber)
         //                //{
@@ -17859,7 +17504,6 @@ namespace MSViewer
         //                        VerifiedSequences.Add(item as SearchResult);
         //                    }
         //                }
-
 
         //                VerifiedSequences.Add(new SearchResult()
         //                {
@@ -17927,7 +17571,6 @@ namespace MSViewer
         //                //dtgridConfirmedSequences.ItemsSource = null;
         //                //dtgridConfirmedSequences.ItemsSource = localsequencesearches;
 
-
         //                //List<SearchResult> sqssearch = new List<SearchResult>();
 
         //                //foreach (var item in dtgridSearchResults.ItemsSource)
@@ -17938,7 +17581,6 @@ namespace MSViewer
         //                //DechargerVM.ProteinView.SortDescriptions.Clear();
         //                //DechargerVM.ProteinView.SortDescriptions.Add(new SortDescription("IsNotConfirmed", ListSortDirection.Ascending));
         //                //DechargerVM.ProteinView.SortDescriptions.Add(new SortDescription("YellowandGreenTagHits", ListSortDirection.Descending));
-
 
         //                //DechargerVM.SearchResults = DechargerVM.SearchResults.OrderBy(a => a.IsNotConfirmed).ThenByDescending(a => a.YellowandGreenTagHits);
 
@@ -17958,7 +17600,6 @@ namespace MSViewer
         //        Dispatcher.CurrentDispatcher.BeginInvoke(throwException);
         //    }
         //}
-
 
         /// <summary>
         /// Finds all the Monomasses and their respective intensities for a particular scan based on the parent scan.
@@ -17988,8 +17629,6 @@ namespace MSViewer
             return crntmnmonomasses;
         }
 
-
-
         //private void btnValidateConfirm_Click(object sender = null, RoutedEventArgs e = null)
         //{
         //    //// Basic validation of curation
@@ -18016,7 +17655,6 @@ namespace MSViewer
         //    }
 
         //    //List<SearchResult> sqss = new List<SearchResult>();
-
 
         //    Dispatcher.Invoke((Action)(() =>
         //    {
@@ -18056,13 +17694,10 @@ namespace MSViewer
         //        localsearchresult.DeltaMass = localsearchresult.ParentMass - Math.Round(CalculateBYCZIons.sequencelengthwithmodifications(SequenceText) + Molecules.Water, 5);
         //        localsearchresult.ValidatedSequence = SequenceText;
 
-
         //        localsearchresult.User_ID = usr.UserID;
         //        localsearchresult.User_Name = usr.DisplayName;
 
         //    }));
-
-
 
         //    resultToConfirm.Curations.Add(new Curation()
         //    {
@@ -18079,7 +17714,6 @@ namespace MSViewer
         //    });
 
         //resultToConfirm.OnPropertyChanged("IsValid");
-
 
         //private void CanOverrideCurrentModification()
         //{
@@ -18149,7 +17783,6 @@ namespace MSViewer
         //    CurrentValidatedSequence.DeltaMass = string.IsNullOrEmpty(Convert.ToString(lblValidationDeltaMass.Content)) ? 0 : Convert.ToDouble(lblValidationDeltaMass.Content);
         //    CurrentValidatedSequence.User_ID = usr.UserID;
         //    CurrentValidatedSequence.User_Name = usr.DisplayName;
-
 
         //    if (txtbxSequenceScanNumbers.Text != "")
         //    {
@@ -18265,7 +17898,6 @@ namespace MSViewer
         //        Date_Time_Curation = DateTime.Now //CurrentValidatedSequence.Date_Time_Curation, //DateTime.Now
         //    });
 
-
         //    VerifiedSequences = VerifiedSequences.OrderByDescending(a => a.Date_Time_Curation).ToList();
 
         //    foreach (var sqs in VerifiedSequences)
@@ -18276,7 +17908,6 @@ namespace MSViewer
         //            verifiedsequence = true;
         //        }
         //    }
-
 
         //    List<SearchResult> localsequencesearches = new List<SearchResult>();
         //    localsequencesearches = (VerifiedSequences);
@@ -18360,9 +17991,8 @@ namespace MSViewer
                     var localsearchresult = DechargerVM.SearchResults.First(a => a.ScanNumbers == currentparent.ScanNumber);
 
                     localsearchresult.BandYIonPercent = bandyionpercent;
-                    //localsearchresult.DeltaMass = 
+                    //localsearchresult.DeltaMass =
                     localsearchresult.ValidatedSequence = SequenceText;
-
 
                     //localsearchresult. = usr.UserID;
                     //localsearchresult.User_Name = usr.DisplayName;
@@ -18389,10 +18019,9 @@ namespace MSViewer
                     ValidatedSequence = sequenceWithMods ?? resultToConfirm.ValidatedSequence, //.Sequence, // txtValidateSequenceWithSpectrum.Text,
                     Accession = resultToConfirm.Accession,  // start with the AutoScan values, but keep separate to allow editing
                     Description = resultToConfirm.Description
-                //BandYIonPercent = 0,
-                //ParentMass = 0
-            });
-
+                    //BandYIonPercent = 0,
+                    //ParentMass = 0
+                });
             }
             catch (Exception ex)
             {
@@ -18404,17 +18033,9 @@ namespace MSViewer
             }
             //resultToConfirm.OnPropertyChanged("IsValid");
 
-
             DechargerVM.ConfirmedSequencesView.Refresh();  // this is cheating, it should be handled by a property changed notification
             DechargerVM.ProteinView.Refresh();  // this has to be refreshed to updated the state of the confirmed buttons...
         }
-
-
-
-
-
-
-
 
         //private void btnConfirmSequence_Click(object sender, RoutedEventArgs e)
         //{
@@ -18438,7 +18059,6 @@ namespace MSViewer
         //    }
 
         //    List<SearchResult> sqss = new List<SearchResult>();
-
 
         //    //Dispatcher.Invoke((Action)(() =>
         //    //{
@@ -18476,13 +18096,10 @@ namespace MSViewer
         //    //    localsearchresult.DeltaMass = localsearchresult.ParentMass - Math.Round(CalculateBYCZIons.sequencelengthwithmodifications(SequenceText) + Molecules.Water, 5);
         //    //    localsearchresult.ValidatedSequence = SequenceText;
 
-
         //    //    //localsearchresult.User_ID = usr.UserID;
         //    //    //localsearchresult.User_Name = usr.DisplayName;
 
         //    //}));
-
-
 
         //    resultToConfirm.Curations.Add(new Curation()
         //    {
@@ -18504,7 +18121,6 @@ namespace MSViewer
         //    DechargerVM.ConfirmedSequencesView.Refresh();  // this is cheating, it should be handled by a property changed notification
         //    DechargerVM.ProteinView.Refresh();  // this has to be refreshed to updated the state of the confirmed buttons...
         //}
-
 
         /// <summary>
         /// Validate the current sequence in the validate tab
@@ -18531,18 +18147,17 @@ namespace MSViewer
                     {
                         var messageboxresult = System.Windows.MessageBox.Show("Warning: A Curated identification for that scan already exists.  Do you want to overwrite?", "Duplicate identification", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-                        if (messageboxresult == MessageBoxResult.No) return;  // do nothing! 
+                        if (messageboxresult == MessageBoxResult.No) return;  // do nothing!
                     }
 
                     AddConfirmation(theSearchResult, txtValidateSequenceWithSpectrum.Text);
                 }
-
         }
 
         /// <summary>
         /// Add the current sequence from the Validate tab to Confirmed Sequence Tab.
         /// </summary>
-        void ConfirmCurrentSequencefromValidateTab()
+        private void ConfirmCurrentSequencefromValidateTab()
         {
             Dispatcher.Invoke((Action)(() =>
             {
@@ -18558,7 +18173,6 @@ namespace MSViewer
 
                 //txtbxSequenceScanNumbers.Text = App.ParentDetails != null ? App.ParentDetails.ScanNumber : "";
                 //localvalidatedsequence.ScanNumbers = txtbxSequenceScanNumbers.Text;
-
 
                 //User usr = new User();
 
@@ -18584,7 +18198,6 @@ namespace MSViewer
                 //    localvalidatedsequence.CurntIons = consolidatedIons;
                 //}
 
-
                 resultToConfirm.Curations.Add(new Curation()
                 {
                     UserID = Environment.UserName,
@@ -18597,14 +18210,11 @@ namespace MSViewer
                     Description = resultToConfirm.Description,
                 });
 
-
                 DechargerVM.ConfirmedSequencesView.Refresh();  // this is cheating, it should be handled by a property changed notification
                 DechargerVM.ProteinView.Refresh();  // this has to be refreshed to updated the state of the confirmed buttons...
                 //tbConfirmedSequenceTab.Focus();
             }));
         }
-
-
 
         private void btnProteinVerifyCurrentSequence_Click(object sender, RoutedEventArgs e)
         {
@@ -18671,7 +18281,7 @@ namespace MSViewer
         /// <param name="e"></param>
         private void btnCnfrmdSqExporttoExcel_Click(object sender, RoutedEventArgs e)
         {
-            // Ideally, we want to have a function that takes any datagrid and dumps it to Excel.  
+            // Ideally, we want to have a function that takes any datagrid and dumps it to Excel.
             // What we see on screen is what we should get in Excel
 
             // dtgridConfirmedSequences
@@ -18722,12 +18332,10 @@ namespace MSViewer
             }
 
             ExportToExcel.ExportToexcel(AllHeaders, columns);
-
         }
 
         private void mnuExporttoExcel_Click(object sender, RoutedEventArgs e)
         {
-
             Dictionary<string, string> sequencenumbers = new Dictionary<string, string>(); ///Scan numbers of all the scans in the Auto Scan tab.
 
             List<SearchResult> SearchSequences = new List<SearchResult>();
@@ -18862,11 +18470,11 @@ namespace MSViewer
             //}
         }
 
-        void DeleteAllConfirmedSequencesornot_Closing(object sender, CancelEventArgs e)
+        private void DeleteAllConfirmedSequencesornot_Closing(object sender, CancelEventArgs e)
         {
             if (TrueorFalse.trueorfalse)
             {
-                // Delete Valid Curations?  
+                // Delete Valid Curations?
                 foreach (var aResult in DechargerVM.SearchResults)
                 {
                     // instead of deleting the curations, just mark as no longer valid...
@@ -18876,7 +18484,6 @@ namespace MSViewer
 
                 DechargerVM.ConfirmedSequencesView.Refresh();  //TODO: This is cheating, it should be automatically updated by a property changed event...
                 DechargerVM.ProteinView.Refresh();
-
             }
         }
 
@@ -18884,7 +18491,6 @@ namespace MSViewer
         {
             if (e != null && (((MSViewer.DeChargerViewModel)((System.Windows.FrameworkElement)e.Source).DataContext).LastSelectedItem) is SearchResult)
             {
-
                 DechargerVM.LastSelectedItem.LastCuration.IsValid = false;
 
                 DechargerVM.ConfirmedSequencesView.Refresh();  //TODO: This is cheating, it should be automatically updated by a property changed event...
@@ -18892,15 +18498,14 @@ namespace MSViewer
             }
         }
 
-        static SetParentMass setprntms = new SetParentMass();
-
+        private static SetParentMass setprntms = new SetParentMass();
 
         private void btnSetManualParentMass_Click(object sender, RoutedEventArgs e)
         {
             SetManualParentMass();
         }
 
-        void SetManualParentMass()
+        private void SetManualParentMass()
         {
             if (App.ScanNumber == null)
                 return;
@@ -18925,9 +18530,7 @@ namespace MSViewer
             stprnt.ShowDialog();
         }
 
-
-
-        void stprnt_Closed(object sender, EventArgs e)
+        private void stprnt_Closed(object sender, EventArgs e)
         {
             if (SetParentMass.SetParentM.SaveParentOrNot)
             {
@@ -18983,7 +18586,7 @@ namespace MSViewer
             }
         }
 
-        void SetParentManual()
+        private void SetParentManual()
         {
             BackgroundWorker bgsetparentmassmanual = new BackgroundWorker();
             bgsetparentmassmanual.DoWork += bgsetparentmassmanual_DoWork;
@@ -18991,7 +18594,7 @@ namespace MSViewer
             bgsetparentmassmanual.RunWorkerAsync();
         }
 
-        void bgsetparentmassmanual_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void bgsetparentmassmanual_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             try
             {
@@ -19002,11 +18605,10 @@ namespace MSViewer
             }
             catch (Exception exxxx)
             {
-
             }
         }
 
-        void bgsetparentmassmanual_DoWork(object sender, DoWorkEventArgs e)
+        private void bgsetparentmassmanual_DoWork(object sender, DoWorkEventArgs e)
         {
             Dispatcher.Invoke(new Action(() =>
             {
@@ -19093,16 +18695,16 @@ namespace MSViewer
             setprnt.ShowDialog();
         }
 
-        bool addparentmassfromMergeSpectra = false;
+        private bool addparentmassfromMergeSpectra = false;
 
-        bool settingparentmassfromMergeSpectra = false;
+        private bool settingparentmassfromMergeSpectra = false;
 
         /// <summary>
         /// Adds ParentMass and ParentZ to all the MSMS spectra
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void AddParentMass_Closing(object sender, CancelEventArgs e)
+        private void AddParentMass_Closing(object sender, CancelEventArgs e)
         {
             if (SetParentMass.SetParentM.SaveParentOrNot)
             {
@@ -19140,7 +18742,7 @@ namespace MSViewer
                     if (item == null) return false;
                     if (item is SpectrumInfo == false) return false;
 
-                    // This is the filter to make the correct scans show up                    
+                    // This is the filter to make the correct scans show up
                     return (item as SpectrumInfo).IsVisible;
                 };
                 this.grdMerge1.ItemsSource = mergeView;
@@ -19194,7 +18796,7 @@ namespace MSViewer
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        double convertotdouble(object value)
+        private double convertotdouble(object value)
         {
             if (value != null && Convert.ToString(value) != "")
             {
@@ -19227,7 +18829,7 @@ namespace MSViewer
             }
         }
 
-        string experimentalmass = string.Empty;
+        private string experimentalmass = string.Empty;
 
         private void tbValidate_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -19291,7 +18893,6 @@ namespace MSViewer
 
         private void mnuDetectParentSelected_Click(object sender, RoutedEventArgs e)
         {
-
             Dispatcher.Invoke(new Action(() =>
             {
                 if (grdMerge1.ItemsSource != null)
@@ -19307,7 +18908,7 @@ namespace MSViewer
         /// Returns true if it any spectrum already has a Mass setup or returns false
         /// </summary>
         /// <returns></returns>
-        bool AnyParentIons()
+        private bool AnyParentIons()
         {
             if (grdMerge1.ItemsSource != null)
             {
@@ -19331,9 +18932,8 @@ namespace MSViewer
             return false;
         }
 
-        void bckgExportMergeSpectraGridToExcel_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void bckgExportMergeSpectraGridToExcel_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-
         }
 
         //void ExportMergeSpectraGridToExcel()
@@ -19409,7 +19009,7 @@ namespace MSViewer
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void bckgExportMergeSpectraGridToExcel_DoWork(object sender, DoWorkEventArgs e)
+        private void bckgExportMergeSpectraGridToExcel_DoWork(object sender, DoWorkEventArgs e)
         {
             //Dispatcher.Invoke(new Action(() =>
             //{
@@ -19470,7 +19070,7 @@ namespace MSViewer
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void mgtspectradetections_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void mgtspectradetections_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             BackgroundWorker bgworkerCopyMergeSpec = new BackgroundWorker();
             bgworkerCopyMergeSpec.DoWork += bgworkerCopyMergeSpec_DoWork;
@@ -19487,11 +19087,10 @@ namespace MSViewer
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void mgtspectradetections_DoWork(object sender, DoWorkEventArgs e)
+        private void mgtspectradetections_DoWork(object sender, DoWorkEventArgs e)
         {
             //Dispatcher.Invoke(new Action(() =>
             //{
-
             Dispatcher.Invoke(new Action(() =>
             {
                 this.busyTic.IsBusy = true;
@@ -19517,7 +19116,6 @@ namespace MSViewer
                 // Populate all the Parent Ion Mass and Charge details
                 foreach (var aScanInfo in mgrspectra)
                 {
-
                     this.BusyProgressValue = (i++ / (float)specCount) * 100;
 
                     MainPointProvider.SetParentInfo(aScanInfo);
@@ -19560,7 +19158,7 @@ namespace MSViewer
             //bgworkerCopyMergeSpec.RunWorkerAsync();
         }
 
-        void bgworkerCopyMergeSpec_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void bgworkerCopyMergeSpec_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             //string csvFileName = (string)(e.Result);
             //System.Diagnostics.Process.Start(csvFileName);
@@ -19574,10 +19172,7 @@ namespace MSViewer
             //File.Open(csvFileName, FileMode.Open);
         }
 
-
-
-
-        void bgworkerCopyMergeSpec_DoWork(object sender, DoWorkEventArgs e)
+        private void bgworkerCopyMergeSpec_DoWork(object sender, DoWorkEventArgs e)
         {
             //Dispatcher.Invoke(new Action(() =>
             //{
@@ -19606,9 +19201,6 @@ namespace MSViewer
                    List<List<String>> Columns = new List<List<string>>();
 
                    List<string> clm = new List<string>();
-
-
-
 
                    clm.Add(Convert.ToString(curntitem.ScanNumber));
                    clm.Add(curntitem.Title);
@@ -19647,7 +19239,6 @@ namespace MSViewer
                    //e.Result = csvFileName;
 
                    ExportToCSV.ExportTOCSV(AllHeaders, Columns);
-
                }
            }));
         }
@@ -19679,12 +19270,10 @@ namespace MSViewer
             }
             finally
             {
-
             }
-
         }
 
-        void bgworkerconfirmedsequencesdoubleclick_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void bgworkerconfirmedsequencesdoubleclick_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             Dispatcher.Invoke((Action)(() =>
             {
@@ -19718,7 +19307,7 @@ namespace MSViewer
             }));
         }
 
-        void bgworkerconfirmedsequencesdoubleclick_DoWork(object sender, DoWorkEventArgs e)
+        private void bgworkerconfirmedsequencesdoubleclick_DoWork(object sender, DoWorkEventArgs e)
         {
             Dispatcher.Invoke((Action)(() =>
             {
@@ -19821,14 +19410,12 @@ namespace MSViewer
                 }
                 try
                 {
-                    dtgridSearchResults.SelectedValue = lstsqssearch.First(a => a.ScanNumbers.Replace(" ", "") == ((System.Windows.Controls.TextBlock)(sender)).Uid);                                     ///The Uid is bounded to the accession and scan number, hence comparing it with the accession of the datagrid itemssource to get the correct item            
-                    //dtgridSearchResults.SelectedValue = lstsqssearch.First(a => a.ScanNumbers == ((System.Windows.Controls.TextBlock)(sender)).Uid);                                     ///The Uid is bounded to the accession and scan number, hence comparing it with the accession of the datagrid itemssource to get the correct item            
-
+                    dtgridSearchResults.SelectedValue = lstsqssearch.First(a => a.ScanNumbers.Replace(" ", "") == ((System.Windows.Controls.TextBlock)(sender)).Uid);                                     ///The Uid is bounded to the accession and scan number, hence comparing it with the accession of the datagrid itemssource to get the correct item
+                    //dtgridSearchResults.SelectedValue = lstsqssearch.First(a => a.ScanNumbers == ((System.Windows.Controls.TextBlock)(sender)).Uid);                                     ///The Uid is bounded to the accession and scan number, hence comparing it with the accession of the datagrid itemssource to get the correct item
                 }
                 catch (Exception ex)
                 {
                     Debug.Print(ex.Message);
-
                 }
             }
         }
@@ -19837,7 +19424,6 @@ namespace MSViewer
         {
             Process.Start("https://www.lilly.com/");
         }
-
 
         //Based on: http://www.dotnetcurry.com/wpf/1130/wpf-commanding-enable-button
 
@@ -19861,7 +19447,6 @@ namespace MSViewer
         //    return dtgridSearchResults.ItemsSource != null && (dtgridSearchResults is IEnumerable<SearchResult>) && (dtgridSearchResults as IEnumerable<SearchResult>).Any();
         //}
 
-
         /// <summary>
         /// Save Auto scan results based on the filelocation and the datagrid
         /// </summary>
@@ -19873,15 +19458,13 @@ namespace MSViewer
 
             //bool SaveAs = false;
 
-
-
             //sqssearchlst.SpectralDataFileHash = sha256_hash(DechargerVM.SpectralDataFilename);
             //string sourcepath = saveflgdl.FileName; //Need the complete file name
 
             // if any part of the path is missing,
             // if saveAs is set to true
             // if the file is read only
-            // then prompt for a new file path.  
+            // then prompt for a new file path.
 
             if (string.IsNullOrWhiteSpace(DechargerVM.WorkspaceDirectory)
                 || string.IsNullOrWhiteSpace(DechargerVM.WorkspaceFilename)
@@ -19899,7 +19482,7 @@ namespace MSViewer
 
                 if (saveflgdl.ShowDialog().Value == false)
                 {
-                    return;  // user failed to provide a file name exit before saving!  
+                    return;  // user failed to provide a file name exit before saving!
                 }
 
                 DechargerVM.WorkspaceFilename = System.IO.Path.GetFileName(saveflgdl.FileName);
@@ -19931,7 +19514,7 @@ namespace MSViewer
         /// Generate the Sequencesearch list from the source
         /// </summary>
         /// <param name="Path"></param>
-        IEnumerable<SearchResult> GenerateSearchResults()
+        private IEnumerable<SearchResult> GenerateSearchResults()
         {
             List<SearchResult> ListConfirmedSequences = new List<SearchResult>();
 
@@ -19965,7 +19548,7 @@ namespace MSViewer
                 }
             }
 
-            // Resolved Conflixt: may need this code: 
+            // Resolved Conflixt: may need this code:
             //if (dtgridSearchResultsDeNovo.ItemsSource != null) ///Adding De Novo results. To reduce the data to be written into the SSR file only add the sequence search results which are not part of the Auto Scan tab.
             //{
             //    foreach (var item in dtgridSearchResultsDeNovo.ItemsSource)
@@ -19981,7 +19564,6 @@ namespace MSViewer
             //    }
             //}
 
-
             List<SearchResult> sequencesearchlst = new List<SearchResult>();
 
             for (int i = 0; i < ListConfirmedSequences.Count; i++)
@@ -19992,7 +19574,6 @@ namespace MSViewer
                 }
                 else if (ListConfirmedSequences[i].InternalMT != null && ListConfirmedSequences[i].InternalMT.Count != 0 && ListConfirmedSequences[i].YellowandGreenTagHits != 0)
                 {
-
                     sequencesearchlst.Add(ListConfirmedSequences[i]);
                 }
             }
@@ -20000,25 +19581,20 @@ namespace MSViewer
             return sequencesearchlst;
         }
 
-
         /// <summary>
         /// Save the Sequencesearchlist to a XML file (or zipped XML file) based on the file location
         /// </summary>
         /// <param name="Path"></param>
         /// <param name="sqssrchlst"></param>
-        void SaveWorkspace(FileInfo file, SearchSummary sqssrchlst, bool useCompression = true)
+        private void SaveWorkspace(FileInfo file, SearchSummary sqssrchlst, bool useCompression = true)
         {
             //SequenceSearchList sqssrchlst = new SequenceSearchList();
-
-
 
             //if (DeChargerModel.SpectralDataFilename != null && File.Exists(DeChargerModel.SpectralDataFilename))
             //{
             //    sqssrchlst.SpectralDataFilename = DeChargerModel.SpectralDataFilename;
             //    sqssrchlst.SpectralDataFileHash = sha256_hash(sqssrchlst.SpectralDataFilename);
             //}
-
-
 
             // the zml results file should be named *.ssr.xml, but if zipped, the .xml should be trimmed from the zip, but the xml file within retains the.xml extension
 
@@ -20049,8 +19625,6 @@ namespace MSViewer
             }
 
             UpdateWorkspaceTitle(sqssrchlst.SearchEndTime);
-
-
         }
 
         public void UpdateWorkspaceTitle(DateTime endTime = default(DateTime))
@@ -20058,13 +19632,12 @@ namespace MSViewer
             dockTools.Title = ToolsDockTitleRoot + (DechargerVM.WorkspaceFilename == null ? string.Empty : (" - " + DechargerVM.WorkspaceFilename)) + (endTime.Year > 2015 ? (" @ " + endTime.ToString("h:mm tt on MMM d, yyyy")) : string.Empty);
         }
 
-
         /// <summary>
         /// Apply all the settings for Sequence Search
         /// </summary>
         /// <param name="sqssrlst"></param>
         /// <returns></returns>
-        SearchSummary ApplySettings(SearchSummary sqssrlst)
+        private SearchSummary ApplySettings(SearchSummary sqssrlst)
         {
             sqssrlst.CurrentSettings = new Settings();
 
@@ -20134,12 +19707,11 @@ namespace MSViewer
             //RootElement_Drop(null, null, @"/dechargerbeta/DeCharger.Beta.application");
 
             ForceSpectrumRedraw();
-
         }
 
         private void ForceSpectrumRedraw()
         {
-            // This is a total hack, but it works.... ugh.  
+            // This is a total hack, but it works.... ugh.
 
             // toggle width by one pixel to force a redraw???
 
@@ -20149,7 +19721,6 @@ namespace MSViewer
                 BottomChart.Margin = new Thickness(BottomChart.Margin.Left, BottomChart.Margin.Top, 4, BottomChart.Margin.Bottom);
 
             //BottomChart.UpdateLayout();
-
         }
 
         /// <summary>
@@ -20226,7 +19797,6 @@ namespace MSViewer
                 }
                 Columns.Add(column);
             }
-
         }
 
         /// <summary>
@@ -20246,7 +19816,6 @@ namespace MSViewer
                         ListOfSearchResults.Add(item as SearchResult);
                     }
                 }
-
 
                 List<string> Headers = new List<string>();
                 List<List<String>> Columns = new List<List<string>>();
@@ -20287,9 +19856,6 @@ namespace MSViewer
             feedback.ShowDialog();
         }
 
-
-
-
         //private void btnLoadfromXML_Click(object sender, RoutedEventArgs e)
         //{
         //    SequenceSearchList sqsssrlst = new SequenceSearchList();
@@ -20323,8 +19889,6 @@ namespace MSViewer
         //{
         //    dtgridSearchResults.ItemsSource = null;
         //}
-
-
     }
 
     public sealed class QuantitationItem
@@ -20338,9 +19902,11 @@ namespace MSViewer
         public string Z { get; set; }
         public string Mass { get; set; }
 
-        public string MzRange { get { return XicMzStart + " - " + XicMzEnd; } }
-        public string RtRange { get { return RtStart + " - " + RtEnd; } }
+        public string MzRange
+        { get { return XicMzStart + " - " + XicMzEnd; } }
 
+        public string RtRange
+        { get { return RtStart + " - " + RtEnd; } }
 
         public override string ToString()
         {
@@ -20348,9 +19914,8 @@ namespace MSViewer
         }
     }
 
-
-    public enum ChartMode { Mass, MZ };
-
+    public enum ChartMode
+    { Mass, MZ };
 
     public class NonKeyNavigationTabItem : TabItem
     {
@@ -20365,6 +19930,7 @@ namespace MSViewer
                     //e.Handled = true;
                     return;
                     break;
+
                 default:
                     break;
             }
@@ -20373,13 +19939,11 @@ namespace MSViewer
         }
     }
 
-
     public class SpectrumModel
     {
         public PointSet Spectrum { get; set; }
         public ObservableCollection<SignalProcessing.Point> MonoMasses { get; set; }
     }
-
 
     public static partial class Extensions
     {
@@ -20407,7 +19971,6 @@ namespace MSViewer
                     results.Add(result);
                     start = result + target.Length;
                 }
-
             } while (result > -1 && start < toBeSearched.Length);
 
             return results;
@@ -20429,6 +19992,7 @@ namespace MSViewer
             get;
             set;
         }
+
         public string Value { get; set; }
         public bool AlreadySelected { get; set; }
         public string FilterType { get; set; }
@@ -20441,6 +20005,7 @@ namespace MSViewer
             get;
             set;
         }
+
         public string Value { get; set; }
         public bool AlreadySelected { get; set; }
         public string FilterType { get; set; }
@@ -20453,6 +20018,7 @@ namespace MSViewer
             get;
             set;
         }
+
         public string Value { get; set; }
         public bool AlreadySelected { get; set; }
         public string FilterType { get; set; }
@@ -20465,6 +20031,7 @@ namespace MSViewer
             get;
             set;
         }
+
         public string Value { get; set; }
         public bool AlreadySelected { get; set; }
         public string FilterType { get; set; }
@@ -20489,19 +20056,22 @@ namespace MSViewer
         public double End { get; set; }
         public string Index { get; set; }
         public float EndDelta { get; set; }
+
         public string NameIndex
         {
             get
             {
                 return Convert.ToString(Start) + Convert.ToString(End);
             }
-            //set; 
+            //set;
         }
+
         //public List<double> StartValues { get; set; }
         //public List<double> EndValues { get; set; }
         //public List<float> StartDeltaValues { get; set; }
         //public List<float> EndDeltaValues { get; set; }
-        public override string ToString() { return "Seq: " + Name + "; Start: " + Start.ToString("0.00") + "; End: " + End.ToString("0.00"); }
+        public override string ToString()
+        { return "Seq: " + Name + "; Start: " + Start.ToString("0.00") + "; End: " + End.ToString("0.00"); }
 
         public double AverageMonoMassIntensity { get; set; }
 
@@ -20524,8 +20094,6 @@ namespace MSViewer
         public Colour color { get; set; }
     }
 
-
-
     public static partial class Extensions
     {
         public static void ApplyConfidence(this InlineCollection inlines, bool isBlastTag = false)
@@ -20533,95 +20101,106 @@ namespace MSViewer
             foreach (var anInline in inlines) ApplyConfidence(anInline, (AminAcidConfidence)anInline.Tag, isBlastTag);
         }
 
-
         public static void ApplyConfidence(this Inline theRun, AminAcidConfidence confidence, bool isBlastTag = false)
         {
             confidence = (AminAcidConfidence)(Math.Abs((int)confidence) * (isBlastTag ? -1 : 1));
-            
+
             switch (confidence)
             {
                 case AminAcidConfidence.BlastTagMatch:
                     theRun.FontSize = 12;
                     theRun.FontWeight = FontWeights.Bold;
                     break;
+
                 case AminAcidConfidence.BlastTagHigh:
                     theRun.FontSize = 12;
                     theRun.Foreground = System.Windows.Media.Brushes.DarkSlateGray;
                     theRun.FontWeight = FontWeights.Bold;
                     break;
+
                 case AminAcidConfidence.BlastTagMisMatch:
                     theRun.FontSize = 12;
                     theRun.Foreground = System.Windows.Media.Brushes.Red;
                     theRun.FontWeight = FontWeights.Bold;
                     break;
+
                 case AminAcidConfidence.BlastTagPossible:
                     theRun.FontSize = 12;
                     theRun.Foreground = System.Windows.Media.Brushes.RoyalBlue;
                     theRun.FontWeight = FontWeights.Bold;
                     break;
+
                 case AminAcidConfidence.Sure:
                     theRun.FontSize = 12;
                     theRun.Foreground = System.Windows.Media.Brushes.Snow;
                     theRun.Background = System.Windows.Media.Brushes.Black;
                     theRun.FontWeight = FontWeights.Bold;
                     break;
+
                 case AminAcidConfidence.High:
                     theRun.FontSize = 12;
                     theRun.Foreground = System.Windows.Media.Brushes.DarkGray;
                     theRun.Background = System.Windows.Media.Brushes.White;
                     theRun.FontWeight = FontWeights.Bold;
                     break;
+
                 case AminAcidConfidence.Medium:
                     theRun.FontSize = 12;
                     theRun.Foreground = System.Windows.Media.Brushes.Gray;
                     theRun.Background = System.Windows.Media.Brushes.White;
                     theRun.FontWeight = FontWeights.Bold;
                     break;
+
                 case AminAcidConfidence.Low:
                     theRun.FontSize = 12;
                     theRun.Foreground = System.Windows.Media.Brushes.Snow;
                     theRun.Background = System.Windows.Media.Brushes.RoyalBlue;
                     theRun.FontWeight = FontWeights.Bold;
                     break;
+
                 case AminAcidConfidence.Possible:
                     theRun.FontSize = 12;
                     theRun.Foreground = System.Windows.Media.Brushes.Black;
                     theRun.Background = System.Windows.Media.Brushes.White;
                     theRun.FontWeight = FontWeights.Bold;
                     break;
+
                 case AminAcidConfidence.NotSure:
                     theRun.FontSize = 12;
                     theRun.Foreground = System.Windows.Media.Brushes.Black;
                     theRun.Background = System.Windows.Media.Brushes.White;
                     theRun.FontWeight = FontWeights.Bold;
                     break;
+
                 case AminAcidConfidence.NotPossible:
                     theRun.FontSize = 12;
                     theRun.Foreground = System.Windows.Media.Brushes.Gray;
                     theRun.Background = System.Windows.Media.Brushes.White;
                     break;
+
                 case AminAcidConfidence.Gap:
                     theRun.FontSize = 12;
                     theRun.Foreground = System.Windows.Media.Brushes.Snow;
                     theRun.Background = System.Windows.Media.Brushes.DarkRed;
                     theRun.FontWeight = FontWeights.Bold;
                     break;
+
                 case AminAcidConfidence.Reallybad:
                     theRun.FontSize = 12;
                     theRun.Foreground = System.Windows.Media.Brushes.Gray;
                     theRun.Background = System.Windows.Media.Brushes.White;
                     break;
+
                 case AminAcidConfidence.SearchHit:
                     theRun.FontSize = 12;
                     theRun.Foreground = System.Windows.Media.Brushes.Purple;
                     theRun.Background = System.Windows.Media.Brushes.White;
                     break;
+
                 default:
                     break;
             }
-
         }
-
 
         private class AminoAcidWithConfidence
         {
@@ -20664,7 +20243,7 @@ namespace MSViewer
 
             if (currentRun != null) inlines.Add(currentRun);  // add the last one
 
-            // this takes the confidence values stored in the tags and applies a color to the runs  
+            // this takes the confidence values stored in the tags and applies a color to the runs
             inlines.ApplyConfidence(true);
 
             //var theRun2 = new Run(aa.SequenceTag);
@@ -20678,7 +20257,6 @@ namespace MSViewer
             //    inlines.Add(theRun2);
             //}
         }
-
 
         public static void ApplyBlastHighlight(this InlineCollection inlines, string ProteinSequence, List<MSViewer.MatchStartEnds> tags)
         {
@@ -20718,7 +20296,7 @@ namespace MSViewer
             if (Dontshowall)
             {
                 List<AminoAcidWithConfidence> grayarea = sequenceWithConfidence.Where(a => a.Confidence == AminAcidConfidence.NotPossible || a.Confidence == AminAcidConfidence.Reallybad).ToList(); //Checking if there is any gray area
-                                                                                                                                                                                                                   //var notgrayarea = sequenceWithConfidence.Where(a => a.Confidence != Confidence.NotPossible && a.Confidence != Confidence.Reallybad).ToList();
+                                                                                                                                                                                                     //var notgrayarea = sequenceWithConfidence.Where(a => a.Confidence != Confidence.NotPossible && a.Confidence != Confidence.Reallybad).ToList();
 
                 //int startnotgrayarea = notgrayarea.Min(a => a.Index);
                 //int endnotgrayarea = notgrayarea.Max(a => a.Index);
@@ -20841,7 +20419,6 @@ namespace MSViewer
         public string Sequence { get; set; }
         public float Score { get; set; }
 
-
         private void OnPropertyChanged(string info)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
@@ -20851,7 +20428,6 @@ namespace MSViewer
             }
         }
     }
-
 
     //public class DoubleFormatter : IValueConverter
     //{
@@ -20865,7 +20441,7 @@ namespace MSViewer
     //            return 0;
     //    }
 
-    //    // No need to implement converting back on a one-way binding 
+    //    // No need to implement converting back on a one-way binding
     //    public object ConvertBack(object value, Type targetType,
     //        object parameter, System.Globalization.CultureInfo culture)
     //    {
@@ -20880,16 +20456,19 @@ namespace MSViewer
             get;
             set;
         }
+
         public double XValue
         {
             get;
             set;
         }
+
         public int Index
         {
             get;
             set;
         }
+
         public int Charge
         {
             get;
@@ -20901,11 +20480,11 @@ namespace MSViewer
     /// While tracing the sequence from one direction
     /// from the parent mass, the Name of the Amino Acid and
     /// the sum of the sequence till this current Amino Acid
-    /// is counted. 
+    /// is counted.
     /// Once this is obtained we trace the sequence from the
-    /// start looking for the Monos if there is any match for the 
+    /// start looking for the Monos if there is any match for the
     /// current value.
-    /// If there is a match to the current value then the Sequence 
+    /// If there is a match to the current value then the Sequence
     /// is strong at that point.
     /// </summary>
     public class AminoAcidIndex
@@ -20915,33 +20494,37 @@ namespace MSViewer
             get;
             set;
         }
+
         public double Totaltillnow
         {
             get;
             set;
         }
+
         public double Start
         {
             get;
             set;
         }
+
         public double End
         {
             get;
             set;
         }
+
         public int StartCharge
         {
             get;
             set;
         }
+
         public int EndCharge
         {
             get;
             set;
         }
     }
-
 
     /// <summary>
     /// The AminoAcidGap is the part of the sequence
@@ -20957,31 +20540,37 @@ namespace MSViewer
             get;
             set;
         }
+
         public double EndValue
         {
             get;
             set;
         }
+
         public double Gap
         {
             get;
             set;
         }
+
         public double EndPosition
         {
             get;
             set;
         }
+
         public double StartPosition
         {
             get;
             set;
         }
+
         public int StartCharge
         {
             get;
             set;
         }
+
         public int EndCharge
         {
             get;
@@ -21018,6 +20607,4 @@ namespace MSViewer
             return "Amino Acid = " + Name + ", Delta = " + (Mass - Math.Abs(Start.MonoMass - End.MonoMass)).ToString("0.000") + ", End = " + End.MonoMass.ToString("0.0000");
         }
     }
-
-
 }

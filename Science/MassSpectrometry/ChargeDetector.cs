@@ -910,44 +910,56 @@ public static class MassSpec
 
     }
 
+    // Generates approximate chemical formula for therotical isotope pattern display
     internal static Ion GenerateAveragine(double mw)
     {
+        //MDK Determine what isotope table is loaded
+        AveragineCacheSettings settings = AveragineCacheSettings.Instance;
+        var newCacheName = settings.SelectedCacheFile;
+        var formula = "";
+
         //For Proteins and Peptides
+        if (newCacheName.Contains("Protein"))
+            {
+            float AveragineMW = 111.1254f;
+            float AverageC = 4.9384f;
+            float AverageH = 7.7583f;
+            float AverageN = 1.3577f;
+            float AverageO = 1.4773f;
+            float AverageS = 0.0417f;
 
-        //float AveragineMW = 111.1254f;
-        //float AverageC = 4.9384f;
-        //float AverageH = 7.7583f;
-        //float AverageN = 1.3577f;
-        //float AverageO = 1.4773f;
-        //float AverageS = 0.0417f;
+            var roundNumAveragine = (int)Math.Round(mw / AveragineMW, 0);
 
-        //var roundNumAveragine = (int)Math.Round(mw / AveragineMW, 0);
+            // Example: C(644) H(1012) N(177) O(193) S(5)
+            var proteinFormula = "C(" + Math.Round(AverageC * roundNumAveragine, 0)
+                      + ") H(" + Math.Round(AverageH * roundNumAveragine, 0)
+                      + ") N(" + Math.Round(AverageN * roundNumAveragine, 0)
+                      + ") O(" + Math.Round(AverageO * roundNumAveragine, 0)
+                      + ") S(" + Math.Round(AverageS * roundNumAveragine, 0) + ")";
 
-        //// Example: C(644) H(1012) N(177) O(193) S(5)
-        //var formula = "C(" + Math.Round(AverageC * roundNumAveragine, 0)
-        //          + ") H(" + Math.Round(AverageH * roundNumAveragine, 0)
-        //          + ") N(" + Math.Round(AverageN * roundNumAveragine, 0)
-        //          + ") O(" + Math.Round(AverageO * roundNumAveragine, 0)
-        //          + ") S(" + Math.Round(AverageS * roundNumAveragine, 0) + ")";
+            formula = proteinFormula;
+            }
 
-        // for DNA oligos
+        // for oligos
+        if (newCacheName.Contains("Oligo"))
+            {
+            float AveragineMW = 305.8335f;
+            float AverageC = 9.75f;
+            float AverageH = 12.30f;
+            float AverageN = 3.75f;
+            float AverageO = 5.90f;
+            float AverageP = 0.95f;
 
-        float AveragineMW = 305.8335f;
-        float AverageC = 9.75f;
-        float AverageH = 12.30f;
-        float AverageN = 3.75f;
-        float AverageO = 5.90f;
-        float AverageP = 0.95f;
+            var roundNumAveragine = (int)Math.Round(mw / AveragineMW, 0);
 
-        var roundNumAveragine = (int)Math.Round(mw / AveragineMW, 0);
-
-        var formula = "C(" + Math.Round(AverageC * roundNumAveragine, 0)
+            var oligoFormula = "C(" + Math.Round(AverageC * roundNumAveragine, 0)
                   + ") H(" + Math.Round(AverageH * roundNumAveragine, 0)
                   + ") N(" + Math.Round(AverageN * roundNumAveragine, 0)
                   + ") O(" + Math.Round(AverageO * roundNumAveragine, 0)
                   + ") P(" + Math.Round(AverageP * roundNumAveragine, 0) + ")";
 
-
+            formula = oligoFormula ;
+            }
 
         return new Ion(formula, -1);
     }

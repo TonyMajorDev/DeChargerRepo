@@ -825,8 +825,8 @@ namespace SignalProcessing
 
                 if (!SetMonoMassforunittests)
                 {
-                    if (this.MonoMZ < 0)
-                        Debug.Print("BAD!");
+                    //if (this.MonoMZ < 0)
+                       // Debug.Print("BAD! MonoMZ < 0");
                     if (SignalProcessor.IonPolarity == Agilent.MassSpectrometry.DataAnalysis.IonPolarity.Negative)
                         return (this.MonoMZ * (double)Z) + ((double)Z * SignalProcessor.ProtonMass);
                     else
@@ -1063,11 +1063,10 @@ namespace SignalProcessing
             // ADW:  AveragineClassSettings
             AveragineCacheSettings settings = AveragineCacheSettings.Instance;
             var newCacheName = settings.SelectedCacheFile;
-            // Mike: Change this to load oligo or Protein Averagine precomputed isotope patterns from files we will inculde
-            //string moleculeMode =
 
             //var appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             //var avgCacheFilename = System.IO.Path.Combine(appData, "avgCache.dat");
+
             var avgCacheFilename = System.IO.Path.Combine(@".\Files", newCacheName);
             FileStream fs;
             ConcurrentDictionary<int, double[]> cache = null;

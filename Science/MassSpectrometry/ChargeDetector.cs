@@ -33,8 +33,8 @@ public class ChargeDetector
 
     SortedList<float, double> intensityList = new SortedList<float, double>();
 
-    private const double Charge16 = 1 / 16d;
-    private const double Tolerance = 0.0035d;  // tight tolerance used for initial detection
+    //private const double Charge16 = 1 / 16d;
+    //private const double Tolerance = 0.0035d;  // tight tolerance used for initial detection
     //public static double PpmTolerance = 1;  // 1 ppm is was a well tuned OrbiTrap should achieve
 
     //DEBUG:  if set to true clusters that are rejected will have thier failure evidence printed to output
@@ -73,17 +73,17 @@ public class ChargeDetector
     }
 
 
-    private void button2_Click()
-    {
+    //private void button2_Click()
+    //{
 
-        var start = DateTime.Now;
+    //    var start = DateTime.Now;
 
-        DetectChargeStates(4, 40);
+    //    DetectChargeStates(4, 40);
 
-        //ParallelDetectChargeStates(4, 40);
+    //    //ParallelDetectChargeStates(4, 40);
 
-        Debug.Print("Elapsed ms: " + DateTime.Now.Subtract(start).TotalMilliseconds);
-    }
+    //    Debug.Print("Elapsed ms: " + DateTime.Now.Subtract(start).TotalMilliseconds);
+    //}
 
     //public List<Cluster> DetectChargeStates(int MinCharge = 4, int MaxCharge = 4)
 
@@ -250,6 +250,9 @@ public class ChargeDetector
             //TODO: use cross-correlation here to find peaks of the distribution?
             //LabelCharge(aPeak, zSpace, Tolerance);
 
+            //MDK  print what aPeak we are processing
+            if (verbose) Debug.Print("aPeak = ", aPeak.ToString());
+
             //if (clusters.Any(c => c.Peaks.Where(i => i.IsCorePeak).Any(p=>p.MZ == aPeak)))
             if (clusters.Any(c => c.Peaks.Any(p => p.MZ == aPeak && c.Peaks.Any(x => x.IsMonoisotopic) && p.Index >= c.Peaks.Where(x => x.IsMonoisotopic).First().Index)))
                 continue;
@@ -261,7 +264,7 @@ public class ChargeDetector
             LooseTolerance = Math.Max(LooseTolerance, zSpace / 5d);
 
             var currentCluster = new Cluster() { Z = charge };
-
+            
             var distribution = new System.Collections.Generic.Dictionary<int, ClusterPeak>();
 
             //var distribution = from peak in mzList
@@ -500,9 +503,12 @@ public class ChargeDetector
                 if (verbose) Debug.Print("Evaluating Distribution of length = " + runLength.ToString() + ", charge = " + charge.ToString());
 
             // DEBUG INVESTIGATION: System exception with scan 193 of 21-mer MSMS 7CS 18CE.d  This break stops the exception for this cluster mass 
-            //if (currentCluster.MonoMass < 896.3 && currentCluster.MonoMass > 896.2)
+            // error is "Exception thrown: 'System.InvalidOperationException' in MassSpectrometry.dll"
+            if (currentCluster.MonoMass < 896.3 && currentCluster.MonoMass > 896.2)
             //{
-            //    break;
+            //    var Holder = 0;
+            //    continue;
+            //    //break;
             //}
 
             if (applyNoiseFilter && (localNoise / ((coreEndIndex - coreStartIndex) * zSpace)) > 4)
@@ -872,33 +878,33 @@ public class ChargeDetector
 
     }
 
-    private double? LabelCharge(double aroundMZ, double chargeSpace)
-    {
-        return LabelCharge(aroundMZ, chargeSpace, Tolerance);
-    }
+    //private double? LabelCharge(double aroundMZ, double chargeSpace)
+    //{
+    //    return LabelCharge(aroundMZ, chargeSpace, Tolerance);
+    //}
 
-    private double? LabelCharge(double aroundMZ, double chargeSpace, double tolerance)
-    {
-        double mz;
-        double mz2;
+    //private double? LabelCharge(double aroundMZ, double chargeSpace, double tolerance)
+    //{
+    //    double mz;
+    //    double mz2;
 
-        mz = mzList.FindClosest(aroundMZ + chargeSpace);
-        mz2 = mzList.FindClosest(aroundMZ - chargeSpace);
-        // Check Intensity tolerance and m/z tolerance
-        if ((mzList[mz] > (mzList[aroundMZ] * 0.3)) && (Math.Abs((aroundMZ + chargeSpace) - mz) < tolerance) && (mzList[mz2] > (mzList[aroundMZ] * 0.3)) && (Math.Abs((aroundMZ - chargeSpace) - mz2) < tolerance))
-            return aroundMZ;
+    //    mz = mzList.FindClosest(aroundMZ + chargeSpace);
+    //    mz2 = mzList.FindClosest(aroundMZ - chargeSpace);
+    //    Check Intensity tolerance and m / z tolerance
+    //    if ((mzList[mz] > (mzList[aroundMZ] * 0.3)) && (Math.Abs((aroundMZ + chargeSpace) - mz) < tolerance) && (mzList[mz2] > (mzList[aroundMZ] * 0.3)) && (Math.Abs((aroundMZ - chargeSpace) - mz2) < tolerance))
+    //        return aroundMZ;
 
-        return null;
-    }
+    //    return null;
+    //}
 
-    private void button3_Click()
-    {
-        var start = DateTime.Now;
+    //    private void button3_Click()
+    //    {
+    //        var start = DateTime.Now;
 
-        ParallelDetectChargeStates(4, 40, 5);
+    //        ParallelDetectChargeStates(4, 40, 5);
 
-        Debug.Print("Elapsed ms: " + DateTime.Now.Subtract(start).TotalMilliseconds);
-    }
+    //        Debug.Print("Elapsed ms: " + DateTime.Now.Subtract(start).TotalMilliseconds);
+    //    }
 
 }
 

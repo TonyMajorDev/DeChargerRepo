@@ -55,6 +55,9 @@ public class AgilentProvider : IMSProvider, IDisposable
 {
     private static bool platformOK = false;
 
+    //DEBUG:  if set to true values printed to output
+    private const bool verbose = true;
+
     private static void CheckPlatform()
     {
         //var a = Assembly.ReflectionOnlyLoadFrom("MassSpecDataReader.dll");
@@ -884,8 +887,8 @@ public class AgilentProvider : IMSProvider, IDisposable
 
     #region IMSProvider Members
 
-
-    public List<Cluster> DetectIons(int scanNum = 1, int minCharge = 1, int maxCharge = 30, double massRangeMin = 0, double massRangeMax = double.MaxValue)
+    // MDK set massRangeMin to something greater than zero
+    public List<Cluster> DetectIons(int scanNum = 1, int minCharge = 1, int maxCharge = 30, double massRangeMin = 0.01, double massRangeMax = double.MaxValue)
     {
         try
         {
@@ -898,7 +901,19 @@ public class AgilentProvider : IMSProvider, IDisposable
             Debug.Print("-----------------------");
             Debug.Print("Detect Ions Called for Scan: " + scanNum + ", z=" + minCharge + " - " + maxCharge + ", peak count: " + this[scanNum].Count);
             Debug.Print("\tFound " + result.Count + " Clusters");
-            if (result.Any()) Debug.Print("\tScore Range: " + result.Min(c => c.Score) + " - " + result.Max(c => c.Score));
+            if (result.Any())
+            {
+                Debug.Print("\tScore Range: " + result.Min(c => c.Score) + " - " + result.Max(c => c.Score));
+
+                // DEBUG MDK  track detected monos and thier properties
+                if (verbose)
+                {
+                    foreach (var c in result)
+                    {
+                        Debug.Print("mz:" + c.MonoMZ + " Mono:" + c.MonoMass + " Z:" + c.Z + " Int:" + c.Intensity + " score:" + c.Score + " Peak count:" + c.Peaks.Count + " charges:" + c.ConsolidatedCharges);
+                    }
+                }
+            }
             Debug.Print("-----------------------");
 
             return result;

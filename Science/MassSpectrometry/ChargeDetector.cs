@@ -38,7 +38,7 @@ public class ChargeDetector
     //public static double PpmTolerance = 1;  // 1 ppm is was a well tuned OrbiTrap should achieve
 
     //DEBUG:  if set to true clusters that are rejected will have thier failure evidence printed to output
-    private const bool verbose = false;
+    private const bool verbose = true;
 
     public ChargeDetector(SortedList<double, float> points, float minIntensity = 0)
     {
@@ -220,7 +220,8 @@ public class ChargeDetector
     /// <returns></returns>
     private List<Cluster> FindIsotopeGroups(List<double> input, int charge, double massTolerance, bool applyNoiseFilter = true)
     {
-        if (verbose) Debug.Print("first cluster input mass:  " + input.First());
+        
+
         var clusters = new List<Cluster>();
 
         //double LooseTolerance = Math.Min(charge > 3 ? 0.0050 : 0.011, (1.0078d / (double)charge) - (1.0078d / ((double)charge+1d)));
@@ -245,13 +246,11 @@ public class ChargeDetector
 
         // WARNING!  The input to this is a list of m/z's but it MUST have previously been sorted by decreasing intensity to work best going forward...
 
+
         foreach (var aPeak in input)
         {
             //TODO: use cross-correlation here to find peaks of the distribution?
             //LabelCharge(aPeak, zSpace, Tolerance);
-
-            //MDK  print what aPeak we are processing
-            if (verbose) Debug.Print("aPeak = ", aPeak.ToString());
 
             //if (clusters.Any(c => c.Peaks.Where(i => i.IsCorePeak).Any(p=>p.MZ == aPeak)))
             if (clusters.Any(c => c.Peaks.Any(p => p.MZ == aPeak && c.Peaks.Any(x => x.IsMonoisotopic) && p.Index >= c.Peaks.Where(x => x.IsMonoisotopic).First().Index)))
@@ -375,6 +374,7 @@ public class ChargeDetector
             //if (charge > 7 && runLength < 7) continue;  // too strict
             if (charge > 12 && runLength < 9) continue;
 
+
             score += 10 * runLength;
 
             double VarianceInRun = 0;
@@ -463,8 +463,15 @@ public class ChargeDetector
                 if (verbose) Debug.Print("Local Noise:  " + localNoise);
                 lastPeak = currentPeak;
             }
+
+            /// MDK  DEBUG
+            if (currentCluster.MonoMass > 896.2842 & currentCluster.MonoMass < 896.2843)
+            { 
+                var x = 1;
+            }
             if (verbose) Debug.Print("Current cluster Mono,mono mz:  " + currentCluster.MonoMass.ToString() + ", "+ currentCluster.MonoMZ.ToString());
             
+
 
             //for (int i = firstRunPeak; i < lastRunPeak; i++)
             //{
@@ -502,15 +509,7 @@ public class ChargeDetector
 
                 if (verbose) Debug.Print("Evaluating Distribution of length = " + runLength.ToString() + ", charge = " + charge.ToString());
 
-            // DEBUG INVESTIGATION: System exception with scan 193 of 21-mer MSMS 7CS 18CE.d  This break stops the exception for this cluster mass 
-            // error is "Exception thrown: 'System.InvalidOperationException' in MassSpectrometry.dll"
-            if (currentCluster.MonoMass < 896.3 && currentCluster.MonoMass > 896.2)
-            //{
-            //    var Holder = 0;
-            //    continue;
-            //    //break;
-            //}
-
+            
             if (applyNoiseFilter && (localNoise / ((coreEndIndex - coreStartIndex) * zSpace)) > 4)
             {
                 if (verbose) Debug.Print("Reject - Local Noise " + (localNoise / (coreEndIndex - coreStartIndex)).ToString("0.0000"));

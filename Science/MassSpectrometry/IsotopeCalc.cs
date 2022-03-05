@@ -46,8 +46,6 @@ namespace MassSpectrometry
 {
     public static class IsotopeCalc
     {
-        //static MwtWinDll.MolecularWeightCalculator mMwtWin = new MwtWinDll.MolecularWeightCalculator();
-
         const double TWOPI = 2 * Math.PI;
         const double HALFPI = Math.PI / 2;
         static double ELECTRON_MASS = new Atom("e").Isotopes[0].Mass;
@@ -291,27 +289,6 @@ namespace MassSpectrometry
 
 
 
-        ///// <summary>
-        ///// Calculate the Theoretical Isotopic Distribution of this Ion and return a single point per peak (histogram)
-        ///// </summary>
-        ///// <param name="theMolecule">This should be a string in the form of "C425 H667 N117 O127 S4"</param>
-        ///// <returns>Array of intensities</returns>
-        //public static double[] CalcIsotopePeaks(this string theMolecule)
-        //{
-        //  Note: PNNL library was too slow for large ions, went back to FFT based algorithm.
-
-        //    //TODO: Switch to new PNNL based library: 
-        //    //s = "C425 H667 N117 O127 S4";
-
-        //    //blnAddProtonChargeCarrier = false;
-        //    //intChargeState = 1;
-        //    //Console.WriteLine("Isotopic abundance test with Charge=" + intChargeState + "; do not add a proton charge carrier");
-
-
-        //    return mMwtWin.ComputeIsotopicAbundances(theMolecule);
-        //}
-
-
 
         /// <summary>
         /// Calculate the Theoretical Isotopic Distribution of this Ion and return a single point per peak (histogram)
@@ -354,6 +331,8 @@ namespace MassSpectrometry
         /// <param name="theIon">The Ion object</param>
         /// <param name="resolvingPower">The FWHM based resolving power (Resolving Power = Mass/deltaMass = Mass/FWHM)</param>
         /// <returns></returns>
+        /// 
+
         public static PointSet CalcIsotopePeaks(this Science.Chemistry.IIon theIon, int resolvingPower)
         {
             // What is resolution?  http://fiehnlab.ucdavis.edu/projects/Seven_Golden_Rules/Mass_Resolution/

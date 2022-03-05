@@ -1138,13 +1138,37 @@ namespace SignalProcessing
         /// <returns></returns>
         public double SetMonoAndCorePeaks()
         {
-            //System.Diagnostics.Debug.WriteLine("Executing FindMono");
+            System.Diagnostics.Debug.WriteLine("Executing FindMono");
 
             //double mass = cluster.Peaks.Where(p => p.IsCorePeak).OrderByDescending(p => p.Intensity).First().MZ * cluster.Z;
 
             if (this.Peaks.Count <= 2) return this.MonoMZ;
 
+            //MDK if below the isotope profile start mass of 150 set mono to max intensity in cluster
+            if (this.Peaks.First().Mass < 151) 
+                { 
+                var max =  this.Peaks.Max().Intensity;
+                foreach (var peak in this.Peaks)
+                    {
+                    if (peak.Mass == max)
+                        {
+                        return this.MonoMass = peak.MZ;
+                        return this.MonoMZ = peak.MZ;
+                        }
+                    }
+                }
+                
+                
+                
+
             double mass = this.Peaks.Skip(2).First().Mass;  //.Where(p => p.IsCorePeak).OrderByDescending(p => p.Intensity).First().MZ * cluster.Z;
+                                                            //MDK
+            if (mass < 151)
+            {
+                mass = 160;
+                
+            }
+            
 
             AveragineCache = AveragineCache ?? LoadAveragineCache();
 
@@ -1207,7 +1231,9 @@ namespace SignalProcessing
 
                 //System.Diagnostics.Debug.WriteLine(resultStr);
 
+
                 AveragineCache.Add(RoundOff(mass), isoPattern);
+                
             }
 
             this.IsoPattern = isoPattern;
@@ -1215,6 +1241,13 @@ namespace SignalProcessing
             // Find the Monoisotopic peak
 
             // Use Top 10 peaks in the iso pattern
+            //MDK debug
+            if (this.IsoPattern.Count() <1 )
+            {
+                var x = 1;
+
+            }
+
             int isoStart = Math.Max(0, this.IsoPattern.MaxIndex() - 5);
             int isoEnd = Math.Min(this.IsoPattern.Length - 1, this.IsoPattern.MaxIndex() + 5);
 

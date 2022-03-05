@@ -46,63 +46,6 @@ namespace SignalProcessing
 
         public static Agilent.MassSpectrometry.DataAnalysis.IonPolarity IonPolarity;
 
-
-        //[OperationContract, WebGet]
-        //public string _Environment()
-        //{
-        //    return System.Configuration.ConfigurationManager.AppSettings.Get("env") ?? "unknown";
-        //}
-
-        //[OperationContract, WebGet]
-        //public string _Version()
-        //{
-        //    return Assembly.GetExecutingAssembly().GetName().Version.ToString();
-        //}
-
-        //[OperationContract, WebGet]
-        //public string _Credentials()
-        //{
-        //    return System.Environment.UserDomainName + @"\" + System.Environment.UserName;
-        //}
-
-        //[OperationContract]
-        //[WebInvoke(BodyStyle = WebMessageBodyStyle.Bare, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, Method = WebRequestMethods.Http.Post)]
-        //public List<point> FindMonoMassAndGetFit(List<point> data)
-        //{
-        //    string r;
-        //    List<point> p, s;
-
-        //    FindMonoMass1(data, out r, out p, out s);
-
-        //    return p;
-        //}
-
-        //[OperationContract]
-        //[WebInvoke(BodyStyle = WebMessageBodyStyle.Bare, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, Method = WebRequestMethods.Http.Post)]
-        //public List<point> FindMonoMassAndGetSignal(List<point> data)
-        //{
-        //    string r;
-        //    List<point> p, s;
-
-        //    FindMonoMass1(data, out r, out p, out s);
-
-        //    return s;
-        //}
-
-        //[OperationContract]
-        //[WebInvoke(BodyStyle = WebMessageBodyStyle.Bare, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, Method = WebRequestMethods.Http.Post)]
-        //public string FindMonoMass(List<point> data)
-        //{
-        //    string r;
-        //    List<point> p, s;
-
-        //    FindMonoMass1(data, out r, out p, out s);
-
-        //    return r;
-        //}
-
-
-
         public static bool CancelConsolidation = false;
 
         /// <summary>

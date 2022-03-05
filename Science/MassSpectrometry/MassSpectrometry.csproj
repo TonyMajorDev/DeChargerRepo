@@ -103,24 +103,24 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BaseCommon, Version=6.0.633.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="BaseCommon, Version=8.0.8208.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\MassHunterDataAccessAssembly_64bit\bin\BaseCommon.dll</HintPath>
+      <HintPath>D:\MHDAC_MIDAC_Package_12.0_B127.0\MHDAC_MIDAC_Package\MHDAC_MIDAC_64bit\bin\BaseCommon.dll</HintPath>
     </Reference>
-    <Reference Include="BaseDataAccess, Version=6.0.633.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="BaseDataAccess, Version=8.0.8208.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\MassHunterDataAccessAssembly_64bit\bin\BaseDataAccess.dll</HintPath>
+      <HintPath>D:\MHDAC_MIDAC_Package_12.0_B127.0\MHDAC_MIDAC_Package\MHDAC_MIDAC_64bit\bin\BaseDataAccess.dll</HintPath>
     </Reference>
-    <Reference Include="BaseTof, Version=1.0.4686.24703, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="BaseTof, Version=8.0.8208.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\MassHunterDataAccessAssembly_64bit\bin\BaseTof.dll</HintPath>
+      <HintPath>D:\MaxEnt\BC12 parts\Bin\BaseTof.dll</HintPath>
     </Reference>
     <Reference Include="DotNetZip, Version=1.13.5.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
       <HintPath>..\..\DeCharger\packages\DotNetZip.1.13.5\lib\net40\DotNetZip.dll</HintPath>
     </Reference>
-    <Reference Include="MassSpecDataReader, Version=6.0.633.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="MassSpecDataReader, Version=8.0.8208.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\MassHunterDataAccessAssembly_64bit\bin\MassSpecDataReader.dll</HintPath>
+      <HintPath>D:\MHDAC_MIDAC_Package_12.0_B127.0\MHDAC_MIDAC_Package\MHDAC_MIDAC_64bit\bin\MassSpecDataReader.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\DeCharger\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -245,7 +245,9 @@
       <Name>Science.Chemistry</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

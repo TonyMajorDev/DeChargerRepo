@@ -30,14 +30,15 @@
     <UpdateIntervalUnits>Days</UpdateIntervalUnits>
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
+    <MapFileExtensions>false</MapFileExtensions>
     <SupportUrl>https://github.com/TonyMajorDev/DeChargerRepo</SupportUrl>
     <ProductName>DeCharger Alpha</ProductName>
     <PublisherName>DeCharger</PublisherName>
     <WebPage>index.htm</WebPage>
-    <ApplicationRevision>552</ApplicationRevision>
+    <ApplicationRevision>555</ApplicationRevision>
     <ApplicationVersion>5.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>false</BootstrapperEnabled>
   </PropertyGroup>
@@ -314,8 +315,12 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="DeCharger.Alpha_TemporaryKey.pfx" />
-    <None Include="Files\OligoAveragineCache.dat" />
-    <None Include="Files\ProteinAveragineCache.dat" />
+    <Content Include="Files\OligoAveragineCache.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Files\ProteinAveragineCache.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\app.manifest" />
     <Resource Include="Gear.png" />
     <Content Include="..\..\Science\Science.Blast\Executables\advapi32.dll">
@@ -349,8 +354,13 @@
     <Compile Include="CurrentFiles\TextFile1.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Resource Include="Files\DNA_mass_list.txt" />
-    <Resource Include="Files\RNA_mass_list.txt" />
+    <Resource Include="Files\DNA_mass_list.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Files\RNA_mass_list.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\decharger_icon.png" />
     <Content Include="Icons\File.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

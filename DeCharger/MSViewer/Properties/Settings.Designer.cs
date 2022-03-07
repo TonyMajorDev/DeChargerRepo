@@ -85,7 +85,7 @@ namespace MSViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool ShowOnlyFTMS {
             get {
                 return ((bool)(this["ShowOnlyFTMS"]));
@@ -1502,7 +1502,7 @@ namespace MSViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool UseHybridIntensities {
             get {
                 return ((bool)(this["UseHybridIntensities"]));
@@ -1586,7 +1586,7 @@ namespace MSViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool AutoMergingEnabled {
             get {
                 return ((bool)(this["AutoMergingEnabled"]));

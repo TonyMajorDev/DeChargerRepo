@@ -487,7 +487,7 @@ namespace MSViewer
                 string version = assembly.FullName.Split(',')[1];
                 string fullversion = version.Split('=')[1];
 
-                //MDK update main title to reflece isotope set loaded
+                //MDK update main title to reflect isotope set loaded
                 AveragineCacheSettings settings = AveragineCacheSettings.Instance;
                 var CacheSetting = settings.SelectedCacheFile;
 
@@ -4809,8 +4809,14 @@ namespace MSViewer
                                 CurrentSpectrum.Add(new ClusterPeak() { Mass = min, Intensity = 0 });
                                 CurrentSpectrum.Add(new ClusterPeak() { Mass = max, Intensity = 0 });
 
-                                BottomChart.AxesX[0].AxisMinimum = min;
+                                //MDK fix mass axis to 0 for min
+                                BottomChart.AxesX[0].AxisMinimum = 0;
+                                //BottomChart.AxesX[0].AxisMinimum = min;
+
                                 BottomChart.AxesX[0].AxisMaximum = max;
+                                //MDK fix if max < 1000
+                                if (max < 1000) max = 1000;
+
 
                                 Debug.WriteLine("Point Count: " + CurrentSpectrum.Range(min, max, (int)BottomChart.AxesX[0].ActualWidth * (Properties.Settings.Default.HighBin ? 2 : 1)).Count());
 
@@ -4864,8 +4870,12 @@ namespace MSViewer
 
                                 BottomChart.Series[7].DataPoints.Clear();
 
-                                BottomChart.AxesX[0].AxisMinimum = min;
+                                //MDK fix mass axis to 0 for min
+                                BottomChart.AxesX[0].AxisMinimum = 0;
+                                //BottomChart.AxesX[0].AxisMinimum = min;
                                 BottomChart.AxesX[0].AxisMaximum = max;
+                                //MDK fix if max < 1000
+                                if (max < 1000) max = 1000;
 
                                 //try
                                 //{
@@ -4908,16 +4918,24 @@ namespace MSViewer
                                 CurrentSpectrum.Add(new ClusterPeak() { MZ = min, Intensity = 0 });
                                 CurrentSpectrum.Add(new ClusterPeak() { MZ = max, Intensity = 0 });
 
+                                //MDK fix mass axis to 0 for min
+                                //BottomChart.AxesX[0].AxisMinimum = 0;
                                 BottomChart.AxesX[0].AxisMinimum = min;
                                 BottomChart.AxesX[0].AxisMaximum = max;
+                                //MDK fix if max < 1000
+                                if (max < 1000) max = 1000;
 
                                 BottomChart.Series[7].DataSource = CurrentSpectrum.Range(min, max, (int)BottomChart.AxesX[0].ActualWidth * (Properties.Settings.Default.HighBin ? 2 : 1));
                                 BottomChart.Series[0].DataPoints.Clear();
 
                                 BottomChart.AxesX[0].Zoom(min, max, min, max);
 
-                                BottomChart.AxesX[0].AxisMinimum = min;
+                                //MDK fix mass axis to 0 for min
+                                BottomChart.AxesX[0].AxisMinimum = 0;
+                                //BottomChart.AxesX[0].AxisMinimum = min;
                                 BottomChart.AxesX[0].AxisMaximum = max;
+                                //MDK fix if max < 1000
+                                if (max < 1000) max = 1000;
 
                                 BottomChart.AxesX[0].Title = "m/z (amu)";
                             }));
@@ -4925,6 +4943,7 @@ namespace MSViewer
                     }
                     else
                     {
+
                         BottomChart.AxesX[0].AxisMinimum = 0d;
                         BottomChart.AxesX[0].AxisMaximum = 1d;
                     }
@@ -5687,9 +5706,13 @@ namespace MSViewer
                       {
                           CurrentSpectrum.Add(new ClusterPeak() { Mass = min, Intensity = 0 });
                           CurrentSpectrum.Add(new ClusterPeak() { Mass = max, Intensity = 0 });
-
-                          BottomChart.AxesX[0].AxisMinimum = min;
+                          
+                          //MDK fix mass axis to 0 for min
+                          BottomChart.AxesX[0].AxisMinimum = 0;
+                          //BottomChart.AxesX[0].AxisMinimum = min;
                           BottomChart.AxesX[0].AxisMaximum = max;
+                          //MDK fix if max < 1000
+                          if (max < 1000) max = 1000;
 
                           Debug.WriteLine("Point Count: " + CurrentSpectrum.Range(min, max, (int)BottomChart.AxesX[0].ActualWidth * (Properties.Settings.Default.HighBin ? 2 : 1)).Count());
 
@@ -5744,9 +5767,12 @@ namespace MSViewer
                           BottomChart.Series[7].DataPoints.Clear();
 
                           BottomChart.AxesX[0].Zoom(min, max, min, max);
-
-                          BottomChart.AxesX[0].AxisMinimum = min;
+                          //MDK fix mass axis to 0 for min
+                          BottomChart.AxesX[0].AxisMinimum = 0;
+                          //BottomChart.AxesX[0].AxisMinimum = min;
                           BottomChart.AxesX[0].AxisMaximum = max;
+                          //MDK fix if max < 1000
+                          if (max < 1000) max = 1000;
 
                           BottomChart.AxesX[0].Title = "Mass (amu)";
                       }));
@@ -5780,16 +5806,24 @@ namespace MSViewer
                     CurrentSpectrum.Add(new ClusterPeak() { MZ = min, Intensity = 0 });
                     CurrentSpectrum.Add(new ClusterPeak() { MZ = max, Intensity = 0 });
 
-                    BottomChart.AxesX[0].AxisMinimum = min;
+                    //MDK fix mass axis to 0 for min
+                    BottomChart.AxesX[0].AxisMinimum = 0;
+                    //BottomChart.AxesX[0].AxisMinimum = min;
                     BottomChart.AxesX[0].AxisMaximum = max;
+                    //MDK fix if max < 1000
+                    if (max < 1000) max = 1000;
 
                     BottomChart.Series[7].DataSource = CurrentSpectrum.Range(min, max, (int)BottomChart.AxesX[0].ActualWidth * (Properties.Settings.Default.HighBin ? 2 : 1));
                     BottomChart.Series[0].DataPoints.Clear();
 
                     BottomChart.AxesX[0].Zoom(min, max, min, max);
 
-                    BottomChart.AxesX[0].AxisMinimum = min;
+                    //MDK fix mass axis to 0 for min
+                    BottomChart.AxesX[0].AxisMinimum = 0;
+                    //BottomChart.AxesX[0].AxisMinimum = min;
                     BottomChart.AxesX[0].AxisMaximum = max;
+                    //MDK fix if max < 1000
+                    if (max < 1000) max = 1000;
 
                     BottomChart.AxesX[0].Title = "m/z (amu)";
                 }));
@@ -13421,8 +13455,12 @@ namespace MSViewer
                     min = min - (max - min) * 0.035;  // This gives us a buffer on the ends of the X axis
                     max = max + (max - min) * 0.035;  // This gives us a buffer on the ends of the X axis
 
-                    BottomChart.AxesX[0].AxisMinimum = min;
+                    //MDK fix mass axis to 0 for min
+                    BottomChart.AxesX[0].AxisMinimum = 0;
+                    //BottomChart.AxesX[0].AxisMinimum = min;
                     BottomChart.AxesX[0].AxisMaximum = max;
+                    //MDK fix if max < 1000
+                    if (max < 1000) max = 1000;
 
                     var theAxis = BottomChart.AxesX[0];
 
@@ -18654,8 +18692,12 @@ namespace MSViewer
                 CurrentSpectrum.Add(new ClusterPeak() { Mass = min, Intensity = 0 });
                 CurrentSpectrum.Add(new ClusterPeak() { Mass = max, Intensity = 0 });
 
-                BottomChart.AxesX[0].AxisMinimum = min;
+                //MDK fix mass axis to 0 for min
+                BottomChart.AxesX[0].AxisMinimum = 0;
+                //BottomChart.AxesX[0].AxisMinimum = min;
                 BottomChart.AxesX[0].AxisMaximum = max;
+                //MDK fix if max < 1000
+                if (max < 1000) max = 1000;
 
                 ZeroMonomass zm = new ZeroMonomass();
                 zm.Intensity = CurrentSpectrum.ParentIon.Intensity;
@@ -18679,8 +18721,12 @@ namespace MSViewer
 
                 BottomChart.AxesX[0].Zoom(min, max, min, max);
 
-                BottomChart.AxesX[0].AxisMinimum = min;
+                //MDK fix mass axis to 0 for min
+                BottomChart.AxesX[0].AxisMinimum = 0;
+                //BottomChart.AxesX[0].AxisMinimum = min;
                 BottomChart.AxesX[0].AxisMaximum = max;
+                //MDK fix if max < 1000
+                if (max < 1000) max = 1000;
 
                 string currenttitle = CurrentSpectrum.Title;
                 if (currenttitle.IndexOf("(") > -1)

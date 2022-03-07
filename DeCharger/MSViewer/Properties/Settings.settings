@@ -18,7 +18,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="ShowOnlyFTMS" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="JumpToXIC" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
@@ -1560,7 +1560,7 @@ dHex(2)Hex(4)HexNAc(5)	dHex(2) Hex(4) HexNAc(5)	1955.723975</Value>
       <Value Profile="(Default)">25</Value>
     </Setting>
     <Setting Name="UseHybridIntensities" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="SequenceSearchFileVersion" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">3</Value>
@@ -1581,7 +1581,7 @@ dHex(2)Hex(4)HexNAc(5)	dHex(2) Hex(4) HexNAc(5)	1955.723975</Value>
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="AutoMergingEnabled" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="ExpressSearch" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>

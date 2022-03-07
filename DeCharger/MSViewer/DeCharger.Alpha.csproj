@@ -35,7 +35,7 @@
     <ProductName>DeCharger Alpha</ProductName>
     <PublisherName>DeCharger</PublisherName>
     <WebPage>index.htm</WebPage>
-    <ApplicationRevision>555</ApplicationRevision>
+    <ApplicationRevision>557</ApplicationRevision>
     <ApplicationVersion>5.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -104,6 +104,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>deCharger_icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DotNetZip, Version=1.13.5.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
@@ -315,6 +318,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="DeCharger.Alpha_TemporaryKey.pfx" />
+    <Resource Include="deCharger_icon.ico" />
     <Content Include="Files\OligoAveragineCache.dat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -360,7 +364,7 @@
     <Resource Include="Files\RNA_mass_list.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Icons\decharger_icon.png" />
+    <Resource Include="Icons\deCharger_icon.ico" />
     <Content Include="Icons\File.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

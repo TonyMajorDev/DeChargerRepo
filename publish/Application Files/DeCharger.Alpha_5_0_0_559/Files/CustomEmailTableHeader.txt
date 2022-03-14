@@ -1,0 +1,99 @@
+﻿<fieldset style="width:1000px;">
+        <legend>Legend:</legend>  	  
+        <table>
+            <tr>																																
+                <td style="border:none;">
+                    <table id="blackrectangle">
+                       <tr>
+                            <td class="rectangle" style="background-color:black; width:25px; color:snow; font-size:10.0pt;font-family:Consolas; border:none;">ABC</td>
+                            <td style="border:none;width:200px; ">-- All Amino Acids match</td>
+                        </tr>
+                    </table>
+                </td>
+                <td style="border:none;">
+                    <table id="bluerectangle">
+                        <tr>
+                            <td class="rectangle" style="background-color:royalblue; font-size:10.0pt;font-family:Consolas; color:snow; width:25px; border:none;">ABC</td>
+                            <td style="border:none;width:200px;">-- Some peaks match</td>
+                            <!--<td style="background-color:blue;"></td>-->
+                        </tr>
+                    </table>
+                </td>
+                <td style="border:none;">
+                    <table>
+                        <tr>
+                            <td class="rectangle" style="background-color:darkred; font-size:10.0pt;font-family:Consolas; width:25px; color:snow; border:none;">ABC</td>
+                            <td style="border:none;width:300px;">-- Unexplained Mass or Modification</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td style="border:none;">
+                    <table>
+                        <tr>
+                            <td class="rectangle" style="background-color:white; font-size:10.0pt;font-family:Consolas; width:25px; color:black; border:none;"> <b> ABC</b></td>
+                            <td style="border:none;width:200px;">-- Within Parent Mass</td>
+                        </tr>
+                    </table>
+                </td>
+                <td style="border:none;">
+                    <table>
+                        <tr>
+                            <td class="rectangle" style="background-color:white; font-size:10.0pt;font-family:Consolas; width:25px; color:gray; border:none;"> <b> ABC</b></td>
+                            <td style="border:none;width:200px;">-- Outside Parent Mass</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>	  
+</fieldset>
+    <br />
+    <br />
+<table style="width:600px; border-spacing:0px;border-collapse: collapse; padding:0px; border:0px;">
+        <thead>
+            <tr style="background-color:beige;">
+                <td width="22%" class="tdcoloumnhead" valign=top>
+                    <p class="tcoloumnHead" style="width:200px;font-family:Verdana, Geneva, Tahoma, sans-serif;">Description</p>
+                </td>
+                <td width="7%" class="tdcoloumnhead" valign=top>
+                    <p class="tcoloumnHead" style="font-family:Verdana, Geneva, Tahoma, sans-serif;">Hits</p>
+                </td>
+                <td width="8%" valign=top class="tdcoloumnhead tdwordwrap">
+                    <p class="tcoloumnHead tdwordwrap" style="width:62px;font-family:Verdana, Geneva, Tahoma, sans-serif;">Scan(s)</p>
+                </td>
+                <td width="6%" valign=top class="tdcoloumnhead">
+                    <p class="tcoloumnHead" style="font-family:Verdana, Geneva, Tahoma, sans-serif;">Mass</p>
+                </td>
+                <td width="2%" valign=top class="tdcoloumnhead tdwordwrap">
+                    <p class="tcoloumnHead tdwordwrap" style="font-family:Verdana, Geneva, Tahoma, sans-serif;">Z</p>
+                </td>
+                <td width="6%" valign=top class="tdcoloumnhead tdwordwrap">
+                    <p class="tcoloumnHead" style="font-family:Verdana, Geneva, Tahoma, sans-serif;">Tag</p>
+                </td>
+                <td width="25%" valign=top class="tdcoloumnhead tdwordwrap">
+                    <p class="tcoloumnHead tdwordwrap" style="font-family:Verdana, Geneva, Tahoma, sans-serif;">Sequence</p>
+                </td>
+                <td width="6%" valign=top class="tdcoloumnhead">
+                    <p class="tcoloumnHead" style="font-family:Verdana, Geneva, Tahoma, sans-serif;">Accession</p>
+                </td>
+                <td width="6%" valign=top class="tdcoloumnhead">
+                    <p class="tcoloumnHead" style="font-family:Verdana, Geneva, Tahoma, sans-serif;">
+                        Delta
+                        Mass
+                    </p>
+                </td>
+                <td width="3%" valign=top class="tdcoloumnhead">
+                    <p class="tcoloumnHead" style="font-family:Verdana, Geneva, Tahoma, sans-serif;">Start</p>
+                </td>
+                <td width="2%" valign=top class="tdcoloumnhead">
+                    <p class="tcoloumnHead" style="font-family:Verdana, Geneva, Tahoma, sans-serif;">End</p>
+                </td>
+                <td width="4%" valign=top class="tdcoloumnhead">
+                    <p class="tcoloumnHead" style="font-family:Verdana, Geneva, Tahoma, sans-serif;">tStart</p>
+                </td>
+                <td width="3%" valign=top class="tdcoloumnhead">
+                    <p class="tcoloumnHead" style="font-family:Verdana, Geneva, Tahoma, sans-serif;">tEnd</p>
+                </td>
+            </tr>
+        </thead>

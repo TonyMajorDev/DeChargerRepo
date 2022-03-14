@@ -81,6 +81,7 @@ using System.Xml.Serialization;
 using Ionic.Zip;
 using static Science.Proteomics.AminoAcidHelpers;
 
+
 //using System.Web.Script.Serialization;
 //using Newtonsoft.Json;
 
@@ -483,9 +484,7 @@ namespace MSViewer
                 this.DragLeave += (s, e) => VisualStateManager.GoToState(this, "Normal", true);
                 this.Drop += new DragEventHandler(RootElement_Drop);
 
-                var assembly = Assembly.GetExecutingAssembly();
-                string version = assembly.FullName.Split(',')[1];
-                string fullversion = version.Split('=')[1];
+
 
                 //MDK update main title to reflect isotope set loaded
                 AveragineCacheSettings settings = AveragineCacheSettings.Instance;
@@ -500,7 +499,28 @@ namespace MSViewer
                     label4.Content = "Decharged MS Viewer" + " - Oligo";
                     }
 
-                lblVersionAuthors.Content = "Version " + fullversion;
+                // old version information
+                var assembly = Assembly.GetExecutingAssembly();
+                string version = assembly.FullName.Split(',')[1];
+                string fullversion = version.Split('=')[1];
+
+                //MDK get publish version  in  progress
+
+                //string execPath = AppDomain.CurrentDomain.BaseDirectory;
+
+                //var pubVer = string.Format("Product Name: {4}, Version: {0}.{1}.{2}.{3}", System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.Major, System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.Minor, System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.Build, System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.Revision, Assembly.GetEntryAssembly().GetName().Name);
+                string pubVer; 
+                try
+                {
+                    pubVer = string.Format("Product Name: {4}, Version: {0}.{1}.{2}.{3}", System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.Major, System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.Minor, System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.Build, System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.Revision, Assembly.GetEntryAssembly().GetName().Name);
+                }
+                catch (Exception ex)
+                {
+                    pubVer = fullversion;
+                }
+
+
+                lblVersionAuthors.Content = "Version: " + pubVer;
                 App.AssemblyLocation = FindCurrentAssemblyPath.GetAssemblyPath();
                 Items = new ObservableCollection<QuantitationItem>();
                 QuantitationListView.ItemsSource = Items;

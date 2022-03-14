@@ -35,7 +35,7 @@
     <ProductName>DeCharger Alpha</ProductName>
     <PublisherName>DeCharger</PublisherName>
     <WebPage>index.htm</WebPage>
-    <ApplicationRevision>557</ApplicationRevision>
+    <ApplicationRevision>560</ApplicationRevision>
     <ApplicationVersion>5.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>

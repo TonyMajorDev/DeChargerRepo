@@ -248,7 +248,7 @@ namespace MSViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool ShowHitsWithNoProteinID {
             get {
                 return ((bool)(this["ShowHitsWithNoProteinID"]));
@@ -514,9 +514,10 @@ namespace MSViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Oxidation\t15.9949\to\r\nDeamidation\t0.9840\tda\r\nAmmonia-loss\t-17.0265\tam\r\nWater-Loss\t" +
-            "-18.0100\twater\r\nAcetylation\t42.0106\tac\r\nEthanolation\t44.0262\teth\r\nCarboxyethyl\t7" +
-            "2.0211\tcrbx\r\nGlu->pyro-Glu\t-18.0105\te->pg\r\nGln->pyro-Glu\t-17.0265\tq->pg\r\n")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Oxidation\t              15.9949\to\r\nDeamidation\t0.9840\tda\r\nAmmonia-loss\t-17.0265\ta" +
+            "m\r\nWater-Loss\t-18.0100\twater\r\nAcetylation\t42.0106\tac\r\nEthanolation\t44.0262\teth\r\n" +
+            "Carboxyethyl\t72.0211\tcrbx\r\nGlu->pyro-Glu\t-18.0105\te->pg\r\nGln->pyro-Glu\t-17.0265\t" +
+            "q->pg\r\n")]
         public string ValidationModificationsList {
             get {
                 return ((string)(this["ValidationModificationsList"]));
@@ -1502,7 +1503,7 @@ namespace MSViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool UseHybridIntensities {
             get {
                 return ((bool)(this["UseHybridIntensities"]));

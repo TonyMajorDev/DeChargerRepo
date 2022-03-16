@@ -73,7 +73,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="ShowHitsWithNoProteinID" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="UseBlast" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
@@ -183,7 +183,7 @@ the Department of Defense, DFARS 252.227-7015 (Technical Data – Commercial Ite
       <Value Profile="(Default)">-100</Value>
     </Setting>
     <Setting Name="ValidationModificationsList" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Oxidation	15.9949	o
+      <Value Profile="(Default)">Oxidation	              15.9949	o
 Deamidation	0.9840	da
 Ammonia-loss	-17.0265	am
 Water-Loss	-18.0100	water
@@ -1560,7 +1560,7 @@ dHex(2)Hex(4)HexNAc(5)	dHex(2) Hex(4) HexNAc(5)	1955.723975</Value>
       <Value Profile="(Default)">25</Value>
     </Setting>
     <Setting Name="UseHybridIntensities" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="SequenceSearchFileVersion" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">3</Value>

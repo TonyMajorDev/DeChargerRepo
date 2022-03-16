@@ -35,7 +35,7 @@
     <ProductName>DeCharger Alpha</ProductName>
     <PublisherName>DeCharger</PublisherName>
     <WebPage>index.htm</WebPage>
-    <ApplicationRevision>561</ApplicationRevision>
+    <ApplicationRevision>562</ApplicationRevision>
     <ApplicationVersion>5.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -498,9 +498,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Files\HTMLCopy.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Files\Outlook Datagrid Email.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Files\PDFHTML.txt">

@@ -1,3 +1,4 @@
+![deCharger](https://github.com/mknierman/mknierman.github.io/blob/gh-pages/Decharger_icon-small.png)
 # DeCharger
 Mass Spectrometry Decharged Viewer
 Developed originally by Tony Major, Michael Knierman, and Anvesh Kodumuri
